@@ -4,7 +4,9 @@ import com.oborodulin.home.common.ui.components.field.util.Focusable
 
 enum class StreetFields : Focusable {
     STREET_ID,
+    STREET_TL_ID,
     STREET_LOCALITY,
+
     //STREET_LOCALITY_DISTRICT,
     //STREET_MICRODISTRICT,
     STREET_ROAD_TYPE,

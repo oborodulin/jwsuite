@@ -23,5 +23,8 @@ class StreetUiToStreetMapper(
         isPrivateSector = input.isPrivateSector,
         estimatedHouses = input.estimatedHouses,
         streetName = input.streetName
-    ).also { it.id = input.id }
+    ).also {
+        it.id = input.id
+        it.tlId = input.tlId
+    }
 }

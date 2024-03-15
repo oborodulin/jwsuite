@@ -39,7 +39,7 @@ fun String?.firstCapitalLetterOrEmpty() = this?.getOrNull(0)?.uppercase().orEmpt
 
 // DOMAIN:
 // Geo:
-fun String?.toRegionName() = this?.substringAfter(' ').orEmpty()
+fun String?.toRegionName() = this?.substringBefore(' ').orEmpty()
 fun String?.toRegionDistrictName() = this?.substringAfter(' ').orEmpty()
 fun String?.toLocalityName() = this?.substringAfter(' ').orEmpty()
 fun String?.toLocalityDistrictName() = this?.substringAfter(' ').orEmpty()

@@ -5,7 +5,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.Result
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable
@@ -127,7 +126,7 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
             territoryCategoryCode = TerritoryCategoryType.valueOf(territoryCategoryCode.value.value),
             territoryCategoryMark = territoryCategoryMark.value.value,
             territoryCategoryName = territoryCategoryName.value.value
-        ).also { it.id = id.value.value.toUUIDOrNull() }
+        ).also { it.id = id() }
         Timber.tag(TAG).d("saveTerritoryCategory() called: UI model %s", territoryCategoryUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveTerritoryCategoryUseCase.execute(

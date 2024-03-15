@@ -5,7 +5,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.Result
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -138,7 +137,7 @@ class GroupViewModelImpl @Inject constructor(
         val groupUi = GroupUi(
             congregation = congregation.value.item.toCongregationUi(),
             groupNum = groupNum.value.value.toInt(),
-        ).also { it.id = id.value.value.toUUIDOrNull() }
+        ).also { it.id = id() }
         Timber.tag(TAG).d("saveGroup() called: UI model %s", groupUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveGroupUseCase.execute(SaveGroupUseCase.Request(groupUiMapper.map(groupUi)))

@@ -4,6 +4,7 @@ import com.oborodulin.home.common.ui.components.field.util.Focusable
 
 enum class CountryFields : Focusable {
     COUNTRY_ID,
+    COUNTRY_TL_ID,
     COUNTRY_CODE,
     COUNTRY_NAME,
     COUNTRY_GEOCODE,

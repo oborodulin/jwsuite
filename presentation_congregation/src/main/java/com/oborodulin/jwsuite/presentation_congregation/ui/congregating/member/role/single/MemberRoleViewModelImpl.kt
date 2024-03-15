@@ -8,7 +8,6 @@ import com.oborodulin.home.common.domain.Result
 import com.oborodulin.home.common.extensions.toFullFormatOffsetDateTimeOrNull
 import com.oborodulin.home.common.extensions.toOffsetDateTime
 import com.oborodulin.home.common.extensions.toShortFormatString
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -137,7 +136,7 @@ class MemberRoleViewModelImpl @Inject constructor(
             member = member.value.item.toMemberUi(congregationUi),
             role = role.value.item.toRoleUi(),
             roleExpiredDate = roleExpiredDate.value.value.toFullFormatOffsetDateTimeOrNull()
-        ).also { it.id = id.value.value.toUUIDOrNull() }
+        ).also { it.id = id() }
         Timber.tag(TAG).d("saveMemberRole() called: UI model %s", memberRoleUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveMemberRoleUseCase.execute(

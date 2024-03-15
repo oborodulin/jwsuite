@@ -82,7 +82,7 @@ data class GeoRegionTlEntity(
     override fun id() = this.regionTlId
 
     override fun key(): Int {
-        var result = regionLocCode.hashCode()
+        var result = regionsId.hashCode()
         result = result * 31 + regionLocCode.hashCode()
         return result
     }

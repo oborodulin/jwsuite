@@ -6,7 +6,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.Result
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -218,7 +217,7 @@ class HouseViewModelImpl @Inject constructor(
             isForeignLanguage = isForeignLanguage.value.value.toBoolean(),
             isPrivateSector = isPrivateSector.value.value.toBoolean(),
             houseDesc = houseDesc.value.value.ifEmpty { null }
-        ).also { it.id = id.value.value.toUUIDOrNull() }
+        ).also { it.id = id() }
         Timber.tag(TAG).d("saveHouse() called: UI model %s", houseUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveHouseUseCase.execute(SaveHouseUseCase.Request(houseUiMapper.map(houseUi)))

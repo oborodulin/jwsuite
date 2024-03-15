@@ -19,7 +19,10 @@ class LocalityToLocalityUiMapper(
         localityShortName = input.localityShortName,
         localityName = input.localityName,
         localityFullName = input.localityFullName
-    ).also { it.id = input.id }
+    ).also {
+        it.id = input.id
+        it.tlId = input.tlId
+    }
 
     override fun nullableMap(input: GeoLocality?) = input?.let { map(it) }
 }

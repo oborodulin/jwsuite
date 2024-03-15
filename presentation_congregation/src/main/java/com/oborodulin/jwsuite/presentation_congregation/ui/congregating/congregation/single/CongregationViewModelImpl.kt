@@ -5,7 +5,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.extensions.toOffsetDateTime
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -132,7 +131,7 @@ class CongregationViewModelImpl @Inject constructor(
             territoryMark = territoryMark.value.value,
             isFavorite = isFavorite.value.value.toBoolean(),
             locality = locality.value.item.toLocalityUi()
-        ).also { it.id = id.value.value.toUUIDOrNull() }
+        ).also { it.id = id() }
         Timber.tag(TAG).d("saveCongregation() called: UI model %s", congregationUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveCongregationUseCase.execute(

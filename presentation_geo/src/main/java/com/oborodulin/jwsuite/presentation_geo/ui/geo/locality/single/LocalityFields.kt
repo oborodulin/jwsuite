@@ -4,6 +4,7 @@ import com.oborodulin.home.common.ui.components.field.util.Focusable
 
 enum class LocalityFields : Focusable {
     LOCALITY_ID,
+    LOCALITY_TL_ID,
     LOCALITY_COUNTRY,
     LOCALITY_REGION,
     LOCALITY_REGION_DISTRICT,

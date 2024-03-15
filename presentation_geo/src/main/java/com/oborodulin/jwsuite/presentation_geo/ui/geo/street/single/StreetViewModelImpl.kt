@@ -73,6 +73,9 @@ class StreetViewModelImpl @Inject constructor(
         MutableStateFlow(mutableMapOf())
     override val roadTypes = _roadTypes.asStateFlow()
 
+    override val tlId: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(StreetFields.STREET_TL_ID.name, InputWrapper())
+    }
     override val locality: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(StreetFields.STREET_LOCALITY.name, InputListItemWrapper())
     }
@@ -159,7 +162,10 @@ class StreetViewModelImpl @Inject constructor(
             isPrivateSector = isPrivateSector.value.value.toBoolean(),
             estimatedHouses = estimatedHouses.value.value.toIntOrNull(),
             streetName = streetName.value.value
-        ).also { it.id = id.value.value.toUUIDOrNull() }
+        ).also {
+            it.id = id()
+            it.tlId = tlId.value.value.toUUIDOrNull()
+        }
         Timber.tag(TAG).d("saveStreet() called: UI model %s", streetUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveStreetUseCase.execute(
@@ -183,6 +189,7 @@ class StreetViewModelImpl @Inject constructor(
                 .d("initFieldStatesByUiModel(StreetUi) called: uiModel = %s", uiModel)
         }
         uiModel.id?.let { initStateValue(StreetFields.STREET_ID, id, it.toString()) }
+        uiModel.tlId?.let { initStateValue(StreetFields.STREET_TL_ID, tlId, it.toString()) }
         initStateValue(
             StreetFields.STREET_LOCALITY, locality, uiModel.locality.toListItemModel()
         )/*
@@ -342,6 +349,7 @@ class StreetViewModelImpl @Inject constructor(
 
                 override val id = MutableStateFlow(InputWrapper())
                 override fun id() = null
+                override val tlId = MutableStateFlow(InputWrapper())
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
 
                 //override val localityDistrict = MutableStateFlow(InputListItemWrapper<ListItemModel>())

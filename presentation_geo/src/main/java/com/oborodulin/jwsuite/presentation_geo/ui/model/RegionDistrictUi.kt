@@ -3,7 +3,6 @@ package com.oborodulin.jwsuite.presentation_geo.ui.model
 import com.oborodulin.home.common.extensions.toRegionDistrictName
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
-import java.util.UUID
 
 data class RegionDistrictUi(
     val region: RegionUi? = null,
@@ -15,7 +14,7 @@ data class RegionDistrictUi(
 ) : ModelUi()
 
 fun RegionDistrictUi?.toListItemModel() = ListItemModel(
-    itemId = this?.id ?: UUID.randomUUID(),
+    itemId = this?.id,
     headline = this?.districtName.orEmpty(),
     supportingText = this?.districtShortName
 )

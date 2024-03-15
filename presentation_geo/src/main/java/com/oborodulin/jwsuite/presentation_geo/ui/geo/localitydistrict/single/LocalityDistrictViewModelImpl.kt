@@ -70,6 +70,9 @@ class LocalityDistrictViewModelImpl @Inject constructor(
             InputListItemWrapper()
         )
     }
+    override val tlId: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(LocalityDistrictFields.LOCALITY_DISTRICT_TL_ID.name, InputWrapper())
+    }
     override val districtShortName: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(LocalityDistrictFields.LOCALITY_DISTRICT_SHORT_NAME.name, InputWrapper())
     }
@@ -125,7 +128,10 @@ class LocalityDistrictViewModelImpl @Inject constructor(
             locality = locality.value.item.toLocalityUi(),
             districtShortName = districtShortName.value.value,
             districtName = districtName.value.value
-        ).also { it.id = id.value.value.toUUIDOrNull() }
+        ).also {
+            it.id = id()
+            it.tlId = tlId.value.value.toUUIDOrNull()
+        }
         Timber.tag(TAG).d("saveLocalityDistrict() called: UI model %s", localityDistrictUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveLocalityDistrictUseCase.execute(
@@ -151,6 +157,9 @@ class LocalityDistrictViewModelImpl @Inject constructor(
             )
         uiModel.id?.let {
             initStateValue(LocalityDistrictFields.LOCALITY_DISTRICT_ID, id, it.toString())
+        }
+        uiModel.tlId?.let {
+            initStateValue(LocalityDistrictFields.LOCALITY_DISTRICT_TL_ID, tlId, it.toString())
         }
         initStateValue(
             LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY, locality,
@@ -298,6 +307,7 @@ class LocalityDistrictViewModelImpl @Inject constructor(
 
                 override val id = MutableStateFlow(InputWrapper())
                 override fun id() = null
+                override val tlId = MutableStateFlow(InputWrapper())
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val districtShortName = MutableStateFlow(InputWrapper())
                 override val districtName = MutableStateFlow(InputWrapper())

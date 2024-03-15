@@ -20,7 +20,10 @@ class RegionToRegionUiMapper(
         coordinates = coordinatesMapper.map(input.coordinates),
         regionName = input.regionName,
         regionFullName = input.regionFullName
-    ).also { it.id = input.id }
+    ).also {
+        it.id = input.id
+        it.tlId = input.tlId
+    }
 
     override fun nullableMap(input: GeoRegion?) = input?.let { map(it) }
 }

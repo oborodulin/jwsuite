@@ -64,6 +64,9 @@ class RegionDistrictViewModelImpl @Inject constructor(
         state, RegionDistrictFields.REGION_DISTRICT_ID.name,
         RegionDistrictFields.REGION_DISTRICT_COUNTRY
     ) {
+    override val tlId: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(RegionDistrictFields.REGION_DISTRICT_TL_ID.name, InputWrapper())
+    }
     override val country: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(
             RegionDistrictFields.REGION_DISTRICT_COUNTRY.name, InputListItemWrapper()
@@ -127,7 +130,10 @@ class RegionDistrictViewModelImpl @Inject constructor(
             region = region.value.item.toRegionUi(),
             districtShortName = districtShortName.value.value,
             districtName = districtName.value.value
-        ).also { it.id = id.value.value.toUUIDOrNull() }
+        ).also {
+            it.id = id()
+            it.tlId = tlId.value.value.toUUIDOrNull()
+        }
         Timber.tag(TAG).d("saveRegionDistrict() called: UI model %s", regionDistrictUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveRegionDistrictUseCase.execute(
@@ -150,6 +156,9 @@ class RegionDistrictViewModelImpl @Inject constructor(
             .d("initFieldStatesByUiModel(RegionDistrictUi) called: uiModel = %s", uiModel)
         uiModel.id?.let {
             initStateValue(RegionDistrictFields.REGION_DISTRICT_ID, id, it.toString())
+        }
+        uiModel.tlId?.let {
+            initStateValue(RegionDistrictFields.REGION_DISTRICT_TL_ID, tlId, it.toString())
         }
         initStateValue(
             RegionDistrictFields.REGION_DISTRICT_COUNTRY, country,
@@ -299,6 +308,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
 
                 override val id = MutableStateFlow(InputWrapper())
                 override fun id() = null
+                override val tlId = MutableStateFlow(InputWrapper())
                 override val country = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val region = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val districtShortName = MutableStateFlow(InputWrapper())

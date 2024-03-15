@@ -19,7 +19,10 @@ class MicrodistrictToMicrodistrictUiMapper(
         microdistrictShortName = input.microdistrictShortName,
         microdistrictName = input.microdistrictName,
         microdistrictFullName = input.microdistrictFullName
-    ).also { it.id = input.id }
+    ).also {
+        it.id = input.id
+        it.tlId = input.tlId
+    }
 
     override fun nullableMap(input: GeoMicrodistrict?) = input?.let { map(it) }
 }

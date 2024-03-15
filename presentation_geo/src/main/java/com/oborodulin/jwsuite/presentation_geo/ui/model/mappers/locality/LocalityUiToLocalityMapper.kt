@@ -14,11 +14,14 @@ class LocalityUiToLocalityMapper(
 ) : Mapper<LocalityUi, GeoLocality> {
     override fun map(input: LocalityUi) = GeoLocality(
         ctx = ctx,
-        region = regionUiMapper.map(input.region!!),
+        region = regionUiMapper.nullableMap(input.region),
         regionDistrict = regionUiDistrictMapper.nullableMap(input.regionDistrict),
         localityCode = input.localityCode,
         localityType = input.localityType,
         localityShortName = input.localityShortName,
         localityName = input.localityName
-    ).also { it.id = input.id }
+    ).also {
+        it.id = input.id
+        it.tlId = input.tlId
+    }
 }

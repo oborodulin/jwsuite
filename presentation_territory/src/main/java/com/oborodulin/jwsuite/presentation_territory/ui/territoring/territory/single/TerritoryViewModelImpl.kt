@@ -5,7 +5,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.Result
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -206,7 +205,7 @@ class TerritoryViewModelImpl @Inject constructor(
             isGroupMinistry = isGroupMinistry.value.value.toBoolean(),
             isActive = isActive.value.value.toBoolean(),
             territoryDesc = territoryDesc.value.value.ifEmpty { null }
-        ).also { it.id = id.value.value.toUUIDOrNull() }
+        ).also { it.id = id() }
         Timber.tag(TAG).d("saveTerritory() called: UI model %s", territoryUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveTerritoryUseCase.execute(

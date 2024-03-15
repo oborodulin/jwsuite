@@ -6,7 +6,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.extensions.toUUID
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -194,7 +193,7 @@ class MemberReportViewModelImpl @Inject constructor(
             age = age.value.value.toIntOrNull(),
             isProcessed = isProcessed.value.value.toBoolean(),
             territoryReportDesc = reportDesc.value.value.ifEmpty { null }
-        ).also { it.id = id.value.value.toUUIDOrNull() }
+        ).also { it.id = id() }
         Timber.tag(TAG).d("saveMemberReport() called: UI model %s", territoryMemberReportUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveMemberReportUseCase.execute(

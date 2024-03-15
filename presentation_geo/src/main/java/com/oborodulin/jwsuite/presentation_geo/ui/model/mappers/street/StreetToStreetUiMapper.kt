@@ -21,5 +21,8 @@ class StreetToStreetUiMapper(
         estimatedHouses = input.estimatedHouses,
         streetName = input.streetName,
         streetFullName = input.streetFullName
-    ).also { it.id = input.id }
+    ).also {
+        it.id = input.id
+        it.tlId = input.tlId
+    }
 }

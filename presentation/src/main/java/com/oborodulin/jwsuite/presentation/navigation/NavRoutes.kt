@@ -155,6 +155,8 @@ import java.util.UUID
 //                      <a href="https://www.flaticon.com/free-icons/map" title="map icons">Map icons created by Freepik - Flaticon</a>
 // ic_download.png - https://www.freepik.com/
 //                      <a href="https://www.flaticon.com/free-icons/cloud-computing" title="cloud computing icons">Cloud computing icons created by Freepik - Flaticon</a>
+// ic_country.png - <a href="https://www.flaticon.com/free-icons/citizenship" title="citizenship icons">Citizenship icons created by Tanah Basah - Flaticon</a>
+// https://www.flaticon.com/free-icon/citizenship_9133134?term=country&page=1&position=5&origin=search&related_id=9133134
 
 private const val TAG = "Presentation.NavRoutes"
 
@@ -288,7 +290,7 @@ sealed class NavRoutes(
     // Geo:
     data object Country : NavRoutes(
         route = String.format(ROUTE_COUNTRY, "$ARG_COUNTRY_ID={$ARG_COUNTRY_ID}"),
-        iconPainterResId = R.drawable.ic_geo_24,
+        iconPainterResId = R.drawable.ic_country_24,
         titleResId = R.string.nav_item_country,
         arguments = listOf(navArgument(ARG_COUNTRY_ID) {
             type = NavType.StringType

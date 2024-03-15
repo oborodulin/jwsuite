@@ -13,5 +13,8 @@ class CountryUiToCountryMapper(private val mapper: CoordinatesUiToGeoCoordinates
         countryOsmId = input.countryOsmId,
         coordinates = mapper.map(input.coordinates),
         countryName = input.countryName
-    ).also { it.id = input.id }
+    ).also {
+        it.id = input.id
+        it.tlId = input.tlId
+    }
 }

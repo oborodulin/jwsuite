@@ -10,6 +10,6 @@ class GeoMicrodistrictToGeoMicrodistrictTlEntityMapper :
     override fun map(input: GeoMicrodistrict) = GeoMicrodistrictTlEntity(
         microdistrictTlId = input.tlId ?: input.apply { tlId = UUID.randomUUID() }.tlId!!,
         microdistrictName = input.microdistrictName,
-        microdistrictsId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!
+        microdistrictsId = input.id!! // ?: input.apply { id = UUID.randomUUID() }.id!!
     )
 }

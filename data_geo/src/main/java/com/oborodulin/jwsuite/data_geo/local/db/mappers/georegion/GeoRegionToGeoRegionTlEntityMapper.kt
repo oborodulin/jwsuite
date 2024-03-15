@@ -9,6 +9,6 @@ class GeoRegionToGeoRegionTlEntityMapper : Mapper<GeoRegion, GeoRegionTlEntity> 
     override fun map(input: GeoRegion) = GeoRegionTlEntity(
         regionTlId = input.tlId ?: input.apply { tlId = UUID.randomUUID() }.tlId!!,
         regionName = input.regionName,
-        regionsId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!
+        regionsId = input.id!! // ?: input.apply { id = UUID.randomUUID() }.id!!
     )
 }

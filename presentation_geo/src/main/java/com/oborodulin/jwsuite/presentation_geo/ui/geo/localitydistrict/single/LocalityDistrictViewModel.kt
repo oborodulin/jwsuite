@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface LocalityDistrictViewModel :
     DialogViewModeled<LocalityDistrictUi, LocalityDistrictUiAction, UiSingleEvent, LocalityDistrictFields> {
+    val tlId: StateFlow<InputWrapper>
     val locality: StateFlow<InputListItemWrapper<ListItemModel>>
     val districtShortName: StateFlow<InputWrapper>
     val districtName: StateFlow<InputWrapper>

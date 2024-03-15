@@ -13,6 +13,7 @@ interface RegionViewModel :
     DialogViewModeled<RegionUi, RegionUiAction, UiSingleEvent, RegionFields> {
     val regionTypes: StateFlow<MutableMap<RegionType, String>>
 
+    val tlId: StateFlow<InputWrapper>
     val country: StateFlow<InputListItemWrapper<ListItemModel>>
     val regionCode: StateFlow<InputWrapper>
     val regionType: StateFlow<InputWrapper>

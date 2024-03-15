@@ -20,7 +20,10 @@ class MicrodistrictUiToMicrodistrictMapper(
         microdistrictType = input.microdistrictType,
         microdistrictShortName = input.microdistrictShortName,
         microdistrictName = input.microdistrictName
-    ).also { it.id = input.id }
+    ).also {
+        it.id = input.id
+        it.tlId = input.tlId
+    }
 
     override fun nullableMap(input: MicrodistrictUi?) = input?.let { map(it) }
 }

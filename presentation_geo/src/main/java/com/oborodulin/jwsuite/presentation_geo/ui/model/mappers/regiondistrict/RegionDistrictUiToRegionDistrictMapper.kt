@@ -19,7 +19,10 @@ class RegionDistrictUiToRegionDistrictMapper(
         districtOsmId = input.districtOsmId,
         coordinates = coordinatesUiMapper.map(input.coordinates),
         districtName = input.districtName
-    ).also { it.id = input.id }
+    ).also {
+        it.id = input.id
+        it.tlId = input.tlId
+    }
 
     override fun nullableMap(input: RegionDistrictUi?) = input?.let { map(it) }
 }

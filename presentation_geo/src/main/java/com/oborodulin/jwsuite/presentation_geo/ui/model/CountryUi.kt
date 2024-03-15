@@ -2,7 +2,6 @@ package com.oborodulin.jwsuite.presentation_geo.ui.model
 
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
-import java.util.UUID
 
 data class CountryUi(
     val countryCode: String = "",
@@ -24,7 +23,7 @@ data class CountryUi(
 }
 
 fun CountryUi?.toListItemModel() = ListItemModel(
-    itemId = this?.id ?: UUID.randomUUID(),
+    itemId = this?.id,
     headline = this?.countryName.orEmpty(),
     supportingText = this?.countryCode
 )

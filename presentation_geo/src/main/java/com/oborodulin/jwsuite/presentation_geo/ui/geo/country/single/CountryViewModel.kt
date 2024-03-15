@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface CountryViewModel :
     DialogViewModeled<CountryUi, CountryUiAction, UiSingleEvent, CountryFields> {
+    val tlId: StateFlow<InputWrapper>
     val countryCode: StateFlow<InputWrapper>
     val countryName: StateFlow<InputWrapper>
     val countryGeocode: StateFlow<InputWrapper>

@@ -225,7 +225,7 @@ class MemberViewModelImpl @Inject constructor(
             memberType = MemberType.valueOf(memberType.value.value),
             movementDate = movementDate.value.value.toFullFormatOffsetDateTime(),
             loginExpiredDate = loginExpiredDate.value.value.toFullFormatOffsetDateTimeOrNull()
-        ).also { it.id = id.value.value.toUUIDOrNull() }
+        ).also { it.id = id() }
         Timber.tag(TAG).d("saveMember() called: UI model %s", memberUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveMemberUseCase.execute(SaveMemberUseCase.Request(memberUiMapper.map(memberUi)))

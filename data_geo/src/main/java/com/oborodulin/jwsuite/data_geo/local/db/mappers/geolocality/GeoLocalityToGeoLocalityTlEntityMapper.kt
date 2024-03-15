@@ -10,6 +10,6 @@ class GeoLocalityToGeoLocalityTlEntityMapper : Mapper<GeoLocality, GeoLocalityTl
         localityTlId = input.tlId ?: input.apply { tlId = UUID.randomUUID() }.tlId!!,
         localityShortName = input.localityShortName,
         localityName = input.localityName,
-        localitiesId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!
+        localitiesId = input.id!! // ?: input.apply { id = UUID.randomUUID() }.id!!
     )
 }

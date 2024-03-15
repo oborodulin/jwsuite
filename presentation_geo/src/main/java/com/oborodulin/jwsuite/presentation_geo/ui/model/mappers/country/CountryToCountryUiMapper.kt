@@ -14,7 +14,10 @@ class CountryToCountryUiMapper(private val mapper: GeoCoordinatesToCoordinatesUi
         countryOsmId = input.countryOsmId,
         coordinates = mapper.map(input.coordinates),
         countryName = input.countryName
-    ).also { it.id = input.id }
+    ).also {
+        it.id = input.id
+        it.tlId = input.tlId
+    }
 
     override fun nullableMap(input: GeoCountry?) = input?.let { map(it) }
 }

@@ -6,7 +6,6 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.Result
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -163,7 +162,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
             isPrivateSector = isPrivateSector.value.value.toBooleanStrictOrNull(),
             isEvenSide = isEvenSide.value.value.toBooleanStrictOrNull(),
             estimatedHouses = estimatedHouses.value.value.toIntOrNull()
-        ).also { it.id = id.value.value.toUUIDOrNull() }
+        ).also { it.id = id() }
         Timber.tag(TAG).d(
             "saveTerritoryStreet() called: UI territoryStreetUi.id = %s; territoryStreetUi = %s",
             territoryStreetUi.id, territoryStreetUi

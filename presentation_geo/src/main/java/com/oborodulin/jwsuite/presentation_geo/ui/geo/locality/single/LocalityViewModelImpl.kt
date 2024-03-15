@@ -74,6 +74,9 @@ class LocalityViewModelImpl @Inject constructor(
         MutableStateFlow(mutableMapOf())
     override val localityTypes = _localityTypes.asStateFlow()
 
+    override val tlId: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(LocalityFields.LOCALITY_TL_ID.name, InputWrapper())
+    }
     override val country: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(LocalityFields.LOCALITY_COUNTRY.name, InputListItemWrapper())
     }
@@ -153,7 +156,10 @@ class LocalityViewModelImpl @Inject constructor(
             localityType = LocalityType.valueOf(localityType.value.value),
             localityShortName = localityShortName.value.value,
             localityName = localityName.value.value
-        ).also { it.id = id.value.value.toUUIDOrNull() }
+        ).also {
+            it.id = id()
+            it.tlId = tlId.value.value.toUUIDOrNull()
+        }
         Timber.tag(TAG).d("saveLocality() called: UI model %s", localityUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveLocalityUseCase.execute(
@@ -174,6 +180,7 @@ class LocalityViewModelImpl @Inject constructor(
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG).d("initFieldStatesByUiModel(LocalityUi) called: uiModel = %s", uiModel)
         uiModel.id?.let { initStateValue(LocalityFields.LOCALITY_ID, id, it.toString()) }
+        uiModel.tlId?.let { initStateValue(LocalityFields.LOCALITY_TL_ID, tlId, it.toString()) }
         initStateValue(
             LocalityFields.LOCALITY_COUNTRY, country, uiModel.region?.country.toListItemModel()
         )
@@ -344,6 +351,7 @@ class LocalityViewModelImpl @Inject constructor(
 
                 override val id = MutableStateFlow(InputWrapper())
                 override fun id() = null
+                override val tlId = MutableStateFlow(InputWrapper())
                 override val country = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val region = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val regionDistrict =

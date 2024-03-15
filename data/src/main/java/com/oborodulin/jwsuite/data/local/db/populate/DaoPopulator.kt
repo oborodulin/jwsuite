@@ -130,6 +130,8 @@ class DaoPopulator(
                 it.encodeToString(textContent)
             )
         }
+        return country
+        /*
         val updatedCountry =
             GeoCountryEntity.ukraineCountry(ctx).copy(countryId = country.countryId)
         val updatedTextContent =
@@ -147,7 +149,8 @@ class DaoPopulator(
                 it.encodeToString(updatedTextContent)
             )
         }
-        return updatedCountry //country
+        return updatedCountry
+         */
     }
 
     override suspend fun insertDefRegion(region: GeoRegionEntity): GeoRegionEntity {

@@ -16,11 +16,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
-import java.math.BigDecimal
 import java.util.Locale
 import java.util.UUID
 
-private const val TAG = "Data.geo.GeoCountryDao"
+private const val TAG = "Data.GeoCountryDao"
 
 @Dao
 interface GeoCountryDao {
@@ -90,47 +89,8 @@ interface GeoCountryDao {
         if (LOG_DATABASE) {
             Timber.tag(TAG).d("country = %s; textContent = %s", country, textContent)
         }
-        //update(country)
+        update(country)
         update(textContent)
-        val updatedCountry = findById(country.countryId).first()
-        if (LOG_DATABASE) {
-            Timber.tag(TAG).d("updatedCountry = %s", updatedCountry)
-        }
-    }
-
-    @Query(
-        """
-    UPDATE ${GeoCountryEntity.TABLE_NAME}
-        SET countryCode = :countryCode, 
-            countryGeocode = :countryGeocode, countryOsmId = :countryOsmId,
-            ${GeoCountryEntity.PREFIX}latitude = :latitude, ${GeoCountryEntity.PREFIX}longitude = :longitude
-    WHERE countryId = :countryId
-    """
-    )
-    suspend fun updateGeoCountryEntity(
-        countryId: UUID, countryCode: String,
-        countryGeocode: String? = null, countryOsmId: Long? = null,
-        latitude: BigDecimal? = null, longitude: BigDecimal? = null
-    )
-
-    @Query("UPDATE ${GeoCountryTlEntity.TABLE_NAME} SET countryTlCode = :countryTlCode, countryName = :countryName WHERE countryTlId = :countryTlId")
-    suspend fun updateGeoCountryTlEntity(
-        countryTlId: UUID, countryTlCode: String? = null, countryName: String,
-    )
-
-    @Transaction
-    suspend fun updateEntities(country: GeoCountryEntity, textContent: GeoCountryTlEntity) {
-        if (LOG_DATABASE) {
-            Timber.tag(TAG).d("country = %s; textContent = %s", country, textContent)
-        }
-        updateGeoCountryEntity(
-            country.countryId, country.countryCode,
-            country.countryGeocode, country.countryOsmId,
-            country.coordinates.latitude, country.coordinates.longitude
-        )
-        updateGeoCountryTlEntity(
-            textContent.countryTlId, textContent.countryTlCode, textContent.countryName
-        )
         val updatedCountry = findById(country.countryId).first()
         if (LOG_DATABASE) {
             Timber.tag(TAG).d("updatedCountry = %s", updatedCountry)

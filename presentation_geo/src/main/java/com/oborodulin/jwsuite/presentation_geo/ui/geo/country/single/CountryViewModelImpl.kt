@@ -61,6 +61,9 @@ class CountryViewModelImpl @Inject constructor(
     DialogViewModel<CountryUi, UiState<CountryUi>, CountryUiAction, UiSingleEvent, CountryFields, InputWrapper>(
         state, CountryFields.COUNTRY_ID.name, CountryFields.COUNTRY_CODE
     ) {
+    override val tlId: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(CountryFields.COUNTRY_TL_ID.name, InputWrapper())
+    }
     override val countryCode: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(CountryFields.COUNTRY_CODE.name, InputWrapper())
     }
@@ -133,21 +136,22 @@ class CountryViewModelImpl @Inject constructor(
                 longitude.value.value.toBigDecimalOrNull()
             ),
             countryName = countryName.value.value
-        ).also { it.id = id.value.value.toUUIDOrNull() }
+        ).also {
+            it.id = id()
+            it.tlId = tlId.value.value.toUUIDOrNull()
+        }
         Timber.tag(TAG).d("saveCountry() called: UI model %s", countryUi)
-
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveCountryUseCase.execute(
                 SaveCountryUseCase.Request(countryUiMapper.map(countryUi))
-            ).collect {}
-             /*   .map { saveConverter.convert(it) }
+            ).map { saveConverter.convert(it) }
                 .collect {
                     Timber.tag(TAG).d("saveCountry() collect: %s", it)
                     if (it is UiState.Success) {
                         setSavedListItem(it.data.toListItemModel())
                     }
-                    //submitState(it)
-                }*/
+                    submitState(it)
+                }
         }
         return job
     }
@@ -161,6 +165,7 @@ class CountryViewModelImpl @Inject constructor(
                 .d("initFieldStatesByUiModel(CountryUi) called: uiModel = %s", uiModel)
         }
         uiModel.id?.let { initStateValue(CountryFields.COUNTRY_ID, id, it.toString()) }
+        uiModel.tlId?.let { initStateValue(CountryFields.COUNTRY_TL_ID, tlId, it.toString()) }
         initStateValue(CountryFields.COUNTRY_CODE, countryCode, uiModel.countryCode)
         initStateValue(CountryFields.COUNTRY_NAME, countryName, uiModel.countryName)
         initStateValue(
@@ -266,6 +271,7 @@ class CountryViewModelImpl @Inject constructor(
 
                 override val id = MutableStateFlow(InputWrapper())
                 override fun id() = null
+                override val tlId = MutableStateFlow(InputWrapper())
                 override val countryCode = MutableStateFlow(InputWrapper())
                 override val countryName = MutableStateFlow(InputWrapper())
                 override val countryGeocode = MutableStateFlow(InputWrapper())

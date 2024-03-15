@@ -13,7 +13,10 @@ class LocalityDistrictUiToLocalityDistrictMapper(private val mapper: LocalityUiT
         locality = mapper.map(input.locality!!),
         districtShortName = input.districtShortName,
         districtName = input.districtName
-    ).also { it.id = input.id }
+    ).also {
+        it.id = input.id
+        it.tlId = input.tlId
+    }
 
     override fun nullableMap(input: LocalityDistrictUi?) = input?.let { map(it) }
 }

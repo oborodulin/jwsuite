@@ -12,7 +12,7 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Data.geo.LocalGeoCountryDataSourceImpl"
+private const val TAG = "Data.LocalGeoCountryDataSourceImpl"
 
 /**
  * Created by o.borodulin on 08.August.2022
@@ -37,7 +37,6 @@ class LocalGeoCountryDataSourceImpl @Inject constructor(
                 country, textContent
             )
             countryDao.update(country, textContent)
-            //countryDao.updateEntities(country, textContent)
         }
 
     override suspend fun deleteCountry(country: GeoCountryEntity) = withContext(dispatcher) {

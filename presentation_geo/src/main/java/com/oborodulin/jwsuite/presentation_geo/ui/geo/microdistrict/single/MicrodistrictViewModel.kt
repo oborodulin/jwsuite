@@ -13,6 +13,7 @@ interface MicrodistrictViewModel :
     DialogViewModeled<MicrodistrictUi, MicrodistrictUiAction, UiSingleEvent, MicrodistrictFields> {
     val microdistrictTypes: StateFlow<MutableMap<VillageType, String>>
 
+    val tlId: StateFlow<InputWrapper>
     val locality: StateFlow<InputListItemWrapper<ListItemModel>>
     val localityDistrict: StateFlow<InputListItemWrapper<ListItemModel>>
     val microdistrictShortName: StateFlow<InputWrapper>

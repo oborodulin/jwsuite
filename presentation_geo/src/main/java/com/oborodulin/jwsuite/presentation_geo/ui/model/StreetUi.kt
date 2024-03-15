@@ -1,9 +1,9 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.model
 
+import com.oborodulin.home.common.extensions.toStreetName
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.domain.types.RoadType
-import java.util.UUID
 
 data class StreetUi(
     val locality: LocalityUi? = null,
@@ -17,7 +17,7 @@ data class StreetUi(
 ) : ModelUi()
 
 fun StreetUi.toStreetsListItem() = StreetsListItem(
-    id = this.id ?: UUID.randomUUID(),
+    id = this.id!!,
     isPrivateSector = this.isPrivateSector,
     estimatedHouses = this.estimatedHouses,
     streetFullName = this.streetFullName,
@@ -26,4 +26,4 @@ fun StreetUi.toStreetsListItem() = StreetsListItem(
 )
 
 fun ListItemModel?.toStreetUi() =
-    StreetUi(streetName = this?.headline.orEmpty()).also { it.id = this?.itemId }
+    StreetUi(streetName = this?.headline.toStreetName()).also { it.id = this?.itemId }

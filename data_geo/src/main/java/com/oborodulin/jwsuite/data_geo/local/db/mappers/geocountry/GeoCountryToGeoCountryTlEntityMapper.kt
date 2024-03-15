@@ -9,6 +9,6 @@ class GeoCountryToGeoCountryTlEntityMapper : Mapper<GeoCountry, GeoCountryTlEnti
     override fun map(input: GeoCountry) = GeoCountryTlEntity(
         countryTlId = input.tlId ?: input.apply { tlId = UUID.randomUUID() }.tlId!!,
         countryName = input.countryName,
-        countriesId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!
+        countriesId = input.id!! // ?: input.apply { id = UUID.randomUUID() }.id!!
     )
 }

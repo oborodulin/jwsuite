@@ -74,6 +74,9 @@ class MicrodistrictViewModelImpl @Inject constructor(
         MutableStateFlow(mutableMapOf())
     override val microdistrictTypes = _microdistrictTypes.asStateFlow()
 
+    override val tlId: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(MicrodistrictFields.MICRODISTRICT_TL_ID.name, InputWrapper())
+    }
     override val locality: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(MicrodistrictFields.MICRODISTRICT_LOCALITY.name, InputListItemWrapper())
     }
@@ -150,7 +153,10 @@ class MicrodistrictViewModelImpl @Inject constructor(
             microdistrictType = VillageType.valueOf(microdistrictType.value.value),
             microdistrictShortName = microdistrictShortName.value.value,
             microdistrictName = microdistrictName.value.value
-        ).also { it.id = id.value.value.toUUIDOrNull() }
+        ).also {
+            it.id = id()
+            it.tlId = tlId.value.value.toUUIDOrNull()
+        }
         Timber.tag(TAG).d("saveMicrodistrict() called: UI model %s", microdistrictUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveMicrodistrictUseCase.execute(
@@ -175,6 +181,9 @@ class MicrodistrictViewModelImpl @Inject constructor(
                 uiModel
             )
         uiModel.id?.let { initStateValue(MicrodistrictFields.MICRODISTRICT_ID, id, it.toString()) }
+        uiModel.tlId?.let {
+            initStateValue(MicrodistrictFields.MICRODISTRICT_TL_ID, tlId, it.toString())
+        }
         initStateValue(
             MicrodistrictFields.MICRODISTRICT_LOCALITY, locality,
             uiModel.locality.toListItemModel()
@@ -359,6 +368,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
 
                 override val id = MutableStateFlow(InputWrapper())
                 override fun id() = null
+                override val tlId = MutableStateFlow(InputWrapper())
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val localityDistrict =
                     MutableStateFlow(InputListItemWrapper<ListItemModel>())

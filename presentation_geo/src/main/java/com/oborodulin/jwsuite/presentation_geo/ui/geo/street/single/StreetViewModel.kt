@@ -13,6 +13,7 @@ interface StreetViewModel :
     DialogViewModeled<StreetUi, StreetUiAction, UiSingleEvent, StreetFields> {
     val roadTypes: StateFlow<MutableMap<RoadType, String>>
 
+    val tlId: StateFlow<InputWrapper>
     val locality: StateFlow<InputListItemWrapper<ListItemModel>>
 
     //val localityDistrict: StateFlow<InputListItemWrapper<ListItemModel>>

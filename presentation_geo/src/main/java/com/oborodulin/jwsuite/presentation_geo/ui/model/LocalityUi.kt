@@ -4,7 +4,6 @@ import com.oborodulin.home.common.extensions.toLocalityName
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.domain.types.LocalityType
-import java.util.UUID
 
 data class LocalityUi(
     val region: RegionUi? = null,
@@ -18,7 +17,7 @@ data class LocalityUi(
 ) : ModelUi()
 
 fun LocalityUi?.toListItemModel() = ListItemModel(
-    itemId = this?.id ?: UUID.randomUUID(),
+    itemId = this?.id,
     headline = this?.localityFullName.orEmpty(),
     supportingText = "${this?.localityCode}: ${this?.localityShortName}"
 )

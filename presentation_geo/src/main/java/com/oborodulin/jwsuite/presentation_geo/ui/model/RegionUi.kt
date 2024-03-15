@@ -4,7 +4,6 @@ import com.oborodulin.home.common.extensions.toRegionName
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.domain.types.RegionType
-import java.util.UUID
 
 data class RegionUi(
     val country: CountryUi? = null,
@@ -18,7 +17,7 @@ data class RegionUi(
 ) : ModelUi()
 
 fun RegionUi?.toListItemModel() = ListItemModel(
-    itemId = this?.id ?: UUID.randomUUID(),
+    itemId = this?.id,
     headline = this?.regionFullName.orEmpty(),
     supportingText = this?.regionCode
 )

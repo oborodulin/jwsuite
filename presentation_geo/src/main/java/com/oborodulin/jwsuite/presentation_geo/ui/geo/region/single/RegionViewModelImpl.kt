@@ -72,6 +72,9 @@ class RegionViewModelImpl @Inject constructor(
         MutableStateFlow(mutableMapOf())
     override val regionTypes = _regionTypes.asStateFlow()
 
+    override val tlId: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(RegionFields.REGION_TL_ID.name, InputWrapper())
+    }
     override val country: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(RegionFields.REGION_COUNTRY.name, InputListItemWrapper())
     }
@@ -157,7 +160,10 @@ class RegionViewModelImpl @Inject constructor(
                 longitude.value.value.toBigDecimalOrNull()
             ),
             regionName = regionName.value.value
-        ).also { it.id = id.value.value.toUUIDOrNull() }
+        ).also {
+            it.id = id()
+            it.tlId = tlId.value.value.toUUIDOrNull()
+        }
         Timber.tag(TAG).d("saveRegion() called: UI model %s", regionUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveRegionUseCase.execute(SaveRegionUseCase.Request(regionUiMapper.map(regionUi)))
@@ -182,6 +188,7 @@ class RegionViewModelImpl @Inject constructor(
                 .d("initFieldStatesByUiModel(RegionUi) called: uiModel = %s", uiModel)
         }
         uiModel.id?.let { initStateValue(RegionFields.REGION_ID, id, it.toString()) }
+        uiModel.tlId?.let { initStateValue(RegionFields.REGION_TL_ID, tlId, it.toString()) }
         initStateValue(RegionFields.REGION_COUNTRY, country, uiModel.country.toListItemModel())
         initStateValue(RegionFields.REGION_CODE, regionCode, uiModel.regionCode)
         initStateValue(RegionFields.REGION_TYPE, regionType, uiModel.regionType.name)
@@ -313,6 +320,7 @@ class RegionViewModelImpl @Inject constructor(
 
                 override val id = MutableStateFlow(InputWrapper())
                 override fun id() = null
+                override val tlId = MutableStateFlow(InputWrapper())
                 override val country = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val regionCode = MutableStateFlow(InputWrapper())
                 override val regionType = MutableStateFlow(InputWrapper())

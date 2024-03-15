@@ -72,19 +72,19 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     abstract suspend fun observeInputEvents()
     override fun id() = id.value.value.toUUIDOrNull()
     fun isNewUiState() = id.value.value.isEmpty()
-    fun onInsert(block: () -> Unit) {
+    inline fun onInsert(block: () -> Unit) {
         if (isNewUiState()) {
             block.invoke()
         }
     }
 
-    fun onUpdate(block: () -> Unit) {
+    inline fun onUpdate(block: () -> Unit) {
         if (id.value.value.isNotEmpty()) {
             block.invoke()
         }
     }
 
-    fun onDelete(block: () -> Unit) {
+    inline fun onDelete(block: () -> Unit) {
         block.invoke()
     }
 
