@@ -12,7 +12,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.components.screen.DialogScreenComponent
-import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
@@ -54,7 +53,7 @@ fun DashboardSettingScreen(
             confirmUiAction = DashboardSettingUiAction.Save,
             upNavigation = upNavigation,
             handleTopBarNavClick = appState.handleTopBarNavClick,
-            isControlsShow = session.containsRole(MemberRoleType.TERRITORIES),
+            isControlsShow = false, //session.containsRole(MemberRoleType.TERRITORIES),
             cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_settings,
             confirmButton = { areValid, handleSaveButtonClick ->
                 SaveButtonComponent(enabled = areValid, onClick = handleSaveButtonClick)

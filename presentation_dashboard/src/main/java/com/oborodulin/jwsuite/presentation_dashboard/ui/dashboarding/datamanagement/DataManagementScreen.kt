@@ -43,7 +43,7 @@ fun DataManagementScreen(
             upNavigation = upNavigation,
             isNextActionPerform = false,
             handleTopBarNavClick = appState.handleTopBarNavClick,
-            isControlsShow = false,
+            //isControlsShow = false,
             confirmResId = R.string.dlg_confirm_data_management,
             cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_settings,
             confirmButton = { areValid, handleSaveButtonClick ->

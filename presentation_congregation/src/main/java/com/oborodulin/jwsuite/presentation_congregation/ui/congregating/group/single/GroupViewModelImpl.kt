@@ -75,10 +75,9 @@ class GroupViewModelImpl @Inject constructor(
         state.getStateFlow(GroupFields.GROUP_NUM.name, InputWrapper())
     }
 
-    override val areInputsValid =
-        combine(congregation, groupNum)
-        { congregation, groupNum -> congregation.errorId == null && groupNum.errorId == null }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+    override val areInputsValid = combine(congregation, groupNum)
+    { congregation, groupNum -> congregation.errorId == null && groupNum.errorId == null }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun initState() = UiState.Loading
 
@@ -87,29 +86,27 @@ class GroupViewModelImpl @Inject constructor(
             Timber.tag(TAG).d("handleAction(GroupUiAction) called: %s", action.javaClass.name)
         }
         val job = when (action) {
-            is GroupUiAction.Load -> when (action.groupId) {
-                null -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_congregation.R.string.group_new_subheader)
-                    submitState(UiState.Success(GroupUi()))
+            is GroupUiAction.Load -> {
+                when (action.groupId) {
+                    null -> setDialogTitleResId(com.oborodulin.jwsuite.presentation_congregation.R.string.group_new_subheader)
+                    else -> setDialogTitleResId(com.oborodulin.jwsuite.presentation_congregation.R.string.group_subheader)
                 }
-
-                else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_congregation.R.string.group_subheader)
-                    loadGroup(action.groupId)
-                }
+                loadGroup(groupId = action.groupId, congregationId = action.congregationId)
             }
 
             is GroupUiAction.GetNextGroupNum -> getNextGroupNum(action.congregationId)
-
             is GroupUiAction.Save -> saveGroup()
         }
         return job
     }
 
-    private fun loadGroup(groupId: UUID): Job {
-        Timber.tag(TAG).d("loadGroup(UUID) called: %s", groupId)
+    private fun loadGroup(groupId: UUID? = null, congregationId: UUID): Job {
+        Timber.tag(TAG)
+            .d("loadGroup(...) called: groupId = %s; congregationId = %s", groupId, congregationId)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getGroupUseCase.execute(GetGroupUseCase.Request(groupId))
+            useCases.getGroupUseCase.execute(
+                GetGroupUseCase.Request(groupId = groupId, congregationId = congregationId)
+            )
                 .map {
                     getConverter.convert(it)
                 }

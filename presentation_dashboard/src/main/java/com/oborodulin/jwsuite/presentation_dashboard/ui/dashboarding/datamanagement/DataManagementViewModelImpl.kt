@@ -75,7 +75,11 @@ class DataManagementViewModelImpl @Inject constructor(
                 .d("handleAction(DataManagementUiAction) called: %s", action.javaClass.name)
         }
         val job = when (action) {
-            is DataManagementUiAction.Load -> loadDataManagementSettings()
+            is DataManagementUiAction.Load -> {
+                setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.nav_item_data_management)
+                loadDataManagementSettings()
+            }
+
             is DataManagementUiAction.Save -> saveDataManagementSettings()
         }
         return job

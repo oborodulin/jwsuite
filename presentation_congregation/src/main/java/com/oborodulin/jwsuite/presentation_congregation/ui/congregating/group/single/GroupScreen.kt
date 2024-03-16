@@ -2,7 +2,6 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.s
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,14 +36,14 @@ fun GroupScreen(
 
     val currentCongregation =
         appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
-    LaunchedEffect(groupInput?.groupId) {
+    /*LaunchedEffect(groupInput?.groupId) {
         Timber.tag(TAG).d("GroupScreen -> LaunchedEffect()")
         currentCongregation?.itemId?.let { congregationId ->
             viewModel.onInsert {
                 viewModel.submitAction(GroupUiAction.GetNextGroupNum(congregationId))
             }
         }
-    }
+    }*/
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
     val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
     var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
@@ -57,7 +56,10 @@ fun GroupScreen(
         SaveDialogScreenComponent(
             viewModel = viewModel,
             inputId = groupInput?.groupId,
-            loadUiAction = GroupUiAction.Load(groupInput?.groupId),
+            loadUiAction = GroupUiAction.Load(
+                groupId = groupInput?.groupId,
+                congregationId = currentCongregation?.itemId!!
+            ),
             saveUiAction = GroupUiAction.Save,
             upNavigation = upNavigation,
             handleTopBarNavClick = appState.handleTopBarNavClick,

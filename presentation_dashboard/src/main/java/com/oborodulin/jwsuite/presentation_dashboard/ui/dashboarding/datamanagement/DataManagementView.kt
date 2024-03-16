@@ -10,26 +10,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TooltipBox
-import androidx.compose.material3.TooltipDefaults
-import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -52,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.oborodulin.home.common.ui.components.TooltipBoxComponent
 import com.oborodulin.home.common.ui.components.datatable.SimpleDataTableComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
@@ -66,7 +58,6 @@ import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation.ui.theme.Purple40
 import com.oborodulin.jwsuite.presentation_dashboard.R
 import com.oborodulin.jwsuite.presentation_dashboard.ui.components.BackupButtonComponent
 import com.oborodulin.jwsuite.presentation_dashboard.ui.components.ReceiveButtonComponent
@@ -98,8 +89,6 @@ fun DataManagementView(
     Timber.tag(TAG).d("DataManagementView(...) called")
     val session = LocalSession.current
     val context = LocalContext.current
-    //val tooltipState = RichTooltipState()
-    val scope = rememberCoroutineScope()
 
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -147,7 +136,7 @@ fun DataManagementView(
             Text(
                 text = stringResource(R.string.transfer_subhead),
                 style = Typography.titleMedium,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
             )
             val items = listOf(
                 "${stringResource(com.oborodulin.jwsuite.data_congregation.R.string.def_trans_obj_name_all)}: ${
@@ -161,26 +150,10 @@ fun DataManagementView(
                 "${stringResource(com.oborodulin.jwsuite.data_congregation.R.string.def_trans_obj_name_bills)}: ",
                 "${stringResource(com.oborodulin.jwsuite.data_congregation.R.string.def_trans_obj_name_reports)}: "
             )
-            // https://www.develou.com/tooltips-android/
-            TooltipBox(
-                positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
-                tooltip = {
-                    RichTooltip(
-                        title = { Text(text = stringResource(R.string.transfer_subhead_tooltip)) },
-                        text = { Text(text = makeBulletedList(items)) }
-                    )
-                },
-                state = rememberTooltipState()
+            TooltipBoxComponent(
+                title = stringResource(R.string.transfer_subhead_tooltip),
+                text = { Text(text = makeBulletedList(items)) }
             )
-            {
-                IconButton(onClick = {}) {
-                    Icon(
-                        imageVector = Icons.Outlined.Info,
-                        contentDescription = "",
-                        tint = Purple40
-                    )
-                }
-            }
         }
         Box(
             modifier = Modifier
@@ -213,12 +186,12 @@ fun DataManagementView(
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = if (isSendButtonShow) Arrangement.SpaceBetween else Arrangement.End,
+            horizontalArrangement = if (isSendButtonShow) Arrangement.SpaceEvenly else Arrangement.End,
         ) {
             if (isSendButtonShow) {
                 SendButtonComponent(
                     modifier = Modifier
-                        .weight(1f)
+                        //.weight(1f)
                         .alignByBaseline()
                 )
             }
@@ -248,12 +221,12 @@ fun DataManagementView(
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceEvenly// .SpaceBetween
         ) {
             BackupButtonComponent(
                 enabled = true,
                 modifier = Modifier
-                    .weight(1f)
+                    //.weight(1f)
                     .padding(vertical = 8.dp)
             ) {
                 Timber.tag(TAG).d("DataManagementView: Backup Button click...")

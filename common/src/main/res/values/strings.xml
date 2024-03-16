@@ -65,6 +65,8 @@
     <!--ЗАПОЛНИТЕЛИ (Compose Preview)-->
     <string name="preview_blank_title">Title</string>
     <string name="preview_blank_column_title">Column title</string>
+    <string name="preview_blank_tooltip_title">Tooltip title</string>
+    <string name="preview_blank_tooltip_text">Tooltip text</string>
     <string name="preview_blank_descr">Description</string>
     <string name="preview_empty_list_text">Empty list</string>
     <string name="preview_list_item_text">List Item Content</string>
