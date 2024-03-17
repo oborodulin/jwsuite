@@ -62,7 +62,7 @@ fun CountryComboBox(
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
         labelResId = R.string.country_hint,
         listTitleResId = R.string.dlg_title_select_country,
-        leadingPainterResId = R.drawable.ic_geo_36,
+        leadingPainterResId = R.drawable.ic_country_36,
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
         onImeKeyAction = onImeKeyAction

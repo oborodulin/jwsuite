@@ -12,6 +12,8 @@ import com.oborodulin.jwsuite.domain.types.VillageType
 import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.DeleteMicrodistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.GetMicrodistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.MicrodistrictUseCases
+import com.oborodulin.jwsuite.domain.usecases.geostreet.DeleteStreetMicrodistrictUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.StreetUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MicrodistrictInput
 import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictsListItem
@@ -34,7 +36,8 @@ private const val TAG = "Geo.MicrodistrictsListViewModelImpl"
 
 @HiltViewModel
 class MicrodistrictsListViewModelImpl @Inject constructor(
-    private val useCases: MicrodistrictUseCases,
+    private val microdistrictUseCases: MicrodistrictUseCases,
+    private val streetUseCases: StreetUseCases,
     private val converter: MicrodistrictsListConverter
 ) : MicrodistrictsListViewModel,
     ListViewModel<List<MicrodistrictsListItem>, UiState<List<MicrodistrictsListItem>>, MicrodistrictsListUiAction, MicrodistrictsListUiSingleEvent>() {
@@ -79,7 +82,7 @@ class MicrodistrictsListViewModelImpl @Inject constructor(
             localityId, localityDistrictId, streetId
         )
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getMicrodistrictsUseCase.execute(
+            microdistrictUseCases.getMicrodistrictsUseCase.execute(
                 GetMicrodistrictsUseCase.Request(
                     localityId = localityId, localityDistrictId = localityDistrictId,
                     streetId = streetId
@@ -112,7 +115,7 @@ class MicrodistrictsListViewModelImpl @Inject constructor(
     private fun deleteMicrodistrict(microdistrictId: UUID): Job {
         Timber.tag(TAG).d("deleteMicrodistrict(...) called: microdistrictId = %s", microdistrictId)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.deleteMicrodistrictUseCase.execute(
+            microdistrictUseCases.deleteMicrodistrictUseCase.execute(
                 DeleteMicrodistrictUseCase.Request(microdistrictId)
             ).collect {}
         }
@@ -125,16 +128,11 @@ class MicrodistrictsListViewModelImpl @Inject constructor(
             streetId, microdistrictId
         )
         val job = viewModelScope.launch(errorHandler) {
-            /*useCases.deleteMicrodistrictUseCase.execute(
-                GetMicrodistrictsUseCase.Request(
-                    localityId = localityId, localityDistrictId = localityDistrictId,
-                    streetId = streetId
+            streetUseCases.deleteStreetMicrodistrictUseCase.execute(
+                DeleteStreetMicrodistrictUseCase.Request(
+                    streetId = streetId, microdistrictId = microdistrictId
                 )
-            ).map {
-                converter.convert(it)
-            }.collect {
-                submitState(it)
-            }*/
+            ).collect {}
         }
         return job
     }

@@ -22,6 +22,7 @@ import java.util.UUID
 private const val TAG = "Data.GeoCountryDao"
 
 // https://commonsware.com/AndroidArch/pages/chap-dao-005
+// https://stackoverflow.com/questions/46730172/room-receiving-error-when-using-transaction
 @Dao
 abstract class GeoCountryDao {
     // EXTRACTS:

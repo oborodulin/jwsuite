@@ -116,7 +116,7 @@ fun TextFieldComponent(
             onValueChange = {
                 // https://stackoverflow.com/questions/67136058/textfield-maxlength-android-jetpack-compose
                 if (it.text.length <= maxLength) {
-                    fieldValue = it; onValueChange(it.text)
+                    fieldValue = it.copy(text = it.text.trim()); onValueChange(it.text.trim())
                 }
             },
             label = labelResId?.let { { Text(stringResource(it)) } },

@@ -250,7 +250,8 @@ fun GeoScreen(
     }*/
     //appState.actionBarTitle.value = stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_geo)
     ScaffoldComponent(
-        topBarTitle = stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_geo),
+        //topBarTitle = stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_geo),
+        navRoute = NavRoutes.Geo,
         topBarSubtitle = "",
         actionBar = actionBar,
         onTopBarNavClick = onTopBarNavClick,

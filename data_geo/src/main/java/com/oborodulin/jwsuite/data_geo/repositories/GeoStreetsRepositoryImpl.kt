@@ -106,7 +106,7 @@ class GeoStreetsRepositoryImpl @Inject constructor(
         }
 
     override fun deleteMicrodistrict(streetId: UUID, microdistrictId: UUID) = flow {
-        localStreetDataSource.deleteStreetLocalityDistrict(streetId, microdistrictId)
+        localStreetDataSource.deleteStreetMicrodistrict(streetId, microdistrictId)
         this.emit(microdistrictId)
     }
 

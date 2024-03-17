@@ -41,6 +41,17 @@ fun RegionsListView(
         regionsListViewModel.submitAction(RegionsListUiAction.Load(countryInput?.countryId))
     }
     val searchText by regionsListViewModel.searchText.collectAsStateWithLifecycle()
+    val fetchButton = @Composable {
+        countryInput?.let {
+            FetchButtonComponent(enabled = true) {
+                regionsListViewModel.submitAction(
+                    RegionsListUiAction.Load(
+                        it.countryId, it.countryGeocodeArea, true
+                    )
+                )
+            }
+        }
+    }
     regionsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         if (LOG_UI_STATE) {
             Timber.tag(TAG).d("Collect ui state flow: %s", state)
@@ -76,17 +87,7 @@ fun RegionsListView(
                         items = it,
                         emptyListResId = R.string.regions_list_empty_text,
                         isEmptyListTextOutput = countryInput?.countryId != null,
-                        fetchListControl = {
-                            countryInput?.let {
-                                FetchButtonComponent(enabled = true) {
-                                    regionsListViewModel.submitAction(
-                                        RegionsListUiAction.Load(
-                                            it.countryId, it.countryGeocodeArea, true
-                                        )
-                                    )
-                                }
-                            }
-                        }
+                        fetchListControl = { fetchButton() }
                     )
                 }
             }

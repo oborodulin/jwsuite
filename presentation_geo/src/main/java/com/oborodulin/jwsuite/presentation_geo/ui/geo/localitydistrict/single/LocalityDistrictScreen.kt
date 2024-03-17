@@ -38,7 +38,8 @@ fun LocalityDistrictScreen(
     var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
     val onActionBarSubtitleChange: (String) -> Unit = { actionBarSubtitle = it }
     ScaffoldComponent(
-        topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_geo,
+        topBarTitleResId = NavRoutes.Geo.titleResId,
+        navRoute = NavRoutes.LocalityDistrict,
         topBarSubtitle = actionBarSubtitle,
         defTopBarActions = defTopBarActions,
         topBarActions = topBarActions

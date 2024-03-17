@@ -105,7 +105,7 @@ fun EditableListViewComponent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 EmptyListTextComponent(emptyListResId)
-                fetchListControl?.invoke()
+                fetchListControl?.let { it() }
             }
         }
     }

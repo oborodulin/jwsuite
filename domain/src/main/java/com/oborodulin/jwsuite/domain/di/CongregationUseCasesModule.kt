@@ -6,7 +6,6 @@ import com.oborodulin.jwsuite.domain.repositories.GroupsRepository
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
 import com.oborodulin.jwsuite.domain.repositories.RolesRepository
 import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
-import com.oborodulin.jwsuite.domain.usecases.*
 import com.oborodulin.jwsuite.domain.usecases.congregation.DeleteCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationsUseCase
@@ -88,8 +87,10 @@ object CongregationUseCasesModule {
     @Singleton
     @Provides
     fun provideGetGroupUseCase(
-        configuration: UseCase.Configuration, groupsRepository: GroupsRepository
-    ): GetGroupUseCase = GetGroupUseCase(configuration, groupsRepository)
+        configuration: UseCase.Configuration,
+        congregationsRepository: CongregationsRepository,
+        groupsRepository: GroupsRepository
+    ): GetGroupUseCase = GetGroupUseCase(configuration, congregationsRepository, groupsRepository)
 
     @Singleton
     @Provides

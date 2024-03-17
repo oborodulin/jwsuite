@@ -12,9 +12,8 @@ class DeleteStreetMicrodistrictUseCase(
     configuration
 ) {
     override fun process(request: Request): Flow<Response> {
-        return streetsRepository.deleteLocalityDistrict(
-            request.streetId, request.microdistrictId
-        ).map { Response }
+        return streetsRepository.deleteMicrodistrict(request.streetId, request.microdistrictId)
+            .map { Response }
     }
 
     data class Request(val streetId: UUID, val microdistrictId: UUID) : UseCase.Request

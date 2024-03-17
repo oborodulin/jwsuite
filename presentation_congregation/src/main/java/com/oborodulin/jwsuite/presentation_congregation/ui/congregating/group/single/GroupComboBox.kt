@@ -41,10 +41,13 @@ fun GroupComboBox(
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
     val isShowNewSingleDialog by singleViewModel.showDialog.collectAsStateWithLifecycle()
+
+    val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value
+    Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
     FullScreenDialog(
         isShow = isShowNewSingleDialog,
         viewModel = singleViewModel,
-        loadUiAction = GroupUiAction.Load(),
+        loadUiAction = GroupUiAction.Load(congregationId = currentCongregation?.itemId!!),
         confirmUiAction = GroupUiAction.Save,
         dialogView = { _, handleConfirmAction ->
             GroupView(
@@ -55,8 +58,7 @@ fun GroupComboBox(
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )
-    val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value
-    Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
+
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,

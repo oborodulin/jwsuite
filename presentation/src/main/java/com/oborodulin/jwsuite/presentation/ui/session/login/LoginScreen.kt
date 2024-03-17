@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.session.SessionInputEvent
 import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
@@ -59,6 +60,7 @@ fun LoginScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
     val dialogTitleResId by viewModel.dialogTitleResId.collectAsStateWithLifecycle()
     //JWSuiteTheme { //(darkTheme = true)
     ScaffoldComponent(
+        navRoute = NavRoutes.Login,
         topBarTitle = appState.appName,
         topBarSubtitle = dialogTitleResId?.let { stringResource(it) }) { innerPadding ->
         //CommonScreen(paddingValues = innerPadding, state = state) { //session ->
