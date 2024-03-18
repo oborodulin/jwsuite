@@ -43,7 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.oborodulin.home.common.ui.components.TooltipBoxComponent
+import com.oborodulin.home.common.ui.components.tooltip.TooltipBoxComponent
 import com.oborodulin.home.common.ui.components.datatable.SimpleDataTableComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
@@ -198,6 +198,11 @@ fun DataManagementView(
             ReceiveButtonComponent(modifier = Modifier.alignByBaseline())
         }
         HorizontalDivider(Modifier.fillMaxWidth())
+        Text(
+            text = stringResource(R.string.backup_subhead),
+            style = Typography.titleMedium,
+            modifier = Modifier.padding(8.dp)
+        )
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[DataManagementFields.DATABASE_BACKUP_PERIOD]!!.focusRequester)
@@ -221,7 +226,7 @@ fun DataManagementView(
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly// .SpaceBetween
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             BackupButtonComponent(
                 enabled = true,
@@ -239,27 +244,27 @@ fun DataManagementView(
                 Timber.tag(TAG).d("DataManagementView: Restore Button click...")
                 databaseViewModel.submitAction(DatabaseUiAction.Restore)
             }
-            databaseViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-                if (LOG_UI_STATE) {
-                    Timber.tag(TAG).d("Collect ui state flow: %s", state)
-                }
-                CommonScreen(state = state) { databaseUi ->
-                    if (databaseUi.isDone.not()) {
-                        Text(
-                            text = databaseUi.entityDesc,
-                            fontSize = 14.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.padding(horizontal = 16.dp)
+        }
+        databaseViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+            if (LOG_UI_STATE) {
+                Timber.tag(TAG).d("Collect ui state flow: %s", state)
+            }
+            CommonScreen(state = state) { databaseUi ->
+                if (databaseUi.isDone.not()) {
+                    Text(
+                        text = databaseUi.entityDesc,
+                        fontSize = 14.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                    databaseUi.progress?.let {
+                        LinearProgressIndicator(
+                            progress = { it },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
                         )
-                        databaseUi.progress?.let {
-                            LinearProgressIndicator(
-                                progress = { it },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp),
-                            )
-                        }
                     }
                 }
             }

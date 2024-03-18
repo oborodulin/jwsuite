@@ -8,12 +8,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.components.screen.DialogScreenComponent
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation_territory.R
@@ -39,7 +39,8 @@ fun TerritorySettingScreen(
     var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
     val onActionBarSubtitleChange: (String) -> Unit = { actionBarSubtitle = it }
     ScaffoldComponent(
-        topBarTitle = stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_territory_settings),
+        //topBarTitle = stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_territory_settings),
+        navRoute = NavRoutes.TerritorySettings,
         topBarSubtitle = actionBarSubtitle,
         defTopBarActions = defTopBarActions,
         topBarActions = topBarActions

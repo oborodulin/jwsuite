@@ -16,6 +16,7 @@ import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.components.screen.DialogScreenComponent
 import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
@@ -57,6 +58,8 @@ fun TerritoryScreen(
     var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
     val onActionBarSubtitleChange: (String) -> Unit = { actionBarSubtitle = it }
     ScaffoldComponent(
+        topBarTitleResId = NavRoutes.Territoring.titleResId,
+        navRoute = NavRoutes.Territory,
         topBarSubtitle = actionBarSubtitle,
         defTopBarActions = defTopBarActions,
         topBarActions = topBarActions

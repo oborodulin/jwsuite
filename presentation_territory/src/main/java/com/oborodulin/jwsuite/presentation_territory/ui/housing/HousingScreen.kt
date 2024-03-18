@@ -136,7 +136,8 @@ fun HousingScreen(
             Timber.tag(TAG).d("Collect ui state flow: %s", state)
         }
         ScaffoldComponent(
-            topBarTitle = stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_housing),
+            //topBarTitle = stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_housing),
+            navRoute = NavRoutes.Housing,
             topBarSubtitle = "",
             actionBar = actionBar,
             defTopBarActions = defTopBarActions,

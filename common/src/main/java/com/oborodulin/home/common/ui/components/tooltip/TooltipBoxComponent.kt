@@ -1,7 +1,8 @@
-package com.oborodulin.home.common.ui.components
+package com.oborodulin.home.common.ui.components.tooltip
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
@@ -50,7 +51,9 @@ fun TooltipBoxComponent(
         state = tooltipState
     )
     {
-        IconButton(onClick = {}) {
+        IconButton(onClick = {}, modifier = Modifier
+            .padding(bottom = 8.dp)
+            .size(16.dp)) {
             Icon(
                 imageVector = Icons.Outlined.Info,
                 contentDescription = contentDescriptionResId?.let { stringResource(it) },

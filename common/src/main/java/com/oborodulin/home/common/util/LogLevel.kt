@@ -20,6 +20,7 @@ object LogLevel {
     // Data:
     const val LOG_DATABASE = true
     const val LOG_DATASTORE = true
+    const val LOG_NETWORK = true
     const val LOG_WORKER = true
     const val LOG_DB_MAPPER = false
 

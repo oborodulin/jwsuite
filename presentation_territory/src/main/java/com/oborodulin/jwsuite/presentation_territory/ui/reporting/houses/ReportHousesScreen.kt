@@ -111,6 +111,8 @@ fun ReportHousesScreen(
     territoryViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         CommonScreen(state = state) { territory ->
             ScaffoldComponent(
+                topBarTitleResId = NavRoutes.Territoring.titleResId,
+                navRoute = NavRoutes.ReportHouses,
                 topBarSubtitle = stringResource(
                     R.string.territory_houses_process,
                     territory.cardNum

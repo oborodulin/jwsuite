@@ -125,6 +125,8 @@ fun TerritoryDetailsScreen(
                 else -> onTabChange(TerritoryDetailsTabType.STREETS)
             }
             ScaffoldComponent(
+                topBarTitleResId = NavRoutes.Territoring.titleResId,
+                navRoute = NavRoutes.TerritoryDetails,
                 topBarSubtitle = stringResource(
                     com.oborodulin.jwsuite.presentation.R.string.nav_item_territory_details,
                     territory.cardNum

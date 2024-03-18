@@ -32,6 +32,8 @@ fun HandOutConfirmationScreen(
     var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
     val onActionBarSubtitleChange: (String) -> Unit = { actionBarSubtitle = it }
     ScaffoldComponent(
+        topBarTitleResId = NavRoutes.Territoring.titleResId,
+        navRoute = NavRoutes.HandOutConfirmation,
         topBarSubtitle = actionBarSubtitle,
         defTopBarActions = defTopBarActions,
         topBarActions = topBarActions

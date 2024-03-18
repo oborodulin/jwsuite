@@ -48,6 +48,7 @@
     <string name="transfer_subhead_tooltip">Следующие данные можно получать только при наличие соответствующих ролей:</string>
     <string name="transfer_objects_header_hint">Получаемые объекты</string>
     <string name="is_personal_header_hint">Персонально?</string>
+    <string name="backup_subhead">РЕЗЕРВНОЕ КОПИРОВАНИЕ ДАННЫХ</string>
 
     <!--ДИАЛОГИ-->
     <!--Заголовки-->

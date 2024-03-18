@@ -32,6 +32,8 @@ fun ProcessConfirmationScreen(
     var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
     val onActionBarSubtitleChange: (String) -> Unit = { actionBarSubtitle = it }
     ScaffoldComponent(
+        topBarTitleResId = NavRoutes.Territoring.titleResId,
+        navRoute = NavRoutes.ProcessConfirmation,
         topBarSubtitle = actionBarSubtitle,
         defTopBarActions = defTopBarActions,
         topBarActions = topBarActions
