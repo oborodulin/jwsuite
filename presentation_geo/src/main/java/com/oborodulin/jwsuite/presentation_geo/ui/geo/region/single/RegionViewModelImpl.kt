@@ -151,7 +151,7 @@ class RegionViewModelImpl @Inject constructor(
     private fun saveRegion(): Job {
         val regionUi = RegionUi(
             country = country.value.item.toCountryUi(),
-            regionCode = regionCode.value.value,
+            regionCode = regionCode.value.value.trim(),
             regionType = RegionType.valueOf(regionType.value.value),
             regionGeocode = regionGeocode.value.value.ifEmpty { null },
             regionOsmId = regionOsmId.value.value.toLongOrNull(),
@@ -159,7 +159,7 @@ class RegionViewModelImpl @Inject constructor(
                 latitude.value.value.toBigDecimalOrNull(),
                 longitude.value.value.toBigDecimalOrNull()
             ),
-            regionName = regionName.value.value
+            regionName = regionName.value.value.trim()
         ).also {
             it.id = id()
             it.tlId = tlId.value.value.toUUIDOrNull()

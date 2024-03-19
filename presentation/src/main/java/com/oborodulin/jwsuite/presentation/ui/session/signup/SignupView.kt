@@ -128,6 +128,7 @@ fun SignupView(
                 )
             },
             inputWrapper = username,
+            trimmedValue = true,
             onValueChange = { viewModel.onTextFieldEntered(SessionInputEvent.Username(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
@@ -150,6 +151,7 @@ fun SignupView(
             visualTransformation = PasswordVisualTransformation(),
             inputWrapper = pin,
             maxLength = Constants.PASS_MIN_LENGTH,
+            trimmedValue = true,
             onValueChange = { viewModel.onTextFieldEntered(SessionInputEvent.Pin(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
@@ -172,6 +174,7 @@ fun SignupView(
             visualTransformation = PasswordVisualTransformation(),
             inputWrapper = confirmPin,
             maxLength = Constants.PASS_MIN_LENGTH,
+            trimmedValue = true,
             onValueChange = { viewModel.onTextFieldEntered(SessionInputEvent.ConfirmPin(it)) },
             onImeKeyAction = {
                 //if (areInputsValid) {

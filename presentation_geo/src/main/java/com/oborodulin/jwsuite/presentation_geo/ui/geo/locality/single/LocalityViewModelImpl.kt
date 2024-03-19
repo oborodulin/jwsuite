@@ -152,10 +152,10 @@ class LocalityViewModelImpl @Inject constructor(
         val localityUi = LocalityUi(
             region = region.value.item.toRegionUi(),
             regionDistrict = regionDistrict.value.item.toRegionDistrictUi(),
-            localityCode = localityCode.value.value,
+            localityCode = localityCode.value.value.trim(),
             localityType = LocalityType.valueOf(localityType.value.value),
-            localityShortName = localityShortName.value.value,
-            localityName = localityName.value.value
+            localityShortName = localityShortName.value.value.trim(),
+            localityName = localityName.value.value.trim()
         ).also {
             it.id = id()
             it.tlId = tlId.value.value.toUUIDOrNull()

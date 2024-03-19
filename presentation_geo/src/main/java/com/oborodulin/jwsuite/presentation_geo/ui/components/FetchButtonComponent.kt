@@ -1,15 +1,19 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,12 +33,9 @@ fun FetchButtonComponent(
 ) {
     // This will cause re-composition on every network state change
     val connection by connectivityState()
-
-    val isConnected = connection === ConnectionState.Available
-
-    if (isConnected) {
+    if (connection === ConnectionState.Available) {
         if (LogLevel.LOG_NETWORK) {
-            Timber.tag(TAG).d("connectivity is available")
+            Timber.tag(TAG).d("Internet connectivity is available")
         }
         ButtonComponent(
             modifier = Modifier
@@ -50,10 +51,25 @@ fun FetchButtonComponent(
         if (LogLevel.LOG_NETWORK) {
             Timber.tag(TAG).d("No Internet Connectivity")
         }
-        Icon(
-            imageVector = Icons.Outlined.AccountCircle,
-            contentDescription = null,
-        )
+        Row(
+            modifier = Modifier
+                .padding(8.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .border(
+                    1.dp, MaterialTheme.colorScheme.error, shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            Icon(
+                painter = painterResource(com.oborodulin.home.common.R.drawable.ic_no_internet_24),
+                contentDescription = stringResource(com.oborodulin.home.common.R.string.ic_no_internet_cnt_desc),
+                tint = MaterialTheme.colorScheme.error
+            )
+            Text(
+                text = stringResource(com.oborodulin.home.common.R.string.no_internet_error),
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.titleSmall
+            )
+        }
     }
 }
 

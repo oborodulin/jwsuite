@@ -9,7 +9,7 @@ sealed class CongregationInputValidator : Validatable {
     data object Locality : CongregationInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> com.oborodulin.jwsuite.presentation_geo.R.string.locality_empty_error
+                inputs[0].isNullOrBlank() -> com.oborodulin.jwsuite.presentation_geo.R.string.locality_empty_error
                 else -> null
             }
     }
@@ -17,7 +17,7 @@ sealed class CongregationInputValidator : Validatable {
     data object CongregationNum : CongregationInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> com.oborodulin.jwsuite.presentation.R.string.num_empty_error
+                inputs[0].isNullOrBlank() -> com.oborodulin.jwsuite.presentation.R.string.num_empty_error
                 //etc..
                 else -> null
             }
@@ -26,7 +26,7 @@ sealed class CongregationInputValidator : Validatable {
     data object CongregationName : CongregationInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.congregation_name_empty_error
+                inputs[0].isNullOrBlank() -> R.string.congregation_name_empty_error
                 else -> null
             }
     }
@@ -34,9 +34,8 @@ sealed class CongregationInputValidator : Validatable {
     data object TerritoryMark : CongregationInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.territory_mark_empty_error
+                inputs[0].isNullOrBlank() -> R.string.territory_mark_empty_error
                 else -> null
             }
     }
-
 }

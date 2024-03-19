@@ -111,10 +111,9 @@ fun CountryView(viewModel: CountryViewModel, handleSaveAction: OnImeKeyAction) {
                         isFocused = focusState.isFocused
                     )
                 },
-            maxLength = 2,
             labelResId = R.string.code_hint,
             helperResId = com.oborodulin.jwsuite.presentation_geo.R.string.country_code_helper,
-            leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
+            leadingPainterResId = R.drawable.ic_ab_36,
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Characters,
@@ -122,6 +121,8 @@ fun CountryView(viewModel: CountryViewModel, handleSaveAction: OnImeKeyAction) {
                 )
             },
             inputWrapper = countryCode,
+            maxLength = 2,
+            trimmedValue = true,
             onValueChange = {
                 Timber.tag(TAG)
                     .d("TextFieldComponent -> COUNTRY_CODE -> onValueChange(...): %s", it)
@@ -162,10 +163,9 @@ fun CountryView(viewModel: CountryViewModel, handleSaveAction: OnImeKeyAction) {
                             isFocused = focusState.isFocused
                         )
                     },
-                enabled = false,
                 labelResId = com.oborodulin.jwsuite.presentation_geo.R.string.geocode_hint,
                 helperResId = com.oborodulin.jwsuite.presentation_geo.R.string.geocode_helper,
-                leadingPainterResId = R.drawable.ic_abc_36,
+                leadingPainterResId = R.drawable.ic_ab_36,
                 keyboardOptions = remember {
                     KeyboardOptions(
                         capitalization = KeyboardCapitalization.Words,
@@ -173,7 +173,8 @@ fun CountryView(viewModel: CountryViewModel, handleSaveAction: OnImeKeyAction) {
                     )
                 },
                 inputWrapper = countryGeocode,
-                onValueChange = {},
+                trimmedValue = true,
+                onValueChange = { viewModel.onTextFieldEntered(CountryInputEvent.Geocode(it)) },
                 onImeKeyAction = viewModel::moveFocusImeAction
             )
             TextFieldComponent(

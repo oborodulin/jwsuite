@@ -58,6 +58,7 @@ fun TextFieldComponent(
     enabled: Boolean = true,
     readOnly: Boolean = false,
     inputWrapper: InputWrapper,
+    trimmedValue: Boolean = false,
     maxLength: Int = Int.MAX_VALUE,
     @StringRes placeholderResId: Int? = null,
     @StringRes labelResId: Int? = null,
@@ -116,7 +117,11 @@ fun TextFieldComponent(
             onValueChange = {
                 // https://stackoverflow.com/questions/67136058/textfield-maxlength-android-jetpack-compose
                 if (it.text.length <= maxLength) {
-                    fieldValue = it.copy(text = it.text.trim()); onValueChange(it.text.trim())
+                    if (trimmedValue) {
+                        fieldValue = it.copy(text = it.text.trim()); onValueChange(it.text.trim())
+                    } else {
+                        fieldValue = it; onValueChange(it.text)
+                    }
                 }
             },
             label = labelResId?.let { { Text(stringResource(it)) } },

@@ -9,7 +9,7 @@ sealed class MemberInputValidator : Validatable {
     data object Congregation : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.member_congregation_empty_error
+                inputs[0].isNullOrBlank() -> R.string.member_congregation_empty_error
                 else -> null
             }
     }
@@ -17,7 +17,7 @@ sealed class MemberInputValidator : Validatable {
     data object ActivityDate : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.member_activity_date_empty_error
+                inputs[0].isNullOrBlank() -> R.string.member_activity_date_empty_error
                 //etc..
                 else -> null
             }
@@ -26,7 +26,7 @@ sealed class MemberInputValidator : Validatable {
     data object Group : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? = null
         /*when {
-            inputs[0].isNullOrEmpty() -> R.string.member_group_empty_error
+            inputs[0].isNullOrBlank() -> R.string.member_group_empty_error
             else -> null
         }*/
     }
@@ -34,7 +34,7 @@ sealed class MemberInputValidator : Validatable {
     data object MemberNum : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? = null
         /*when {
-            inputs[0].isNullOrEmpty() -> R.string.member_num_empty_error
+            inputs[0].isNullOrBlank() -> R.string.member_num_empty_error
             //etc..
             else -> null
         }*/
@@ -43,7 +43,7 @@ sealed class MemberInputValidator : Validatable {
     data object Pseudonym : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.member_pseudonym_empty_error
+                inputs[0].isNullOrBlank() -> R.string.member_pseudonym_empty_error
                 //etc..
                 else -> null
             }
@@ -52,7 +52,7 @@ sealed class MemberInputValidator : Validatable {
     data object PhoneNumber : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? = null
         /*    when {
-                !inputs[0].isNullOrEmpty() -> com.oborodulin.jwsuite.presentation.R.string.num_empty_error
+                !inputs[0].isNullOrBlank() -> com.oborodulin.jwsuite.presentation.R.string.num_empty_error
                 //etc..
                 else -> null
             }
@@ -62,7 +62,7 @@ sealed class MemberInputValidator : Validatable {
     data object MemberType : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? = null
         /*when {
-            inputs[0].isNullOrEmpty() -> com.oborodulin.jwsuite.presentation.R.string.num_empty_error
+            inputs[0].isNullOrBlank() -> com.oborodulin.jwsuite.presentation.R.string.num_empty_error
             //etc..
             else -> null
         }
@@ -72,7 +72,7 @@ sealed class MemberInputValidator : Validatable {
     data object DateOfBirth : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? = null
         /*when {
-            inputs[0].isNullOrEmpty() -> R.string.num_empty_error
+            inputs[0].isNullOrBlank() -> R.string.num_empty_error
             //etc..
             else -> null
         }
@@ -82,7 +82,7 @@ sealed class MemberInputValidator : Validatable {
     data object DateOfBaptism : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? = null
         /*when {
-            inputs[0].isNullOrEmpty() -> R.string.num_empty_error
+            inputs[0].isNullOrBlank() -> R.string.num_empty_error
             //etc..
             else -> null
         }
@@ -92,7 +92,7 @@ sealed class MemberInputValidator : Validatable {
     data object LoginExpiredDate : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? = null
         /*when {
-            inputs[0].isNullOrEmpty() -> R.string.num_empty_error
+            inputs[0].isNullOrBlank() -> R.string.num_empty_error
             //etc..
             else -> null
         }
@@ -102,7 +102,7 @@ sealed class MemberInputValidator : Validatable {
     data object MovementDate : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.member_movement_date_empty_error
+                inputs[0].isNullOrBlank() -> R.string.member_movement_date_empty_error
                 //etc..
                 else -> null
             }

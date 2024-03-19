@@ -191,7 +191,7 @@ fun MemberView(
             labelResId = R.string.member_num_hint,
             leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+                KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Next)
             },
             inputWrapper = memberNum,
             onValueChange = { numInGroup ->
@@ -300,6 +300,7 @@ fun MemberView(
                 )
             },
             inputWrapper = pseudonym,
+            trimmedValue = true,
             onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
@@ -318,6 +319,7 @@ fun MemberView(
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = phoneNumber,
+            trimmedValue = true,
             onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.PhoneNumber(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )

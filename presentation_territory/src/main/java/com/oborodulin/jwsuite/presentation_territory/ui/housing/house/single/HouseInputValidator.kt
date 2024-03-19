@@ -9,14 +9,15 @@ sealed class HouseInputValidator : Validatable {
     data object Locality : HouseInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.locality_empty_error
+                inputs[0].isNullOrBlank() -> R.string.locality_empty_error
                 else -> null
             }
     }
+
     data object Street : HouseInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.street_empty_error
+                inputs[0].isNullOrBlank() -> R.string.street_empty_error
                 else -> null
             }
     }
@@ -24,7 +25,7 @@ sealed class HouseInputValidator : Validatable {
     data object HouseNum : HouseInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> com.oborodulin.jwsuite.presentation_territory.R.string.house_num_empty_error
+                inputs[0].isNullOrBlank() -> com.oborodulin.jwsuite.presentation_territory.R.string.house_num_empty_error
                 else -> null
             }
     }
@@ -32,7 +33,7 @@ sealed class HouseInputValidator : Validatable {
     data object BuildingType : HouseInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> com.oborodulin.jwsuite.presentation_territory.R.string.building_type_empty_error
+                inputs[0].isNullOrBlank() -> com.oborodulin.jwsuite.presentation_territory.R.string.building_type_empty_error
                 else -> null
             }
     }

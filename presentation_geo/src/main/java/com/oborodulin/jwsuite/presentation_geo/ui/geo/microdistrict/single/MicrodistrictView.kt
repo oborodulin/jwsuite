@@ -159,6 +159,7 @@ fun MicrodistrictView(
             },
             inputWrapper = microdistrictShortName,
             maxLength = 3,
+            trimmedValue = true,
             onValueChange = {
                 viewModel.onTextFieldEntered(MicrodistrictInputEvent.MicrodistrictShortName(it))
             },

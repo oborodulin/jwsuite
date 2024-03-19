@@ -138,6 +138,7 @@ fun RegionView(viewModel: RegionViewModel, handleSaveAction: OnImeKeyAction) {
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = regionCode,
+            trimmedValue = true,
             onValueChange = { viewModel.onTextFieldEntered(RegionInputEvent.RegionCode(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
@@ -194,7 +195,6 @@ fun RegionView(viewModel: RegionViewModel, handleSaveAction: OnImeKeyAction) {
                             isFocused = focusState.isFocused
                         )
                     },
-                enabled = false,
                 labelResId = com.oborodulin.jwsuite.presentation_geo.R.string.geocode_hint,
                 helperResId = com.oborodulin.jwsuite.presentation_geo.R.string.geocode_helper,
                 leadingPainterResId = R.drawable.ic_abc_36,
@@ -205,6 +205,7 @@ fun RegionView(viewModel: RegionViewModel, handleSaveAction: OnImeKeyAction) {
                     )
                 },
                 inputWrapper = regionGeocode,
+                trimmedValue = true,
                 onImeKeyAction = viewModel::moveFocusImeAction
             )
             TextFieldComponent(

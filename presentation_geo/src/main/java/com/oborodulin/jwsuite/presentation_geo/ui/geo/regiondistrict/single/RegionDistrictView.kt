@@ -154,6 +154,7 @@ fun RegionDistrictView(
             },
             inputWrapper = districtShortName,
             maxLength = 4,
+            trimmedValue = true,
             onValueChange = {
                 viewModel.onTextFieldEntered(RegionDistrictInputEvent.DistrictShortName(it))
             },

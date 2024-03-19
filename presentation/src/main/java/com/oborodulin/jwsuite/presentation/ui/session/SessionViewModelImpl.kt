@@ -204,7 +204,7 @@ class SessionViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("signup() called")
         val job = viewModelScope.launch(errorHandler) {
             useCases.signupUseCase.execute(
-                SignupUseCase.Request(username.value.value, pin.value.value)
+                SignupUseCase.Request(username.value.value.trim(), pin.value.value.trim())
             ).map { signupConverter.convert(it) }
                 .collect {
                     _isLogged.value = false
@@ -232,7 +232,7 @@ class SessionViewModelImpl @Inject constructor(
     private fun checkPasswordValid(): Job {
         Timber.tag(TAG).d("checkPasswordValid() called")
         val job = viewModelScope.launch(errorHandler) {
-            useCases.checkPasswordValidUseCase.execute(CheckPasswordValidUseCase.Request(pin.value.value))
+            useCases.checkPasswordValidUseCase.execute(CheckPasswordValidUseCase.Request(pin.value.value.trim()))
                 .collect {
                     if (it is Result.Success) {
                         _isPasswordValid.value = it.data.isPasswordValid
@@ -252,7 +252,7 @@ class SessionViewModelImpl @Inject constructor(
     private fun login(): Job {
         Timber.tag(TAG).d("login() called")
         val job = viewModelScope.launch(errorHandler) {
-            val state = useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value))
+            val state = useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value.trim()))
                 .map { loginConverter.convert(it) }.first()
             uiState(state)?.let { session ->
                 Timber.tag(TAG).d("login: session.isLogged = %s", session.isLogged)
@@ -360,7 +360,7 @@ class SessionViewModelImpl @Inject constructor(
                     )
                 }
                 SessionInputValidator.ConfirmPin.errorIdOrNull(
-                    confirmPin.value.value, pin.value.value
+                    confirmPin.value.value.trim(), pin.value.value.trim()
                 )?.let {
                     inputErrors.add(
                         InputError(

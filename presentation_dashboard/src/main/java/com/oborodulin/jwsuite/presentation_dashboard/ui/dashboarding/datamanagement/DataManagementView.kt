@@ -214,7 +214,7 @@ fun DataManagementView(
                 },
             labelResId = R.string.database_backup_period_hint,
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done)
+                KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done)
             },
             inputWrapper = databaseBackupPeriod,
             onValueChange = {

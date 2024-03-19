@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.UUID
 
+// Converters:
 fun String.toUUID(): UUID = UUID.fromString(this)
 fun String?.toUUIDOrNull() = this?.ifEmpty { null }?.let { UUID.fromString(it) }
 fun String.toOffsetDateTime(): OffsetDateTime {
@@ -32,9 +33,11 @@ fun String.toFullFormatOffsetDateTimeOrNull() = if (this.isNotEmpty())
     this.toFullFormatOffsetDateTime()
 else null
 
+// Validations:
 inline fun String?.ifNotEmpty(value: (String) -> String) =
     if (this?.isNotEmpty() == true) value(this) else this
 
+// Transformations:
 fun String?.firstCapitalLetterOrEmpty() = this?.getOrNull(0)?.uppercase().orEmpty()
 
 // DOMAIN:

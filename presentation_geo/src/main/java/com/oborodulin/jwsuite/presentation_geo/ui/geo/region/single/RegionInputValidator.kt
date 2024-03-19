@@ -9,7 +9,7 @@ sealed class RegionInputValidator : Validatable {
     data object Country : RegionInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.country_empty_error
+                inputs[0].isNullOrBlank() -> R.string.country_empty_error
                 //etc..
                 else -> null
             }
@@ -18,7 +18,7 @@ sealed class RegionInputValidator : Validatable {
     data object RegionCode : RegionInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.region_code_empty_error
+                inputs[0].isNullOrBlank() -> R.string.region_code_empty_error
                 //etc..
                 else -> null
             }
@@ -27,7 +27,7 @@ sealed class RegionInputValidator : Validatable {
     data object RegionName : RegionInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.region_name_empty_error
+                inputs[0].isNullOrBlank() -> R.string.region_name_empty_error
                 else -> null
             }
     }

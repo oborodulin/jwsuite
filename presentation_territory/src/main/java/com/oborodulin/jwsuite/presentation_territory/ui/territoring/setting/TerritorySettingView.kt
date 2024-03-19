@@ -123,7 +123,7 @@ fun TerritorySettingView(
                 },
             labelResId = R.string.territory_processing_period_hint,
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+                KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Next)
             },
             inputWrapper = territoryProcessingPeriod,
             onValueChange = {
@@ -144,7 +144,7 @@ fun TerritorySettingView(
                 },
             labelResId = R.string.territory_at_hand_period_hint,
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+                KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Next)
             },
             inputWrapper = territoryAtHandPeriod,
             onValueChange = {
@@ -163,7 +163,7 @@ fun TerritorySettingView(
                 },
             labelResId = R.string.territory_idle_period_hint,
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+                KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Next)
             },
             inputWrapper = territoryIdlePeriod,
             onValueChange = {
@@ -182,7 +182,7 @@ fun TerritorySettingView(
                 },
             labelResId = R.string.territory_rooms_limit_hint,
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+                KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Next)
             },
             inputWrapper = territoryRoomsLimit,
             onValueChange = {
@@ -200,7 +200,7 @@ fun TerritorySettingView(
                     )
                 }, labelResId = R.string.territory_max_rooms_hint,
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done)
+                KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done)
             },
             inputWrapper = territoryMaxRooms,
             onValueChange = {

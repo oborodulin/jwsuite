@@ -124,8 +124,8 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
     private fun saveTerritoryCategory(): Job {
         val territoryCategoryUi = TerritoryCategoryUi(
             territoryCategoryCode = TerritoryCategoryType.valueOf(territoryCategoryCode.value.value),
-            territoryCategoryMark = territoryCategoryMark.value.value,
-            territoryCategoryName = territoryCategoryName.value.value
+            territoryCategoryMark = territoryCategoryMark.value.value.trim(),
+            territoryCategoryName = territoryCategoryName.value.value.trim()
         ).also { it.id = id() }
         Timber.tag(TAG).d("saveTerritoryCategory() called: UI model %s", territoryCategoryUi)
         val job = viewModelScope.launch(errorHandler) {

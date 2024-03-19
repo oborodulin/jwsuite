@@ -156,7 +156,9 @@ import java.util.UUID
 // ic_download.png - https://www.freepik.com/
 //                      <a href="https://www.flaticon.com/free-icons/cloud-computing" title="cloud computing icons">Cloud computing icons created by Freepik - Flaticon</a>
 // ic_country.png - <a href="https://www.flaticon.com/free-icons/citizenship" title="citizenship icons">Citizenship icons created by Tanah Basah - Flaticon</a>
-// https://www.flaticon.com/free-icon/citizenship_9133134?term=country&page=1&position=5&origin=search&related_id=9133134
+//                  https://www.flaticon.com/free-icon/citizenship_9133134?term=country&page=1&position=5&origin=search&related_id=9133134
+// ic_no_internet.png - https://www.flaticon.com/search?word=no%20internet%20connection&color=black&shape=outline
+//                  <a href="https://www.flaticon.com/free-icons/offline" title="offline icons">Offline icons created by Any Icon - Flaticon</a>
 
 private const val TAG = "Presentation.NavRoutes"
 

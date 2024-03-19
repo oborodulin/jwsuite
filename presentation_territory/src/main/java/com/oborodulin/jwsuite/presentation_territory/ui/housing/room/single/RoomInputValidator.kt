@@ -9,7 +9,7 @@ sealed class RoomInputValidator : Validatable {
     data object Locality : RoomInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.locality_empty_error
+                inputs[0].isNullOrBlank() -> R.string.locality_empty_error
                 else -> null
             }
     }
@@ -17,7 +17,7 @@ sealed class RoomInputValidator : Validatable {
     data object Street : RoomInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.street_empty_error
+                inputs[0].isNullOrBlank() -> R.string.street_empty_error
                 else -> null
             }
     }
@@ -25,7 +25,7 @@ sealed class RoomInputValidator : Validatable {
     data object House : RoomInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.house_empty_error
+                inputs[0].isNullOrBlank() -> R.string.house_empty_error
                 else -> null
             }
     }
@@ -33,7 +33,7 @@ sealed class RoomInputValidator : Validatable {
     data object RoomNum : RoomInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> com.oborodulin.jwsuite.presentation_territory.R.string.room_num_empty_error
+                inputs[0].isNullOrBlank() -> com.oborodulin.jwsuite.presentation_territory.R.string.room_num_empty_error
                 else -> null
             }
     }

@@ -9,7 +9,7 @@ sealed class GroupInputValidator : Validatable {
     data object GroupNum : GroupInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.num_empty_error
+                inputs[0].isNullOrBlank() -> R.string.num_empty_error
                 //etc..
                 else -> null
             }

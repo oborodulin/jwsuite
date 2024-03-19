@@ -9,7 +9,7 @@ sealed class LocalityInputValidator : Validatable {
     data object Country : LocalityInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.country_empty_error
+                inputs[0].isNullOrBlank() -> R.string.country_empty_error
                 //etc..
                 else -> null
             }
@@ -18,7 +18,7 @@ sealed class LocalityInputValidator : Validatable {
     data object Region : LocalityInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.region_empty_error
+                inputs[0].isNullOrBlank() -> R.string.region_empty_error
                 else -> null
             }
     }
@@ -26,7 +26,7 @@ sealed class LocalityInputValidator : Validatable {
     data object LocalityCode : LocalityInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.locality_code_empty_error
+                inputs[0].isNullOrBlank() -> R.string.locality_code_empty_error
                 //etc..
                 else -> null
             }
@@ -35,7 +35,7 @@ sealed class LocalityInputValidator : Validatable {
     data object LocalityShortName : LocalityInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.locality_short_name_empty_error
+                inputs[0].isNullOrBlank() -> R.string.locality_short_name_empty_error
                 else -> null
             }
     }
@@ -43,7 +43,7 @@ sealed class LocalityInputValidator : Validatable {
     data object LocalityName : LocalityInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.locality_name_empty_error
+                inputs[0].isNullOrBlank() -> R.string.locality_name_empty_error
                 else -> null
             }
     }

@@ -126,9 +126,9 @@ class CongregationViewModelImpl @Inject constructor(
 
     private fun saveCongregation(): Job {
         val congregationUi = CongregationUi(
-            congregationNum = congregationNum.value.value,
-            congregationName = congregationName.value.value,
-            territoryMark = territoryMark.value.value,
+            congregationNum = congregationNum.value.value.trim(),
+            congregationName = congregationName.value.value.trim(),
+            territoryMark = territoryMark.value.value.trim(),
             isFavorite = isFavorite.value.value.toBoolean(),
             locality = locality.value.item.toLocalityUi()
         ).also { it.id = id() }
@@ -214,29 +214,25 @@ class CongregationViewModelImpl @Inject constructor(
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is CongregationInputEvent.Locality ->
-                        setStateValue(
-                            CongregationFields.CONGREGATION_LOCALITY, locality,
-                            CongregationInputValidator.Locality.errorIdOrNull(event.input.headline)
-                        )
+                    is CongregationInputEvent.Locality -> setStateValue(
+                        CongregationFields.CONGREGATION_LOCALITY, locality,
+                        CongregationInputValidator.Locality.errorIdOrNull(event.input.headline)
+                    )
 
-                    is CongregationInputEvent.CongregationNum ->
-                        setStateValue(
-                            CongregationFields.CONGREGATION_NUM, congregationNum,
-                            CongregationInputValidator.CongregationNum.errorIdOrNull(event.input)
-                        )
+                    is CongregationInputEvent.CongregationNum -> setStateValue(
+                        CongregationFields.CONGREGATION_NUM, congregationNum,
+                        CongregationInputValidator.CongregationNum.errorIdOrNull(event.input)
+                    )
 
-                    is CongregationInputEvent.CongregationName ->
-                        setStateValue(
-                            CongregationFields.CONGREGATION_NAME, congregationName,
-                            CongregationInputValidator.CongregationName.errorIdOrNull(event.input)
-                        )
+                    is CongregationInputEvent.CongregationName -> setStateValue(
+                        CongregationFields.CONGREGATION_NAME, congregationName,
+                        CongregationInputValidator.CongregationName.errorIdOrNull(event.input)
+                    )
 
-                    is CongregationInputEvent.TerritoryMark ->
-                        setStateValue(
-                            CongregationFields.TERRITORY_MARK, territoryMark,
-                            CongregationInputValidator.TerritoryMark.errorIdOrNull(event.input)
-                        )
+                    is CongregationInputEvent.TerritoryMark -> setStateValue(
+                        CongregationFields.TERRITORY_MARK, territoryMark,
+                        CongregationInputValidator.TerritoryMark.errorIdOrNull(event.input)
+                    )
 
                     is CongregationInputEvent.IsFavorite ->
                         setStateValue(CongregationFields.IS_FAVORITE, isFavorite, null)

@@ -128,14 +128,14 @@ class CountryViewModelImpl @Inject constructor(
 
     private fun saveCountry(): Job {
         val countryUi = CountryUi(
-            countryCode = countryCode.value.value,
-            countryGeocode = countryGeocode.value.value.ifEmpty { null },
+            countryCode = countryCode.value.value.trim(),
+            countryGeocode = countryGeocode.value.value.ifBlank { null },
             countryOsmId = countryOsmId.value.value.toLongOrNull(),
             coordinates = CoordinatesUi(
                 latitude.value.value.toBigDecimalOrNull(),
                 longitude.value.value.toBigDecimalOrNull()
             ),
-            countryName = countryName.value.value
+            countryName = countryName.value.value.trim()
         ).also {
             it.id = id()
             it.tlId = tlId.value.value.toUUIDOrNull()
@@ -201,6 +201,10 @@ class CountryViewModelImpl @Inject constructor(
                         CountryFields.COUNTRY_NAME, countryName, event.input,
                         CountryInputValidator.CountryName.isValid(event.input)
                     )
+
+                    is CountryInputEvent.Geocode -> setStateValue(
+                        CountryFields.COUNTRY_GEOCODE, countryGeocode, event.input, true
+                    )
                 }
             }
             .debounce(350)
@@ -216,6 +220,9 @@ class CountryViewModelImpl @Inject constructor(
                         CountryInputValidator.CountryName.errorIdOrNull(event.input)
                     )
 
+                    is CountryInputEvent.Geocode -> setStateValue(
+                        CountryFields.COUNTRY_GEOCODE, countryGeocode, null
+                    )
                 }
             }
     }

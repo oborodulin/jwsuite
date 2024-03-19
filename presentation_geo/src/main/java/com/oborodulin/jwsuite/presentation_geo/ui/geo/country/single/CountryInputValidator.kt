@@ -9,7 +9,7 @@ sealed class CountryInputValidator : Validatable {
     data object CountryCode : CountryInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.country_code_empty_error
+                inputs[0].isNullOrBlank() -> R.string.country_code_empty_error
                 //etc..
                 else -> null
             }
@@ -18,7 +18,7 @@ sealed class CountryInputValidator : Validatable {
     data object CountryName : CountryInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.country_name_empty_error
+                inputs[0].isNullOrBlank() -> R.string.country_name_empty_error
                 else -> null
             }
     }

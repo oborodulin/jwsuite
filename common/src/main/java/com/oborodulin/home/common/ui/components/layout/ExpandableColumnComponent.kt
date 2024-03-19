@@ -53,7 +53,7 @@ fun ExpandableColumnComponent(
     var expanded by rememberSaveable { mutableStateOf(isExpanded) }
     Column(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(8.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .border(
@@ -74,9 +74,15 @@ fun ExpandableColumnComponent(
             )
             IconButton(onClick = { if (enabled) expanded = !expanded }) {
                 if (expanded) {
-                    Icon(Icons.Outlined.KeyboardArrowUp, null)
+                    Icon(
+                        Icons.Outlined.KeyboardArrowUp,
+                        stringResource(R.string.exp_clmn_collapse_cnt_desc)
+                    )
                 } else {
-                    Icon(Icons.Outlined.KeyboardArrowDown, null)
+                    Icon(
+                        Icons.Outlined.KeyboardArrowDown,
+                        stringResource(R.string.exp_clmn_expand_cnt_desc)
+                    )
                 }
             }
         }
@@ -84,7 +90,7 @@ fun ExpandableColumnComponent(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(8.dp)
                     .then(modifier)
             ) {
                 content()

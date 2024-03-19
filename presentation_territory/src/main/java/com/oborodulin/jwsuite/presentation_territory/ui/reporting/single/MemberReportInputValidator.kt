@@ -9,7 +9,7 @@ sealed class MemberReportInputValidator : Validatable {
     data object TerritoryStreet : MemberReportInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.territory_street_empty_error
+                inputs[0].isNullOrBlank() -> R.string.territory_street_empty_error
                 else -> null
             }
     }
@@ -17,7 +17,7 @@ sealed class MemberReportInputValidator : Validatable {
     data object House : MemberReportInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.territory_house_empty_error
+                inputs[0].isNullOrBlank() -> R.string.territory_house_empty_error
                 else -> null
             }
     }
@@ -25,7 +25,7 @@ sealed class MemberReportInputValidator : Validatable {
     data object Room : MemberReportInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.territory_room_empty_error
+                inputs[0].isNullOrBlank() -> R.string.territory_room_empty_error
                 else -> null
             }
     }
@@ -33,7 +33,7 @@ sealed class MemberReportInputValidator : Validatable {
     data object MemberReportMark : MemberReportInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.member_report_mark_empty_error
+                inputs[0].isNullOrBlank() -> R.string.member_report_mark_empty_error
                 //etc..
                 else -> null
             }
@@ -42,7 +42,7 @@ sealed class MemberReportInputValidator : Validatable {
     data object Language : MemberReportInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.language_empty_error
+                inputs[0].isNullOrBlank() -> R.string.language_empty_error
                 //etc..
                 else -> null
             }
@@ -51,7 +51,7 @@ sealed class MemberReportInputValidator : Validatable {
     data object Age : MemberReportInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? = null
         /*when {
-            inputs[0].isNullOrEmpty() -> R.string.member_num_empty_error
+            inputs[0].isNullOrBlank() -> R.string.member_num_empty_error
             //etc..
             else -> null
         }*/

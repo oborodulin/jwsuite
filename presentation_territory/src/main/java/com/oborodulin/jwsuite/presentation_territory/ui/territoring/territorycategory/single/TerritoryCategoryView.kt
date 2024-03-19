@@ -112,6 +112,7 @@ fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel, handleSaveActio
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = territoryCategoryCode,
+            trimmedValue = true,
             onValueChange = {
                 viewModel.onTextFieldEntered(TerritoryCategoryInputEvent.TerritoryCategoryCode(it))
             },
@@ -135,6 +136,8 @@ fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel, handleSaveActio
                 )
             },
             inputWrapper = territoryCategoryMark,
+            maxLength = 1,
+            trimmedValue = true,
             onValueChange = {
                 viewModel.onTextFieldEntered(TerritoryCategoryInputEvent.TerritoryCategoryMark(it))
             },
@@ -159,6 +162,7 @@ fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel, handleSaveActio
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = territoryCategoryName,
+            trimmedValue = true,
             onValueChange = {
                 viewModel.onTextFieldEntered(TerritoryCategoryInputEvent.TerritoryCategoryName(it))
             },

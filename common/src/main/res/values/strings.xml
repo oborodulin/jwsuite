@@ -7,6 +7,7 @@
     <!--ОБЩИЕ СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <string name="success">success</string>
     <string name="number_negative_error">Укажите, пожалуйста, положительное число!</string>
+    <string name="no_internet_error">Нет подключения к интернету! Убедитесь, пожалуйста, что устройство подключено к сети</string>
     <string name="name_too_short_error">Name is too short!</string>
     <string name="card_number_too_short_error">Number is too short!</string>
 
@@ -43,10 +44,13 @@
     <string name="ic_delete_cnt_desc">Удалить</string>
     <string name="ic_cancel_changes_cnt_desc">Отменить изменения</string>
     <string name="ic_error_cnt_desc">Ошибка</string>
+    <string name="ic_no_internet_cnt_desc">Нет подключения к интернету</string>
     <string name="btn_next_cnt_desc">Далее</string>
     <string name="btn_save_cnt_desc">Сохранить</string>
     <string name="cmb_drop_down_cnt_desc">Раскрыть выпадающий список</string>
     <string name="cmb_clear_cnt_desc">Очистить значение выпадающего списка</string>
+    <string name="exp_clmn_expand_cnt_desc">Показать дополнительную информацию</string>
+    <string name="exp_clmn_collapse_cnt_desc">Скрыть дополнительную информацию</string>
 
     <!--ЕДИНИЦЫ ИЗМЕРЕНИЯ-->
     <string name="day_unit">д.</string>

@@ -130,6 +130,7 @@ fun CongregationView(
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = congregationNum,
+            trimmedValue = true,
             onValueChange = {
                 viewModel.onTextFieldEntered(CongregationInputEvent.CongregationNum(it))
             },
@@ -189,6 +190,7 @@ fun CongregationView(
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = territoryMark,
             maxLength = 1,
+            trimmedValue = true,
             onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.TerritoryMark(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )

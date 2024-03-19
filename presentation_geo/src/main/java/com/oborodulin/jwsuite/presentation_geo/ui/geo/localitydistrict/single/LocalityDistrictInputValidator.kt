@@ -9,7 +9,7 @@ sealed class LocalityDistrictInputValidator : Validatable {
     data object Locality : LocalityDistrictInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.locality_empty_error
+                inputs[0].isNullOrBlank() -> R.string.locality_empty_error
                 else -> null
             }
     }
@@ -17,7 +17,7 @@ sealed class LocalityDistrictInputValidator : Validatable {
     data object DistrictShortName : LocalityDistrictInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.locality_district_short_name_empty_error
+                inputs[0].isNullOrBlank() -> R.string.locality_district_short_name_empty_error
                 else -> null
             }
     }
@@ -25,7 +25,7 @@ sealed class LocalityDistrictInputValidator : Validatable {
     data object DistrictName : LocalityDistrictInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.locality_district_name_empty_error
+                inputs[0].isNullOrBlank() -> R.string.locality_district_name_empty_error
                 else -> null
             }
     }

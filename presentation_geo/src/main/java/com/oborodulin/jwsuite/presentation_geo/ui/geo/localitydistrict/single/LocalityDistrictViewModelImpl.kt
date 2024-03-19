@@ -126,8 +126,8 @@ class LocalityDistrictViewModelImpl @Inject constructor(
     private fun saveLocalityDistrict(): Job {
         val localityDistrictUi = LocalityDistrictUi(
             locality = locality.value.item.toLocalityUi(),
-            districtShortName = districtShortName.value.value,
-            districtName = districtName.value.value
+            districtShortName = districtShortName.value.value.trim(),
+            districtName = districtName.value.value.trim()
         ).also {
             it.id = id()
             it.tlId = tlId.value.value.toUUIDOrNull()

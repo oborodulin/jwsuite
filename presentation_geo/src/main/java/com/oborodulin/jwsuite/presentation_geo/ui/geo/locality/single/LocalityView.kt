@@ -167,9 +167,10 @@ fun LocalityView(
             helperResId = com.oborodulin.jwsuite.presentation_geo.R.string.locality_code_helper,
             leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+                KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Next)
             },
             inputWrapper = localityCode,
+            trimmedValue = true,
             onValueChange = {
                 //https://stackoverflow.com/questions/73400126/restrict-only-numbers-in-textfield-in-jetpack-compose
                 if (it.isEmpty() || it.matches(pattern)) {
@@ -197,6 +198,7 @@ fun LocalityView(
             },
             inputWrapper = localityShortName,
             maxLength = 4,
+            trimmedValue = true,
             onValueChange = {
                 viewModel.onTextFieldEntered(LocalityInputEvent.LocalityShortName(it))
             },

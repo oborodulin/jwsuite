@@ -9,7 +9,7 @@ sealed class DatabaseInputValidator : Validatable {
     data object ReceiverMember : DatabaseInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.receiver_member_empty_error
+                inputs[0].isNullOrBlank() -> R.string.receiver_member_empty_error
                 //etc..
                 else -> null
             }

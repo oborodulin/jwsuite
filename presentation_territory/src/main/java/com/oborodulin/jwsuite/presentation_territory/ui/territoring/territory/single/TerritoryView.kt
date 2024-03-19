@@ -210,7 +210,7 @@ fun TerritoryView(
             labelResId = R.string.territory_num_hint,
             leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+                KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Next)
             },
             inputWrapper = territoryNum,
             onValueChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.TerritoryNum(it.toIntOrNull())) },

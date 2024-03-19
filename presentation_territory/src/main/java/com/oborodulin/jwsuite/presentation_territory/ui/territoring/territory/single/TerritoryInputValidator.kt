@@ -9,7 +9,7 @@ sealed class TerritoryInputValidator : Validatable {
     data object Category : TerritoryInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.territory_category_empty_error
+                inputs[0].isNullOrBlank() -> R.string.territory_category_empty_error
                 else -> null
             }
     }
@@ -17,7 +17,7 @@ sealed class TerritoryInputValidator : Validatable {
     data object Locality : TerritoryInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> com.oborodulin.jwsuite.presentation_geo.R.string.locality_empty_error
+                inputs[0].isNullOrBlank() -> com.oborodulin.jwsuite.presentation_geo.R.string.locality_empty_error
                 //etc..
                 else -> null
             }
@@ -26,7 +26,7 @@ sealed class TerritoryInputValidator : Validatable {
     data object TerritoryNum : TerritoryInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.territory_num_empty_error
+                inputs[0].isNullOrBlank() -> R.string.territory_num_empty_error
                 //etc..
                 else -> null
             }

@@ -128,8 +128,8 @@ class RegionDistrictViewModelImpl @Inject constructor(
     private fun saveRegionDistrict(): Job {
         val regionDistrictUi = RegionDistrictUi(
             region = region.value.item.toRegionUi(),
-            districtShortName = districtShortName.value.value,
-            districtName = districtName.value.value
+            districtShortName = districtShortName.value.value.trim(),
+            districtName = districtName.value.value.trim()
         ).also {
             it.id = id()
             it.tlId = tlId.value.value.toUUIDOrNull()

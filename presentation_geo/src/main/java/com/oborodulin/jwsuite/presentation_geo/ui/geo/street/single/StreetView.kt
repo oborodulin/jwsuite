@@ -229,7 +229,7 @@ fun StreetView(
             labelResId = com.oborodulin.jwsuite.presentation_geo.R.string.estimated_houses_hint,
             leadingImageVector = Icons.Outlined.Home,
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done)
+                KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done)
             },
             inputWrapper = estimatedHouses,
             onValueChange = {

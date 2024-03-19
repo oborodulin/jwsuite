@@ -151,8 +151,8 @@ class MicrodistrictViewModelImpl @Inject constructor(
             locality = locality.value.item.toLocalityUi(),
             localityDistrict = localityDistrict.value.item.toLocalityDistrictUi(),
             microdistrictType = VillageType.valueOf(microdistrictType.value.value),
-            microdistrictShortName = microdistrictShortName.value.value,
-            microdistrictName = microdistrictName.value.value
+            microdistrictShortName = microdistrictShortName.value.value.trim(),
+            microdistrictName = microdistrictName.value.value.trim()
         ).also {
             it.id = id()
             it.tlId = tlId.value.value.toUUIDOrNull()

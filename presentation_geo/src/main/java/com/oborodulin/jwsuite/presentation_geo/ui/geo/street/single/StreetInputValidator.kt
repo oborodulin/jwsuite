@@ -9,7 +9,7 @@ sealed class StreetInputValidator : Validatable {
     data object Locality : StreetInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.locality_empty_error
+                inputs[0].isNullOrBlank() -> R.string.locality_empty_error
                 else -> null
             }
     }
@@ -17,7 +17,7 @@ sealed class StreetInputValidator : Validatable {
     data object StreetName : StreetInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.street_name_empty_error
+                inputs[0].isNullOrBlank() -> R.string.street_name_empty_error
                 else -> null
             }
     }
