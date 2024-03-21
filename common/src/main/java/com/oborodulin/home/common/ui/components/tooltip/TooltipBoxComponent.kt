@@ -52,12 +52,12 @@ fun TooltipBoxComponent(
     )
     {
         IconButton(onClick = {}, modifier = Modifier
-            .padding(bottom = 8.dp)
-            .size(16.dp)) {
+            .padding(top = 2.dp, bottom = 4.dp)
+            .size(18.dp)) {
             Icon(
                 imageVector = Icons.Outlined.Info,
                 contentDescription = contentDescriptionResId?.let { stringResource(it) },
-                modifier = Modifier.size(16.dp),
+                modifier = Modifier.size(18.dp),
                 tint = tint
             )
         }

@@ -25,7 +25,7 @@ import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 private const val TAG = "Common.ui.EmptyListTextComponent"
 
 @Composable
-fun EmptyListTextComponent(@StringRes textResId: Int) {
+fun EmptyListTextComponent(@StringRes textResId: Int, content: @Composable (() -> Unit)? = null) {
     Column(
         modifier = Modifier
             .padding(8.dp)
@@ -43,6 +43,7 @@ fun EmptyListTextComponent(@StringRes textResId: Int) {
             fontWeight = FontWeight.Bold
         )
         Spacer(Modifier.height(8.dp))
+        content?.invoke()
     }
 }
 

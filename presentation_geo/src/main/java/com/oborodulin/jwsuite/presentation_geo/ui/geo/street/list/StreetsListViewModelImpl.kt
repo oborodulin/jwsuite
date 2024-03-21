@@ -133,6 +133,7 @@ class StreetsListViewModelImpl @Inject constructor(
         fun previewModel(ctx: Context) =
             object : StreetsListViewModel {
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
+                override val selectedItemFlow = MutableStateFlow(ListItemModel())
                 override val singleEventFlow =
                     Channel<StreetsListUiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
@@ -146,7 +147,7 @@ class StreetsListViewModelImpl @Inject constructor(
 
                 override val areSingleSelected = MutableStateFlow(false)
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
-                override fun singleSelectedItem() = null
+                override fun singleSelectedItem() = MutableStateFlow(null)
 
                 override fun handleActionJob(
                     action: () -> Unit,

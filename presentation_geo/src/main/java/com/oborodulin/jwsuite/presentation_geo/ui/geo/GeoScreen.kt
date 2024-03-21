@@ -183,7 +183,7 @@ fun GeoScreen(
                             Timber.tag(TAG).d("selectedStreet = %s", selectedStreet)
                             appState.mainNavigate(
                                 NavRoutes.StreetLocalityDistrict.routeForStreetLocalityDistrict(
-                                    NavigationInput.StreetLocalityDistrictInput(streetId = selectedStreet?.itemId!!)
+                                    NavigationInput.StreetLocalityDistrictInput(streetId = selectedStreet.value?.itemId!!)
                                 )
                             )
                         }
@@ -197,7 +197,7 @@ fun GeoScreen(
                             Timber.tag(TAG).d("selectedStreet = %s", selectedStreet)
                             appState.mainNavigate(
                                 NavRoutes.StreetMicrodistrict.routeForStreetMicrodistrict(
-                                    NavigationInput.StreetMicrodistrictInput(streetId = selectedStreet?.itemId!!)
+                                    NavigationInput.StreetMicrodistrictInput(streetId = selectedStreet.value?.itemId!!)
                                 )
                             )
                         }
@@ -357,7 +357,7 @@ fun CountriesWithRegionsView(
     countriesListViewModel: CountriesListViewModelImpl
 ) {
     Timber.tag(TAG).d("CountriesWithRegionsView(...) called")
-    val selectedCountry: ListItemModel? by remember { mutableStateOf(countriesListViewModel.singleSelectedItem()) }
+    val selectedCountry by countriesListViewModel.singleSelectedItem().collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -416,9 +416,9 @@ fun RegionsWithRegionDistrictsAndLocalitiesView(
     appState: AppState,
     regionsListViewModel: RegionsListViewModelImpl
 ) {
-    Timber.tag(TAG).d("RegionRegionDistrictsLocalitiesView(...) called")
-    var selectedRegionId: UUID? by remember { mutableStateOf(regionsListViewModel.singleSelectedItem()?.itemId) }
-    val onTabClick = { selectedRegionId = regionsListViewModel.singleSelectedItem()?.itemId }
+    Timber.tag(TAG).d("RegionsWithRegionDistrictsAndLocalitiesView(...) called")
+    var selectedRegionId: UUID? by remember { mutableStateOf(regionsListViewModel.singleSelectedItem().value?.itemId) }
+    val onTabClick = { selectedRegionId = regionsListViewModel.singleSelectedItem().value?.itemId }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -491,8 +491,8 @@ fun RegionDistrictsWithLocalitiesView(
     appState: AppState,
     regionDistrictsListViewModel: RegionDistrictsListViewModelImpl
 ) {
-    Timber.tag(TAG).d("RegionDistrictsLocalitiesView(...) called")
-    val selectedRegionDistrictId: UUID? by remember { mutableStateOf(regionDistrictsListViewModel.singleSelectedItem()?.itemId) }
+    Timber.tag(TAG).d("RegionDistrictsWithLocalitiesView(...) called")
+    val selectedRegionDistrictId: UUID? by remember { mutableStateOf(regionDistrictsListViewModel.singleSelectedItem().value?.itemId) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -547,9 +547,10 @@ fun LocalitiesWithLocalitiesDistrictsAndMicrodistrictsView(
     appState: AppState,
     localitiesListViewModel: LocalitiesListViewModelImpl
 ) {
-    Timber.tag(TAG).d("LocalitiesLocalitiesDistrictsMicrodistrictsView(...) called")
-    var selectedLocalityId: UUID? by remember { mutableStateOf(localitiesListViewModel.singleSelectedItem()?.itemId) }
-    val onTabClick = { selectedLocalityId = localitiesListViewModel.singleSelectedItem()?.itemId }
+    Timber.tag(TAG).d("LocalitiesWithLocalitiesDistrictsAndMicrodistrictsView(...) called")
+    var selectedLocalityId: UUID? by remember { mutableStateOf(localitiesListViewModel.singleSelectedItem().value?.itemId) }
+    val onTabClick =
+        { selectedLocalityId = localitiesListViewModel.singleSelectedItem().value?.itemId }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -638,12 +639,15 @@ fun LocalitiesDistrictsWithMicrodistrictsAndStreetsView(
     appState: AppState,
     localityDistrictsListViewModel: LocalityDistrictsListViewModel,
 ) {
-    Timber.tag(TAG).d("LocalitiesDistrictsMicrodistrictsStreetsView(...) called")
+    Timber.tag(TAG).d("LocalitiesDistrictsWithMicrodistrictsAndStreetsView(...) called")
     var selectedLocalityDistrictId: UUID? by remember {
-        mutableStateOf(localityDistrictsListViewModel.singleSelectedItem()?.itemId)
+        mutableStateOf(localityDistrictsListViewModel.singleSelectedItem().value?.itemId)
     }
     val onTabClick =
-        { selectedLocalityDistrictId = localityDistrictsListViewModel.singleSelectedItem()?.itemId }
+        {
+            selectedLocalityDistrictId =
+                localityDistrictsListViewModel.singleSelectedItem().value?.itemId
+        }
     //val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
@@ -721,8 +725,8 @@ fun MicrodistrictsWithStreetsView(
     appState: AppState,
     microdistrictsListViewModel: MicrodistrictsListViewModel
 ) {
-    Timber.tag(TAG).d("MicrodistrictsStreetsView(...) called")
-    val selectedMicrodistrictId: UUID? by remember { mutableStateOf(microdistrictsListViewModel.singleSelectedItem()?.itemId) }
+    Timber.tag(TAG).d("MicrodistrictsWithStreetsView(...) called")
+    val selectedMicrodistrictId: UUID? by remember { mutableStateOf(microdistrictsListViewModel.singleSelectedItem().value?.itemId) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -778,9 +782,9 @@ fun StreetsWithLocalityDistrictsAndMicrodistrictsView(
     onStreetTabChange: (GeoStreetDistrictTabType) -> Unit,
     streetsListViewModel: StreetsListViewModel
 ) {
-    Timber.tag(TAG).d("StreetsView(...) called")
-    var selectedStreetId: UUID? by remember { mutableStateOf(streetsListViewModel.singleSelectedItem()?.itemId) }
-    val onTabClick = { selectedStreetId = streetsListViewModel.singleSelectedItem()?.itemId }
+    Timber.tag(TAG).d("StreetsWithLocalityDistrictsAndMicrodistrictsView(...) called")
+    var selectedStreetId: UUID? by remember { mutableStateOf(streetsListViewModel.singleSelectedItem().value?.itemId) }
+    val onTabClick = { selectedStreetId = streetsListViewModel.singleSelectedItem().value?.itemId }
     Column(
         modifier = Modifier
             .fillMaxSize()

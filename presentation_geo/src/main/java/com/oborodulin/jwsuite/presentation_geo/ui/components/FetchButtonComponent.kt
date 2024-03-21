@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -57,11 +58,13 @@ fun FetchButtonComponent(
                 .clip(RoundedCornerShape(16.dp))
                 .border(
                     1.dp, MaterialTheme.colorScheme.error, shape = RoundedCornerShape(16.dp)
-                )
+                ),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 painter = painterResource(com.oborodulin.home.common.R.drawable.ic_no_internet_24),
                 contentDescription = stringResource(com.oborodulin.home.common.R.string.ic_no_internet_cnt_desc),
+                modifier = Modifier.padding(8.dp),
                 tint = MaterialTheme.colorScheme.error
             )
             Text(

@@ -293,7 +293,7 @@ fun CongregationsWithMembersView(
     //onActionBarSubtitleChange: (String) -> Unit
 ) {
     Timber.tag(TAG).d("CongregationsWithMembersView(...) called")
-    val selectedCongregationId = congregationsListViewModel.singleSelectedItem()?.itemId
+    val selectedCongregationId by remember { mutableStateOf(congregationsListViewModel.singleSelectedItem().value?.itemId) }
     //val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
@@ -357,7 +357,7 @@ fun GroupsWithMembersView(
     isService: Boolean = false
 ) {
     Timber.tag(TAG).d("GroupsWithMembersView(...) called")
-    val selectedGroupId = groupsListViewModel.singleSelectedItem()?.itemId
+    val selectedGroupId by remember { mutableStateOf(groupsListViewModel.singleSelectedItem().value?.itemId) }
     //val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier

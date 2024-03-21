@@ -101,6 +101,7 @@ class TerritoryCategoriesListViewModelImpl @Inject constructor(
         fun previewModel(ctx: Context) =
             object : TerritoryCategoriesListViewModel {
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
+                override val selectedItemFlow = MutableStateFlow(ListItemModel())
                 override val singleEventFlow =
                     Channel<TerritoryCategoriesListUiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
@@ -114,7 +115,7 @@ class TerritoryCategoriesListViewModelImpl @Inject constructor(
 
                 override val areSingleSelected = MutableStateFlow(false)
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
-                override fun singleSelectedItem() = null
+                override fun singleSelectedItem() = MutableStateFlow(null)
 
                 override fun handleActionJob(
                     action: () -> Unit,

@@ -113,6 +113,7 @@ class CongregationsListViewModelImpl @Inject constructor(
         fun previewModel(ctx: Context) =
             object : CongregationsListViewModel {
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
+                override val selectedItemFlow = MutableStateFlow(ListItemModel())
                 override val singleEventFlow =
                     Channel<CongregationsListUiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
@@ -126,7 +127,7 @@ class CongregationsListViewModelImpl @Inject constructor(
 
                 override val areSingleSelected = MutableStateFlow(false)
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
-                override fun singleSelectedItem() = null
+                override fun singleSelectedItem() = MutableStateFlow(null)
 
                 override fun handleActionJob(
                     action: () -> Unit,

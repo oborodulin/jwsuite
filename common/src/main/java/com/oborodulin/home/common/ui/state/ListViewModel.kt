@@ -5,6 +5,8 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.LogLevel.LOG_MVI_LIST
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import timber.log.Timber
@@ -14,6 +16,8 @@ private const val TAG = "Common.ListViewModel"
 abstract class ListViewModel<T : List<ListItemModel>, S : UiState<T>, A : UiAction, E : UiSingleEvent> :
     MviViewModel<T, S, A, E>(), ListViewModeled<T, A, E> {
     private val _selectedItem: MutableStateFlow<ListItemModel?> = MutableStateFlow(null)
+    override val selectedItemFlow = _selectedItem.asStateFlow()
+
     override val areSingleSelected = _selectedItem.map { item -> item != null }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000), false
     )
@@ -49,27 +53,29 @@ abstract class ListViewModel<T : List<ListItemModel>, S : UiState<T>, A : UiActi
             Timber.tag(TAG).d("singleSelectItem(...) called")
         }
         uiState()?.let { uiState ->
-            uiState.forEach { it.selected = false }
-            val item = uiState.find { it.itemId == selectedItem.itemId }
-            item?.selected = true
-            _selectedItem.value = item
-            if (LOG_MVI_LIST) {Timber.tag(TAG).d("selected %s list item", item)}
+            uiState.firstOrNull { it.selected }?.let { it.selected = false }
+            _selectedItem.value =
+                uiState.find { it.itemId == selectedItem.itemId }?.apply { selected = true }
+            if (LOG_MVI_LIST) {
+                Timber.tag(TAG).d("selected %s list item", _selectedItem.value)
+            }
         }
     }
 
-    override fun singleSelectedItem(): ListItemModel? {
-        if (LOG_MVI_LIST) {Timber.tag(TAG).d("singleSelectedItem() called")}
-        var selectedItem: ListItemModel? = null
-        uiState()?.let { uiState ->
-            selectedItem = try {
-                uiState.first { it.selected }
-            } catch (e: NoSuchElementException) {
-                uiState.getOrNull(0)
-                //Timber.tag(TAG).e(e)
-            }
-            if (LOG_MVI_LIST) {Timber.tag(TAG).d("selected %s list item", selectedItem)}
+    override fun singleSelectedItem(): StateFlow<ListItemModel?> {
+        if (LOG_MVI_LIST) {
+            Timber.tag(TAG).d("singleSelectedItem() called")
         }
-        return selectedItem
+        uiState()?.let { uiState ->
+            val item =
+                uiState.getOrNull(uiState.indexOfFirst { it.selected }.takeIf { it >= 0 } ?: 0)
+            if (item != _selectedItem.value) _selectedItem.value = item
+            if (LOG_MVI_LIST) {
+                Timber.tag(TAG).d("selected %s list item", item)
+            }
+        }
+
+        return selectedItemFlow
     }
 
     /*override fun checkItem(checkedItem: ListItemModel, checkValue: Boolean) {

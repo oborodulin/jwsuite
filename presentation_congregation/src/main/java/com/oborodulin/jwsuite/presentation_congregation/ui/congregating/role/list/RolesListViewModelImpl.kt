@@ -69,6 +69,7 @@ class RolesListViewModelImpl @Inject constructor(
         fun previewModel(ctx: Context) =
             object : RolesListViewModel {
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
+                override val selectedItemFlow = MutableStateFlow(ListItemModel())
                 override val singleEventFlow =
                     Channel<UiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
@@ -82,7 +83,7 @@ class RolesListViewModelImpl @Inject constructor(
 
                 override val areSingleSelected = MutableStateFlow(false)
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
-                override fun singleSelectedItem() = null
+                override fun singleSelectedItem() = MutableStateFlow(null)
 
                 override fun handleActionJob(
                     action: () -> Unit,

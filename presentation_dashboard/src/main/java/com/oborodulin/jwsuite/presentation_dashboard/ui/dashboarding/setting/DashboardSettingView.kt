@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -30,7 +29,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -43,6 +41,7 @@ import com.oborodulin.home.common.extensions.toShortFormatString
 import com.oborodulin.home.common.ui.components.datatable.SimpleDataTableComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.ui.components.text.ClickableTextItemComponent
 import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
@@ -187,21 +186,19 @@ fun DashboardSettingView(
                     })*/
         }
         HorizontalDivider(Modifier.fillMaxWidth())
-        ClickableText(
-            text = AnnotatedString(stringResource(R.string.data_management_hint)),
-            onClick = { appState.mainNavigate(NavRoutes.DataManagement.route) },
-            style = Typography.bodyLarge,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp, horizontal = 8.dp)
-        )
+        ClickableTextItemComponent(textItemResId = R.string.data_management_hint) {
+            appState.mainNavigate(NavRoutes.DataManagement.route)
+        }
         HorizontalDivider(Modifier.fillMaxWidth())
         Text(
             text = stringResource(R.string.legal_info_subhead),
             style = Typography.titleMedium,
             modifier = Modifier.padding(8.dp)
         )
-        ClickableText(
+        ClickableTextItemComponent(textItemResId = R.string.licenses_hint) {
+
+        }
+        /*ClickableText(
             text = AnnotatedString(stringResource(R.string.licenses_hint)),
             onClick = { offset ->
                 Timber.tag(TAG).d("%s-th character is clicked.", offset)
@@ -210,17 +207,10 @@ fun DashboardSettingView(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
-        )
-        ClickableText(
-            text = AnnotatedString(stringResource(R.string.icons_attribution_hint)),
-            onClick = { offset ->
-                Timber.tag(TAG).d("%s-th character is clicked.", offset)
-            },
-            style = Typography.bodyLarge,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
+        )*/
+        ClickableTextItemComponent(textItemResId = R.string.icons_attribution_hint) {
+
+        }
         HorizontalDivider(Modifier.fillMaxWidth())
         Text(
             text = stringResource(R.string.about_subhead),

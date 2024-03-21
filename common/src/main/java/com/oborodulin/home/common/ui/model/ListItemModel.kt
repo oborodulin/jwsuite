@@ -61,13 +61,13 @@ open class ListItemModel(
 
     override fun toString(): String {
         val str = StringBuffer()
-        str.append("ListItemModel (headline = ").append(headline)
+        str.append("ListItemModel(headline = ").append(headline)
             .append("; supportingText = ").append(supportingText)
-            .append(") [checked = ").append(checked)
+            .append("; [checked = ").append(checked)
             .append("; selected = ").append(selected)
-            .append("'] itemId = ").append(itemId)
+            .append("']; itemId = ").append(itemId).append(")")
         return str.toString()
     }
 }
 
-fun ListItemModel?.isEmptyOrNull() = this == null || this.itemId == null || this.headline.isEmpty()
+fun ListItemModel?.isEmptyOrNull() = this == null || this.itemId == null || this.headline.isBlank()

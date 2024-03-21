@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface ListViewModeled<T : List<ListItemModel>, A : UiAction, E : UiSingleEvent> :
     MviViewModeled<T, A, E> {
+    val selectedItemFlow: StateFlow<ListItemModel?>
     val areSingleSelected: StateFlow<Boolean>
 
     // https://medium.com/geekculture/add-remove-in-lazycolumn-list-aka-recyclerview-jetpack-compose-7c4a2464fc9f
@@ -12,6 +13,6 @@ interface ListViewModeled<T : List<ListItemModel>, A : UiAction, E : UiSingleEve
     fun addItem*/
 
     fun singleSelectItem(selectedItem: ListItemModel)
-    fun singleSelectedItem(): ListItemModel?
+    fun singleSelectedItem(): StateFlow<ListItemModel?>
     //fun checkItem(checkedItem: ListItemModel, checkValue: Boolean)
 }
