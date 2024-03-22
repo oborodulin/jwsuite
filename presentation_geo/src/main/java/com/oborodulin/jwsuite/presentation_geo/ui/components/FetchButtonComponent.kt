@@ -1,25 +1,16 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.data.network.ConnectionState
 import com.oborodulin.home.common.ui.components.buttons.ButtonComponent
+import com.oborodulin.home.common.ui.components.text.ErrorTextComponent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.util.LogLevel
 import com.oborodulin.home.common.util.connectivityState
@@ -52,27 +43,11 @@ fun FetchButtonComponent(
         if (LogLevel.LOG_NETWORK) {
             Timber.tag(TAG).d("No Internet Connectivity")
         }
-        Row(
-            modifier = Modifier
-                .padding(8.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .border(
-                    1.dp, MaterialTheme.colorScheme.error, shape = RoundedCornerShape(16.dp)
-                ),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(com.oborodulin.home.common.R.drawable.ic_no_internet_24),
-                contentDescription = stringResource(com.oborodulin.home.common.R.string.ic_no_internet_cnt_desc),
-                modifier = Modifier.padding(8.dp),
-                tint = MaterialTheme.colorScheme.error
-            )
-            Text(
-                text = stringResource(com.oborodulin.home.common.R.string.no_internet_error),
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.titleSmall
-            )
-        }
+        ErrorTextComponent(
+            painterResId = com.oborodulin.home.common.R.drawable.ic_no_internet_24,
+            contentDescResId = com.oborodulin.home.common.R.string.ic_no_internet_cnt_desc,
+            textResId = com.oborodulin.home.common.R.string.no_internet_error
+        )
     }
 }
 

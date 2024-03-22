@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,12 +33,13 @@ fun IconComponent(
     @DrawableRes painterResId: Int? = null,
     icon: @Composable (() -> Unit)? = null,
     @StringRes contentDescriptionResId: Int? = null,
+    tint: Color = LocalContentColor.current,
     size: Dp = 24.dp
 ): Unit? {
     if (LOG_UI_COMPONENTS) {
         Timber.tag(TAG).d("IconComponent(...) called")
     }
-    return icon?.let { it() } ?: when (painterResId) {
+    return icon?.invoke() ?: when (painterResId) {
         null -> imageVector?.let { iv ->
             Icon(
                 imageVector = iv,
@@ -46,6 +49,7 @@ fun IconComponent(
 // https://stackoverflow.com/questions/64377952/material-icon-size-adjustment-in-jetpack-compose
                     .size(size)
                     .then(modifier),
+                tint = tint
                 //tint = if (enabledFab) LocalContentColor.current.copy(alpha = 0.4f) // LocalContentAlpha.current
                 //else DarkGray
             )
@@ -58,6 +62,7 @@ fun IconComponent(
                 //.padding(end = 4.dp)
                 .size(size)
                 .then(modifier),
+            tint = tint
             //tint = if (enabledFab) LocalContentColor.current.copy(alpha = 0.4f) // LocalContentAlpha.current
             //else DarkGray
         )
