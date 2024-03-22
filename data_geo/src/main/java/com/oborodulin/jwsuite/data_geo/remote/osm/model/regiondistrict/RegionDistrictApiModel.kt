@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_geo.remote.osm.model.region
+package com.oborodulin.jwsuite.data_geo.remote.osm.model.regiondistrict
 
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.Geometry
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.Osm3s
@@ -6,7 +6,7 @@ import com.squareup.moshi.Json
 import java.util.Locale
 import java.util.UUID
 
-data class RegionApiModel(
+data class RegionDistrictApiModel(
     @Json(name = "version") val version: String,
     @Json(name = "generator") val generator: String,
     @Json(name = "osm3s") val osm3s: Osm3s,
@@ -16,6 +16,18 @@ data class RegionApiModel(
         fun data(
             countryId: UUID, geocodeArea: String, locale: String? = Locale.getDefault().language
         ) = """
+[out:json][timeout:25];
+{{geocodeArea:Donetsk Oblast}}->.searchArea;
+(rel["admin_level"="6"][place="district"](area.searchArea);)->.rdr;
+//.rdr out tags;
+
+//(nr(r.rdr);)->.cnrd;
+foreach.rdr(
+  convert RegionDistrictType 
+    osmType = type(), ::id = id(), ::geom = geom(), regionId = "regionId", ref = t["wikidata"], geocodeArea = t["koatuu"], locale = "ru", name = t["name:ru"], flag = t["flag"];
+  out geom;
+);
+
     [out:json][timeout:25];
     {{geocodeArea:$geocodeArea}}->.searchArea;
     (rel["admin_level"="4"](area.searchArea);)->.rr;
