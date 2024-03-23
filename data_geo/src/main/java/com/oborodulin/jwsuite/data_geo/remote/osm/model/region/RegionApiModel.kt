@@ -18,12 +18,11 @@ data class RegionApiModel(
         ) = """
     [out:json][timeout:25];
     {{geocodeArea:$geocodeArea}}->.searchArea;
-    (rel["admin_level"="4"](area.searchArea);)->.rr;
-    (nr(r.rr)[place="state"];)->.cnr;
-    foreach.cnr(
+    (rel["admin_level"="4"][place="state"](area.searchArea);)->.rr;
+    foreach.rr(
         convert RegionType 
-            osmType = type(), ::id = id(), ::geom = geom(), countryId = "$countryId" ref = t["ref"], isoCode = t["ISO3166-2"], geocodeArea = t["name:en"], locale = "$locale", name = t["name:$locale"], flag = t["flag"];
-        out geom;
+            osmType = type(), ::id = id(), ::geom = geom(), countryId = "$countryId", ref = t["ref"], isoCode = t["ISO3166-2"], geocodeArea = t["name:en"], locale = "$locale", name = t["name:$locale"], flag = t["flag"];
+        out center;
     );
     """.trimIndent()
     }

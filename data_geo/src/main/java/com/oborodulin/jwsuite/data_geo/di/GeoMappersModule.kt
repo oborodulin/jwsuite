@@ -121,7 +121,9 @@ import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geocountry.GeoCountryA
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.GeoRegionApiMappers
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.RegionElementToGeoRegionMapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.RegionElementsListToGeoRegionsListMapper
-import com.oborodulin.jwsuite.domain.usecases.*
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegiondistrict.GeoRegionDistrictApiMappers
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegiondistrict.RegionDistrictElementToGeoRegionDistrictMapper
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegiondistrict.RegionDistrictElementsListToGeoRegionDistrictsListMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -957,4 +959,22 @@ object GeoMappersModule {
     fun provideGeoRegionApiMappers(
         regionElementsListToGeoRegionsListMapper: RegionElementsListToGeoRegionsListMapper
     ): GeoRegionApiMappers = GeoRegionApiMappers(regionElementsListToGeoRegionsListMapper)
+
+    // RegionDistrictElement
+    @Singleton
+    @Provides
+    fun provideRegionDistrictElementToGeoRegionDistrictMapper(mapper: GeometryToGeoCoordinatesMapper): RegionDistrictElementToGeoRegionDistrictMapper =
+        RegionDistrictElementToGeoRegionDistrictMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideRegionDistrictElementsListToGeoRegionDistrictsListMapper(mapper: RegionDistrictElementToGeoRegionDistrictMapper): RegionDistrictElementsListToGeoRegionDistrictsListMapper =
+        RegionDistrictElementsListToGeoRegionDistrictsListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoRegionDistrictApiMappers(
+        regionDistrictElementsListToGeoRegionDistrictsListMapper: RegionDistrictElementsListToGeoRegionDistrictsListMapper
+    ): GeoRegionDistrictApiMappers =
+        GeoRegionDistrictApiMappers(regionDistrictElementsListToGeoRegionDistrictsListMapper)
 }

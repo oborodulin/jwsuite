@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.data_geo.di
 
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.country.CountryService
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.region.RegionService
-import com.oborodulin.jwsuite.domain.usecases.*
+import com.oborodulin.jwsuite.data_geo.remote.osm.model.regiondistrict.RegionDistrictService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,4 +22,9 @@ object GeoServicesModule {
     @Provides
     fun provideRegionService(retrofit: Retrofit): RegionService =
         retrofit.create(RegionService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideRegionDistrictService(retrofit: Retrofit): RegionDistrictService =
+        retrofit.create(RegionDistrictService::class.java)
 }
