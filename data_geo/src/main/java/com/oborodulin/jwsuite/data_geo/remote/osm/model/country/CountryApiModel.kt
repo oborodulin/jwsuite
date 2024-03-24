@@ -15,11 +15,10 @@ data class CountryApiModel(
         fun data(locale: String? = Locale.getDefault().language) = """
     [out:json][timeout:600];
     (rel[admin_level="2"][boundary="administrative"][type!="multilinestring"];)->.rc;
-    (node(r.rc)[place="country"];) ->.nc;
-    foreach.nc(
+    foreach.rc(
         convert CountryType 
             osmType = type(), ::id = id(), ::geom = geom(), countryCode = t["country_code_iso3166_1_alpha_2"], isoCode = t["ISO3166-1:alpha2"], geocodeArea = t["name:en"], locale = "$locale", name = t["name:$locale"], flag = t["flag"];
-	    out geom;
+	    out center;
     );
         """.trimIndent()
     }

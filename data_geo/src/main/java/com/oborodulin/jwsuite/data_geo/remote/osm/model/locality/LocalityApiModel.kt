@@ -12,6 +12,9 @@ data class LocalityApiModel(
     @Json(name = "osm3s") val osm3s: Osm3s,
     @Json(name = "elements") val elements: List<LocalityElement>
 ) {
+    // https://wiki.openstreetmap.org/wiki/RU:Key:admin_level
+    // https://wiki.openstreetmap.org/wiki/Key:place
+    // https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL#Key/value_matches_regular_expression_(~%22key_regex%22~%22value_regex%22)
     companion object {
         fun data(
             regionId: UUID, geocodeArea: String, locale: String? = Locale.getDefault().language
