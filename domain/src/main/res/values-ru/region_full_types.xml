@@ -1,0 +1,10 @@
+<resources>
+    <string-array name="region_full_types">
+        <item>республика</item>
+        <item>край</item>
+        <item>область</item>
+        <item>город федерального значения</item>
+        <item>автономная область</item>
+        <item>автономный округ</item>
+    </string-array>
+</resources>

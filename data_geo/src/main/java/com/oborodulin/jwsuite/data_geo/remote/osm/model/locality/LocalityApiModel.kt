@@ -17,7 +17,9 @@ data class LocalityApiModel(
     // https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL#Key/value_matches_regular_expression_(~%22key_regex%22~%22value_regex%22)
     companion object {
         fun data(
-            regionId: UUID, geocodeArea: String, locale: String? = Locale.getDefault().language
+            regionId: UUID,
+            geocodeArea: String,
+            locale: String? = Locale.getDefault().language.substringBefore('-')
         ) = """
     [out:json][timeout:25];
     {{geocodeArea:$geocodeArea}}->.searchArea;

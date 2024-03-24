@@ -14,7 +14,9 @@ data class RegionDistrictApiModel(
 ) {
     companion object {
         fun data(
-            regionId: UUID, geocodeArea: String, locale: String? = Locale.getDefault().language
+            regionId: UUID,
+            geocodeArea: String,
+            locale: String? = Locale.getDefault().language.substringBefore('-')
         ) = """
     [out:json][timeout:25];
     {{geocodeArea:$geocodeArea}}->.searchArea;

@@ -12,7 +12,7 @@ data class CountryApiModel(
     @Json(name = "elements") val elements: List<CountryElement>
 ) {
     companion object {
-        fun data(locale: String? = Locale.getDefault().language) = """
+        fun data(locale: String? = Locale.getDefault().language.substringBefore('-')) = """
     [out:json][timeout:600];
     (rel[admin_level="2"][boundary="administrative"][type!="multilinestring"];)->.rc;
     foreach.rc(
