@@ -10,10 +10,12 @@ class RegionDistrictElementToGeoRegionDistrictMapper(private val mapper: Geometr
     Mapper<RegionDistrictElement, GeoRegionDistrict> {
     override fun map(input: RegionDistrictElement) = GeoRegionDistrict(
         region = GeoRegion().also { it.id = input.tags.regionId },
-        districtShortName = input.tags.wikidata,
-        districtGeocode = input.tags.geocodeArea,
+        districtShortName = input.tags.countyAbbrev.ifEmpty {
+            "${input.tags.wikidata}-${input.tags.name.substring(0..3).uppercase()}"
+        },
+        districtGeocode = input.tags.geocodeArea.ifEmpty { input.tags.name },
         districtOsmId = input.id,
         coordinates = mapper.map(input.geometry),
-        districtName = input.tags.name
+        districtName = input.tags.nameLoc.ifEmpty { input.tags.name }
     )
 }

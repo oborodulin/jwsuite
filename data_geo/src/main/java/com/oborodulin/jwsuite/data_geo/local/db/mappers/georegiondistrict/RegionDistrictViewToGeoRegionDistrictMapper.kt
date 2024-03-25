@@ -10,7 +10,7 @@ class RegionDistrictViewToGeoRegionDistrictMapper(private val mapper: Coordinate
     Mapper<RegionDistrictView, GeoRegionDistrict>,
     NullableMapper<RegionDistrictView, GeoRegionDistrict> {
     override fun map(input: RegionDistrictView) = GeoRegionDistrict(
-        districtShortName = input.data.regDistrictShortName,
+        districtShortName = input.data.regDistrictShortName.substringAfterLast('-'),
         districtGeocode = input.data.regDistrictGeocode,
         districtOsmId = input.data.regDistrictOsmId,
         coordinates = mapper.map(input.data.coordinates),

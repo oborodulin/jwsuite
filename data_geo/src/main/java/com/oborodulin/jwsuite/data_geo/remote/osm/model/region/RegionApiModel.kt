@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data_geo.remote.osm.model.region
 
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.Geometry
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.Osm3s
+import com.oborodulin.jwsuite.domain.util.Constants.OSM_TIMEOUT
 import com.squareup.moshi.Json
 import java.util.Locale
 import java.util.UUID
@@ -19,7 +20,7 @@ data class RegionApiModel(
             excRegionType: String,
             locale: String? = Locale.getDefault().language.substringBefore('-')
         ) = """
-    [out:json][timeout:25];
+    [out:json][timeout:$OSM_TIMEOUT];
     {{geocodeArea:$geocodeArea}}->.searchArea;
     (rel["admin_level"="4"][~"^(ISO3166-2|addr:country|is_in:country_code)+${'$'}"~"^$locale(.)*${'$'}",i]["official_status"!~"$excRegionType"]["name"~"."](area.searchArea);)->.rr;
     foreach.rr(

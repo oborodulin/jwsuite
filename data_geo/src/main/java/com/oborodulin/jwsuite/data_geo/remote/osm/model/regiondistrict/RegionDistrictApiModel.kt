@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data_geo.remote.osm.model.regiondistrict
 
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.Geometry
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.Osm3s
+import com.oborodulin.jwsuite.domain.util.Constants.OSM_TIMEOUT
 import com.squareup.moshi.Json
 import java.util.Locale
 import java.util.UUID
@@ -16,14 +17,18 @@ data class RegionDistrictApiModel(
         fun data(
             regionId: UUID,
             geocodeArea: String,
+            incRegionDistrictType: String, // район
             locale: String? = Locale.getDefault().language.substringBefore('-')
         ) = """
-    [out:json][timeout:25];
+    [out:json][timeout:$OSM_TIMEOUT];
     {{geocodeArea:$geocodeArea}}->.searchArea;
-    (rel["admin_level"="6"][place="district"](area.searchArea);)->.rdr;
+    (
+    rel["admin_level"="6"][~"^(place|official_status)*${'$'}"~"(district|$incRegionDistrictType)${'$'}"]["name"~"."](area.searchArea);
+    rel["admin_level"="6"][~"^county.*${'$'}"~"."]["border_type"!~"city"]["name"~"."](area.searchArea);
+    )->.rdr;
     foreach.rdr(
         convert RegionDistrictType 
-            osmType = type(), ::id = id(), ::geom = geom(), regionId = "$regionId", wikidata = t["wikidata"], geocodeArea = t["name:en"], locale = "$locale", name = t["name:$locale"], flag = t["flag"];
+            osmType = type(), ::id = id(), ::geom = geom(), regionId = "$regionId", county_abbrev = t["county:abbrev"], wikidata = t["wikidata"], geocodeArea = t["name:en"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"], flag = t["flag"];
         out center;
     );
     """.trimIndent()
@@ -40,9 +45,14 @@ data class RegionDistrictElement(
 data class RegionDistrictTags(
     @Json(name = "osmType") val osmType: String,
     @Json(name = "regionId") val regionId: UUID,
+    //
+    @Json(name = "county_abbrev") val countyAbbrev: String,
     @Json(name = "wikidata") val wikidata: String,
+
     @Json(name = "geocodeArea") val geocodeArea: String,
     @Json(name = "locale") val locale: String,
+    //
+    @Json(name = "name_loc") val nameLoc: String,
     @Json(name = "name") val name: String,
     @Json(name = "flag") val flag: String
 )

@@ -1,6 +1,5 @@
 <resources>
     <!--BUTTONS:-->
-    <string name="btn_fetch_lbl">Получить</string>
 
     <!--FAB:-->
     <string name="fab_street_locality_district_text">Добавить район</string>
@@ -162,6 +161,5 @@
     <string name="street_unique_constraint_error">Улица такого типа и с таким наименованием уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
-    <string name="fetch_cnt_desc">Получить данные из интернета</string>
 
 </resources>

@@ -15,7 +15,7 @@ import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
-import com.oborodulin.jwsuite.presentation_geo.ui.components.FetchButtonComponent
+import com.oborodulin.home.common.ui.components.buttons.FetchButtonComponent
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.list.RegionsListUiAction
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.list.RegionsListViewModelImpl
 import kotlinx.coroutines.flow.collectLatest

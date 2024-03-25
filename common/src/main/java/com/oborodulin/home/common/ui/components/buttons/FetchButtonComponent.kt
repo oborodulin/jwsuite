@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_geo.ui.components
+package com.oborodulin.home.common.ui.components.buttons
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.padding
@@ -8,13 +8,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.oborodulin.home.common.R
 import com.oborodulin.home.common.data.network.ConnectionState
-import com.oborodulin.home.common.ui.components.buttons.ButtonComponent
 import com.oborodulin.home.common.ui.components.text.ErrorTextComponent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.util.LogLevel
 import com.oborodulin.home.common.util.connectivityState
-import com.oborodulin.jwsuite.presentation_geo.R
 import timber.log.Timber
 
 private const val TAG = "Common.ui.FetchButtonComponent"
@@ -36,7 +35,7 @@ fun FetchButtonComponent(
             enabled = enabled,
             painterResId = R.drawable.ic_download_24,
             textResId = R.string.btn_fetch_lbl,
-            contentDescriptionResId = R.string.fetch_cnt_desc,
+            contentDescriptionResId = R.string.btn_fetch_cnt_desc,
             onClick = onClick
         )
     } else {
@@ -44,9 +43,9 @@ fun FetchButtonComponent(
             Timber.tag(TAG).d("No Internet Connectivity")
         }
         ErrorTextComponent(
-            painterResId = com.oborodulin.home.common.R.drawable.ic_no_internet_24,
-            contentDescResId = com.oborodulin.home.common.R.string.ic_no_internet_cnt_desc,
-            textResId = com.oborodulin.home.common.R.string.no_internet_error
+            painterResId = R.drawable.ic_no_internet_24,
+            contentDescResId = R.string.ic_no_internet_cnt_desc,
+            textResId = R.string.no_internet_error
         )
     }
 }

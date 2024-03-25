@@ -27,7 +27,7 @@ class RegionElementToGeoRegionMapper(
             regionCode = input.tags.cadasterCode.ifEmpty { input.tags.shortNameLoc.ifEmpty { input.tags.refLoc.ifEmpty { input.tags.gost.ifEmpty { input.tags.shortName.ifEmpty { input.tags.ref.ifEmpty { input.tags.isoCode } } } } } },
             regionType = resType?.let { RegionType.entries[resArray.indexOf(it)] }
                 ?: RegionType.REGION,
-            regionGeocode = input.tags.geocodeArea,
+            regionGeocode = input.tags.geocodeArea.ifEmpty { input.tags.name },
             regionOsmId = input.id,
             coordinates = mapper.map(input.geometry),
             regionName = input.tags.nameLoc.ifEmpty { input.tags.name }

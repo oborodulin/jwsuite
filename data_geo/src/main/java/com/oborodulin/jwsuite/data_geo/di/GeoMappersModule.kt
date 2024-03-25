@@ -949,8 +949,10 @@ object GeoMappersModule {
     // RegionElement
     @Singleton
     @Provides
-    fun provideRegionElementToGeoRegionMapper(@ApplicationContext ctx: Context, mapper: GeometryToGeoCoordinatesMapper): RegionElementToGeoRegionMapper =
-        RegionElementToGeoRegionMapper(ctx = ctx, mapper = mapper)
+    fun provideRegionElementToGeoRegionMapper(
+        @ApplicationContext ctx: Context,
+        mapper: GeometryToGeoCoordinatesMapper
+    ): RegionElementToGeoRegionMapper = RegionElementToGeoRegionMapper(ctx = ctx, mapper = mapper)
 
     @Singleton
     @Provides

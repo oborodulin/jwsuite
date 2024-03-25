@@ -26,6 +26,9 @@ object Constants {
     const val FMT_PAYMENT_PERIOD_EXPR = "'%02d.%d: '"
     const val FMT_HEATING_METER_EXPR = "'%.5f %s x '"
 
+    // OSM constants:
+    const val OSM_TIMEOUT = 600
+
     // AppSettings:
     const val PRM_LANG_VAL = "'LANG'"
     const val PRM_CURRENCY_CODE_VAL = "'CURRENCY_CODE'"

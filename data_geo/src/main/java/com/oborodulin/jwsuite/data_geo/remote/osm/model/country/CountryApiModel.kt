@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data_geo.remote.osm.model.country
 
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.Geometry
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.Osm3s
+import com.oborodulin.jwsuite.domain.util.Constants.OSM_TIMEOUT
 import com.squareup.moshi.Json
 import java.util.Locale
 
@@ -13,14 +14,14 @@ data class CountryApiModel(
 ) {
     companion object {
         fun data(locale: String? = Locale.getDefault().language.substringBefore('-')) = """
-    [out:json][timeout:600];
-    (rel[admin_level="2"][boundary="administrative"][type!="multilinestring"];)->.rc;
+    [out:json][timeout:$OSM_TIMEOUT];
+    (rel[admin_level="2"][boundary="administrative"][type!="multilinestring"][~"^(country_code_iso3166_1_alpha_2|ISO3166-1:alpha2)${'$'}"~"."];)->.rc;
     foreach.rc(
         convert CountryType 
-            osmType = type(), ::id = id(), ::geom = geom(), countryCode = t["country_code_iso3166_1_alpha_2"], isoCode = t["ISO3166-1:alpha2"], geocodeArea = t["name:en"], locale = "$locale", name = t["name:$locale"], flag = t["flag"];
+            osmType = type(), ::id = id(), ::geom = geom(), countryCode = t["country_code_iso3166_1_alpha_2"], isoCode = t["ISO3166-1:alpha2"], geocodeArea = t["name:en"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"], flag = t["flag"];
 	    out center;
     );
-        """.trimIndent()
+    """.trimIndent()
     }
 }
 
@@ -37,6 +38,8 @@ data class CountryTags(
     @Json(name = "isoCode") val isoCode: String,
     @Json(name = "geocodeArea") val geocodeArea: String,
     @Json(name = "locale") val locale: String,
+    // GeoCountry.countryName
+    @Json(name = "name_loc") val nameLoc: String,
     @Json(name = "name") val name: String,
     @Json(name = "flag") val flag: String
 )

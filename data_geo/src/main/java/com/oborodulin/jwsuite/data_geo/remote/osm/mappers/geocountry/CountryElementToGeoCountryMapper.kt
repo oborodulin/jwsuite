@@ -9,9 +9,9 @@ class CountryElementToGeoCountryMapper(private val mapper: GeometryToGeoCoordina
     Mapper<CountryElement, GeoCountry> {
     override fun map(input: CountryElement) = GeoCountry(
         countryCode = input.tags.isoCode.ifEmpty { input.tags.countryCode },
-        countryGeocode = input.tags.geocodeArea,
+        countryGeocode = input.tags.geocodeArea.ifEmpty { input.tags.name },
         countryOsmId = input.id,
         coordinates = mapper.map(input.geometry),
-        countryName = input.tags.name
+        countryName = input.tags.nameLoc.ifEmpty { input.tags.name }
     )
 }
