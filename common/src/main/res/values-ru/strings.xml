@@ -7,7 +7,7 @@
     <!--ОБЩИЕ СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <string name="success">успешно</string>
     <string name="number_negative_error">Укажите, пожалуйста, положительное число!</string>
-    <string name="no_internet_error">Нет подключения к интернету!\nУбедитесь, пожалуйста, что устройство подключено к сети</string>
+    <string name="no_internet_error">Нет доступа к сети!\nУбедитесь, пожалуйста, что включен Wi-Fi или мобильный интернет</string>
     <string name="name_too_short_error">Наименование слишком короткое!</string>
     <string name="card_number_too_short_error">Номер карты слишком короткий!</string>
 

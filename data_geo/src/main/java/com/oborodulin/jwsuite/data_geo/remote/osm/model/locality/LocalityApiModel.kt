@@ -23,6 +23,18 @@ data class LocalityApiModel(
             geocodeArea: String,
             locale: String? = Locale.getDefault().language.substringBefore('-')
         ) = """
+[out:json][timeout:25];
+{{geocodeArea:Monterey County}}->.searchArea;
+(
+rel["admin_level"~"^([7-9]|10)${'$'}"]["name"~"."](area.searchArea);
+//.rl out tags;
+nr(r.rl)[place~"^(city|town|village|hamlet|isolated_dwelling)${'$'}"]["name"~"."];
+)->.crl;
+foreach.crl(
+  convert LocalityType 
+    osmType = type(), ::id = id(), ::geom = geom(), regionId = "regionId", place = t["place"], postal_code = t["postal_code"], prefix = t["name:prefix"], geocodeArea = t["name:en"], locale = "ru", name_loc = t["name:ru"], name = t["name"];
+out center;
+);            
     [out:json][timeout:$OSM_TIMEOUT];
     {{geocodeArea:$geocodeArea}}->.searchArea;
     (rel["admin_level"~"^([4-9]|10)${'$'}"](area.searchArea);)->.rl;

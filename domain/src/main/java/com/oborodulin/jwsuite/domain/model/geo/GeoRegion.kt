@@ -25,6 +25,7 @@ data class GeoRegion(
     val osmInfo = regionGeocode.orEmpty().plus(coordinates)
 
     companion object {
+        const val REGION_CODE_LENGTH = 3
         fun default(country: GeoCountry?) = GeoRegion(country = country)
     }
 }

@@ -21,7 +21,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
@@ -54,7 +53,6 @@ import java.util.EnumMap
 
 private const val TAG = "Geo.RegionView"
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegionView(viewModel: RegionViewModel, handleSaveAction: OnImeKeyAction) {
     Timber.tag(TAG).d("RegionView(...) called")
@@ -138,6 +136,7 @@ fun RegionView(viewModel: RegionViewModel, handleSaveAction: OnImeKeyAction) {
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = regionCode,
+            //maxLength = GeoRegion.REGION_CODE_LENGTH,
             trimmedValue = true,
             onValueChange = { viewModel.onTextFieldEntered(RegionInputEvent.RegionCode(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction

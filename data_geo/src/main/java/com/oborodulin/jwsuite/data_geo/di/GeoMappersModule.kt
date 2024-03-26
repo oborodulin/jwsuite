@@ -968,8 +968,11 @@ object GeoMappersModule {
     // RegionDistrictElement
     @Singleton
     @Provides
-    fun provideRegionDistrictElementToGeoRegionDistrictMapper(mapper: GeometryToGeoCoordinatesMapper): RegionDistrictElementToGeoRegionDistrictMapper =
-        RegionDistrictElementToGeoRegionDistrictMapper(mapper = mapper)
+    fun provideRegionDistrictElementToGeoRegionDistrictMapper(
+        @ApplicationContext ctx: Context,
+        mapper: GeometryToGeoCoordinatesMapper
+    ): RegionDistrictElementToGeoRegionDistrictMapper =
+        RegionDistrictElementToGeoRegionDistrictMapper(ctx = ctx, mapper = mapper)
 
     @Singleton
     @Provides

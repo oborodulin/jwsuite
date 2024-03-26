@@ -45,13 +45,13 @@ data class RegionDistrictElement(
 data class RegionDistrictTags(
     @Json(name = "osmType") val osmType: String,
     @Json(name = "regionId") val regionId: UUID,
-    //
+    // GeoRegionDistrict.districtShortName
     @Json(name = "county_abbrev") val countyAbbrev: String,
     @Json(name = "wikidata") val wikidata: String,
 
     @Json(name = "geocodeArea") val geocodeArea: String,
     @Json(name = "locale") val locale: String,
-    //
+    // GeoRegionDistrict.districtName
     @Json(name = "name_loc") val nameLoc: String,
     @Json(name = "name") val name: String,
     @Json(name = "flag") val flag: String

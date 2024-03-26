@@ -153,7 +153,7 @@ fun RegionDistrictView(
                 )
             },
             inputWrapper = districtShortName,
-            maxLength = 4,
+            //maxLength = GeoRegionDistrict.SHORT_NAME_LENGTH,
             trimmedValue = true,
             onValueChange = {
                 viewModel.onTextFieldEntered(RegionDistrictInputEvent.DistrictShortName(it))
