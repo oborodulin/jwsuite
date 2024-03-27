@@ -14,6 +14,7 @@ data class RegionDistrictApiModel(
     @Json(name = "elements") val elements: List<RegionDistrictElement>
 ) {
     companion object {
+        // https://stackoverflow.com/questions/30690724/dollar-sign-character-in-multiline-strings
         fun data(
             regionId: UUID,
             geocodeArea: String,

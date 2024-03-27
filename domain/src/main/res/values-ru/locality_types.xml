@@ -17,5 +17,7 @@
         <item>с/п</item>
         <!--Сельсовет -->
         <item>с/с</item>
+        <!--Хутор -->
+        <item>х.</item>
     </string-array>
 </resources>

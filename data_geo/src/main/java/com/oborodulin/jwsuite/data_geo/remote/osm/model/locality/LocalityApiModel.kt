@@ -2,7 +2,6 @@ package com.oborodulin.jwsuite.data_geo.remote.osm.model.locality
 
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.Geometry
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.Osm3s
-import com.oborodulin.jwsuite.domain.util.Constants
 import com.oborodulin.jwsuite.domain.util.Constants.OSM_TIMEOUT
 import com.squareup.moshi.Json
 import java.util.Locale
@@ -20,28 +19,18 @@ data class LocalityApiModel(
     companion object {
         fun data(
             regionId: UUID,
+            regionDistrictId: UUID? = null,
             geocodeArea: String,
             locale: String? = Locale.getDefault().language.substringBefore('-')
-        ) = """
-[out:json][timeout:25];
-{{geocodeArea:Monterey County}}->.searchArea;
-(
-rel["admin_level"~"^([7-9]|10)${'$'}"]["name"~"."](area.searchArea);
-//.rl out tags;
-nr(r.rl)[place~"^(city|town|village|hamlet|isolated_dwelling)${'$'}"]["name"~"."];
-)->.crl;
-foreach.crl(
-  convert LocalityType 
-    osmType = type(), ::id = id(), ::geom = geom(), regionId = "regionId", place = t["place"], postal_code = t["postal_code"], prefix = t["name:prefix"], geocodeArea = t["name:en"], locale = "ru", name_loc = t["name:ru"], name = t["name"];
-out center;
-);            
+        ) = """ 
     [out:json][timeout:$OSM_TIMEOUT];
     {{geocodeArea:$geocodeArea}}->.searchArea;
-    (rel["admin_level"~"^([4-9]|10)${'$'}"](area.searchArea);)->.rl;
-    (nr(r.rl)[place~"^(city|town|village|hamlet|isolated_dwelling)${'$'}"]["name:$locale"~"."];)->.crl;
+    node[place~"^(city|town|village|hamlet|isolated_dwelling)${'$'}"]["name"~"."](area.searchArea)->.crl;
     foreach.crl(
         convert LocalityType 
-            osmType = type(), ::id = id(), ::geom = geom(), regionId = "$regionId", place = t["place"], postal_code = t["postal_code"], prefix = t["name:prefix"], geocodeArea = t["name:en"], locale = "$locale", name = t["name:$locale"];
+            osmType = type(), ::id = id(), ::geom = geom(), regionId = "$regionId", regionDistrictId = "${
+            regionDistrictId?.toString().orEmpty()
+        }", postal_code = t["postal_code"], wikidata = t["wikidata"], gnis_id = t["gnis:feature_id"], place = t["place"], official_status = t["official_status"], prefix = t["name:prefix"], geocodeArea = t["name:en"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"];
         out center;
     );
     """.trimIndent()
@@ -58,10 +47,19 @@ data class LocalityElement(
 data class LocalityTags(
     @Json(name = "osmType") val osmType: String,
     @Json(name = "regionId") val regionId: UUID,
-    @Json(name = "place") val place: String,
+    @Json(name = "regionDistrictId") val regionDistrictId: UUID?,
+    // GeoLocality.localityCode
     @Json(name = "postal_code") val postalCode: String,
+    @Json(name = "wikidata") val wikidata: String,
+    @Json(name = "gnis_id") val gnisId: String,
+    // GeoLocality.localityType
+    @Json(name = "place") val place: String,
+    @Json(name = "official_status") val officialStatus: String,
     @Json(name = "prefix") val prefix: String,
+
     @Json(name = "geocodeArea") val geocodeArea: String,
     @Json(name = "locale") val locale: String,
+    // GeoLocality.localityName
+    @Json(name = "name_loc") val nameLoc: String,
     @Json(name = "name") val name: String
 )

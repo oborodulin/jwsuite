@@ -1,0 +1,15 @@
+<resources>
+    <string-array name="locality_full_types">
+        <item>город;місто</item>
+        <item>посёлок городского типа;городской посёлок;селище міського типу</item>
+        <item>село;деревня;городской посёлок</item>
+        <item>дачный посёлок</item>
+        <item>массив</item>
+        <item>почтовое отделение</item>
+        <item>рабочий поселок</item>
+        <item>сельская администрация</item>
+        <item>сельское поселение;село;деревня</item>
+        <item>сельсовет</item>
+        <item>хутор</item>
+    </string-array>
+</resources>
