@@ -12,15 +12,16 @@ import com.oborodulin.jwsuite.domain.types.LocalityType
 class LocalityElementToGeoLocalityMapper(
     private val ctx: Context,
     private val mapper: GeometryToGeoCoordinatesMapper
-) :
-    Mapper<LocalityElement, GeoLocality> {
+) : Mapper<LocalityElement, GeoLocality> {
     override fun map(input: LocalityElement): GeoLocality {
         val resArray =
             ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.locality_full_types)
         val type = LocalityType.valueOf(input.tags.place.uppercase())
-        val resType = resArray.firstOrNull {
-            input.tags.officialStatus.contains(it, true) ||
-                    input.tags.prefix.contains(it, true)
+        val resType = resArray.firstOrNull { res ->
+            res.splitToSequence(';').any {
+                input.tags.officialStatus.contains(it, true) ||
+                        input.tags.prefix.contains(it, true)
+            }
         }
         return GeoLocality(
             region = GeoRegion().also { it.id = input.tags.regionId },

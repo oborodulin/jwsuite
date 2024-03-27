@@ -989,8 +989,11 @@ object GeoMappersModule {
     // LocalityElement
     @Singleton
     @Provides
-    fun provideLocalityElementToGeoLocalityMapper(mapper: GeometryToGeoCoordinatesMapper): LocalityElementToGeoLocalityMapper =
-        LocalityElementToGeoLocalityMapper(mapper = mapper)
+    fun provideLocalityElementToGeoLocalityMapper(
+        @ApplicationContext ctx: Context,
+        mapper: GeometryToGeoCoordinatesMapper
+    ): LocalityElementToGeoLocalityMapper =
+        LocalityElementToGeoLocalityMapper(ctx = ctx, mapper = mapper)
 
     @Singleton
     @Provides
