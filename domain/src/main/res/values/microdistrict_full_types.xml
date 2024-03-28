@@ -1,0 +1,6 @@
+<resources>
+    <string-array name="microdistrict_full_types">
+        <item>посёлок</item>
+        <item>микрорайон</item>
+    </string-array>
+</resources>

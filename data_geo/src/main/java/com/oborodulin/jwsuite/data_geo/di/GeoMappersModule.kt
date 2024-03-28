@@ -121,6 +121,9 @@ import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geocountry.GeoCountryA
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geolocality.GeoLocalityApiMappers
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geolocality.LocalityElementToGeoLocalityMapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geolocality.LocalityElementsListToGeoLocalitiesListMapper
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geolocalitydistrict.GeoLocalityDistrictApiMappers
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geolocalitydistrict.LocalityDistrictElementToGeoLocalityDistrictMapper
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geolocalitydistrict.LocalityDistrictElementsListToGeoLocalityDistrictsListMapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.GeoRegionApiMappers
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.RegionElementToGeoRegionMapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.RegionElementsListToGeoRegionsListMapper
@@ -1006,4 +1009,25 @@ object GeoMappersModule {
         localityElementsListToGeoLocalitiesListMapper: LocalityElementsListToGeoLocalitiesListMapper
     ): GeoLocalityApiMappers =
         GeoLocalityApiMappers(localityElementsListToGeoLocalitiesListMapper)
+
+    // LocalityElement
+    @Singleton
+    @Provides
+    fun provideLocalityDistrictElementToGeoLocalityDistrictMapper(
+        @ApplicationContext ctx: Context,
+        mapper: GeometryToGeoCoordinatesMapper
+    ): LocalityDistrictElementToGeoLocalityDistrictMapper =
+        LocalityDistrictElementToGeoLocalityDistrictMapper(ctx = ctx, mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideLocalityDistrictElementsListToGeoLocalityDistrictsListMapper(mapper: LocalityDistrictElementToGeoLocalityDistrictMapper): LocalityDistrictElementsListToGeoLocalityDistrictsListMapper =
+        LocalityDistrictElementsListToGeoLocalityDistrictsListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoLocalityDistrictApiMappers(
+        localityDistrictElementsListToGeoLocalityDistrictsListMapper: LocalityDistrictElementsListToGeoLocalityDistrictsListMapper
+    ): GeoLocalityDistrictApiMappers =
+        GeoLocalityDistrictApiMappers(localityDistrictElementsListToGeoLocalityDistrictsListMapper)
 }

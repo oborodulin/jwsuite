@@ -1,0 +1,5 @@
+package com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geolocalitydistrict
+
+data class GeoLocalityDistrictApiMappers(
+    val localityDistrictElementsListToGeoLocalityDistrictsListMapper: LocalityDistrictElementsListToGeoLocalityDistrictsListMapper
+)

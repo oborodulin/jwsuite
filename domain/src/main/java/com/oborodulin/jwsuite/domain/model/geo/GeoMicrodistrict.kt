@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.domain.model.geo
 
 import android.content.Context
 import com.oborodulin.home.common.domain.model.DomainModel
+import com.oborodulin.home.common.extensions.ifNotEmpty
 import com.oborodulin.jwsuite.domain.R
 import com.oborodulin.jwsuite.domain.types.VillageType
 
@@ -24,6 +25,7 @@ data class GeoMicrodistrict(
         } $microdistrictName".trim()
 
     companion object {
+        const val SHORT_NAME_LENGTH = 3
         fun default(
             locality: GeoLocality? = null,
             localityDistrict: GeoLocalityDistrict? = null,
@@ -37,5 +39,9 @@ data class GeoMicrodistrict(
                 )
             )
         }
+
+        fun shortNameFromName(prefix: String = "", name: String) =
+            name.substring(0..<SHORT_NAME_LENGTH).uppercase()
+                .let { fn -> prefix.ifNotEmpty { "$it-$fn" } ?: fn }
     }
 }

@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_geo.remote.osm.model.localitydistrict
+package com.oborodulin.jwsuite.data_geo.remote.osm.model.microdistrict
 
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.Geometry
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.Osm3s
@@ -7,53 +7,55 @@ import com.squareup.moshi.Json
 import java.util.Locale
 import java.util.UUID
 
-data class LocalityDistrictApiModel(
+data class MicrodistrictApiModel(
     @Json(name = "version") val version: String,
     @Json(name = "generator") val generator: String,
     @Json(name = "osm3s") val osm3s: Osm3s,
-    @Json(name = "elements") val elements: List<LocalityDistrictElement>
+    @Json(name = "elements") val elements: List<MicrodistrictElement>
 ) {
     companion object {
         // https://stackoverflow.com/questions/30690724/dollar-sign-character-in-multiline-strings
         fun data(
             localityId: UUID,
+            localityDistrictId: UUID? = null,
             geocodeArea: String,
-            incLocalityDistrictType: String, // район
             locale: String? = Locale.getDefault().language.substringBefore('-')
         ) = """
     [out:json][timeout:$OSM_TIMEOUT];
     {{geocodeArea:$geocodeArea}}->.searchArea;
     (
-        node[place="borough"]["name"~"."](area.searchArea);
-        rel["admin_level"~"^[5-8]${'$'}"]["name"~"$incLocalityDistrictType", i](area.searchArea);
-        rel["admin_level"~"^[5-8]${'$'}"][border_type="county"]["name"~"."](area.searchArea);
+    node[place~"^(suburb|quarter|neighbourhood|city_block|plot)${'$'}"]["name"~"."](area.searchArea);
+    rel["admin_level"~"^[8,9]|10${'$'}"][place="suburb"]["name"~"."](area.searchArea);
     )->.crl;
     foreach.crl(
-        convert LocalityDistrictType 
-            osmType = type(), ::id = id(), ::geom = geom(), localityId = "$localityId", wikidata = t["wikidata"], gnis_id = t["gnis:feature_id"], geocodeArea = t["name:en"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"];
+        convert MicrodistrictType 
+            osmType = type(), ::id = id(), ::geom = geom(), localityId = "$localityId", localityDistrictId = "${localityDistrictId?.toString().orEmpty()}", wikidata = t["wikidata"], gnis_id = t["gnis:feature_id"], place = t["place"], geocodeArea = t["name:en"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"];
         out center;
     );
     """.trimIndent()
     }
 }
 
-data class LocalityDistrictElement(
+data class MicrodistrictElement(
     @Json(name = "type") val type: String,
     @Json(name = "id") val id: Long,
     @Json(name = "geometry") val geometry: Geometry,
-    @Json(name = "tags") val tags: LocalityDistrictTags
+    @Json(name = "tags") val tags: MicrodistrictTags
 )
 
-data class LocalityDistrictTags(
+data class MicrodistrictTags(
     @Json(name = "osmType") val osmType: String,
     @Json(name = "localityId") val localityId: UUID,
-    // GeoLocalityDistrict.districtShortName
+    @Json(name = "localityDistrictId") val localityDistrictId: UUID?,
+    // GeoMicrodistrict.microdistrictShortName
     @Json(name = "wikidata") val wikidata: String,
     @Json(name = "gnis_id") val gnisId: String,
+    // GeoMicrodistrict.microdistrictType
+    @Json(name = "place") val place: String,
 
     @Json(name = "geocodeArea") val geocodeArea: String,
     @Json(name = "locale") val locale: String,
-    // GeoLocalityDistrict.districtName
+    // GeoMicrodistrict.microdistrictName
     @Json(name = "name_loc") val nameLoc: String,
     @Json(name = "name") val name: String
 )
