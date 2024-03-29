@@ -1,0 +1,16 @@
+<resources>
+    <string-array name="microdistrict_types">
+        <!--Посёлок -->
+        <item>пос.</item>
+        <!--Микрорайон -->
+        <item>мкр.</item>
+        <!--Квартал -->
+        <item>кв-л</item>
+        <!--Городок -->
+        <item>г-к</item>
+        <!--Квартал -->
+        <item>кв-л</item>
+        <!--Территория -->
+        <item>тер.</item>
+    </string-array>
+</resources>

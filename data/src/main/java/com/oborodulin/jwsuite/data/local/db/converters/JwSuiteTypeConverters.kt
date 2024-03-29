@@ -15,7 +15,7 @@ import com.oborodulin.jwsuite.domain.types.RoadType
 import com.oborodulin.jwsuite.domain.types.TerritoryCategoryType
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.types.TerritoryReportMark
-import com.oborodulin.jwsuite.domain.types.VillageType
+import com.oborodulin.jwsuite.domain.types.MicrodistrictType
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
@@ -107,10 +107,10 @@ object JwSuiteTypeConverters {
 
     //-----------------------------
     @TypeConverter
-    fun toVillageType(value: String) = enumValueOf<VillageType>(value)
+    fun toVillageType(value: String) = enumValueOf<MicrodistrictType>(value)
 
     @TypeConverter
-    fun fromVillageType(value: VillageType) = value.name
+    fun fromVillageType(value: MicrodistrictType) = value.name
 
     //-----------------------------
     @TypeConverter

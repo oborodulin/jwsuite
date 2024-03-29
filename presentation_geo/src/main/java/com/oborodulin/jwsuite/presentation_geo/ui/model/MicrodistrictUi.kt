@@ -1,12 +1,12 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.model
 
 import com.oborodulin.home.common.ui.model.ModelUi
-import com.oborodulin.jwsuite.domain.types.VillageType
+import com.oborodulin.jwsuite.domain.types.MicrodistrictType
 
 data class MicrodistrictUi(
     val locality: LocalityUi? = null,
     val localityDistrict: LocalityDistrictUi? = null,
-    val microdistrictType: VillageType = VillageType.MICRO_DISTRICT,
+    val microdistrictType: MicrodistrictType = MicrodistrictType.SUBURB,
     val microdistrictShortName: String = "",
     val microdistrictName: String = "",
 

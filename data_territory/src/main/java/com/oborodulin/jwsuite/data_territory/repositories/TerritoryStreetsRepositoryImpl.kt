@@ -1,9 +1,9 @@
-package com.oborodulin.jwsuite.data_territory.local.db.repositories
+package com.oborodulin.jwsuite.data_territory.repositories
 
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorystreet.TerritoryStreetCsvMappers
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorystreet.TerritoryStreetMappers
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryStreetDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalTerritoryStreetDataSource
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryStreet
 import com.oborodulin.jwsuite.domain.repositories.TerritoryStreetsRepository
 import com.oborodulin.jwsuite.domain.services.csv.CsvExtract

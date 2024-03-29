@@ -1,9 +1,9 @@
-package com.oborodulin.jwsuite.data_territory.local.db.repositories
+package com.oborodulin.jwsuite.data_territory.repositories
 
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.entrance.EntranceCsvMappers
 import com.oborodulin.jwsuite.data_territory.local.db.entities.EntranceEntity
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.entrance.EntranceMappers
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalEntranceDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalEntranceDataSource
 import com.oborodulin.jwsuite.domain.model.territory.Entrance
 import com.oborodulin.jwsuite.domain.repositories.EntrancesRepository
 import com.oborodulin.jwsuite.domain.services.csv.CsvExtract

@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_territory.local.db.repositories.sources
+package com.oborodulin.jwsuite.data_territory.local.db.sources
 
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity

@@ -10,8 +10,7 @@ import com.oborodulin.jwsuite.domain.model.geo.GeoLocalityDistrict
 class LocalityDistrictElementToGeoLocalityDistrictMapper(
     private val ctx: Context,
     private val mapper: GeometryToGeoCoordinatesMapper
-) :
-    Mapper<LocalityDistrictElement, GeoLocalityDistrict> {
+) : Mapper<LocalityDistrictElement, GeoLocalityDistrict> {
     override fun map(input: LocalityDistrictElement): GeoLocalityDistrict {
         val resArray =
             ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.region_district_full_types)

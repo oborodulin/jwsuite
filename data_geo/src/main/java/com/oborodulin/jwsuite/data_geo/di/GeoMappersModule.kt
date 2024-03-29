@@ -124,12 +124,18 @@ import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geolocality.LocalityEl
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geolocalitydistrict.GeoLocalityDistrictApiMappers
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geolocalitydistrict.LocalityDistrictElementToGeoLocalityDistrictMapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geolocalitydistrict.LocalityDistrictElementsListToGeoLocalityDistrictsListMapper
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geomicrodistrict.GeoMicrodistrictApiMappers
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geomicrodistrict.MicrodistrictElementToGeoMicrodistrictMapper
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geomicrodistrict.MicrodistrictElementsListToGeoMicrodistrictsListMapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.GeoRegionApiMappers
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.RegionElementToGeoRegionMapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.RegionElementsListToGeoRegionsListMapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegiondistrict.GeoRegionDistrictApiMappers
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegiondistrict.RegionDistrictElementToGeoRegionDistrictMapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegiondistrict.RegionDistrictElementsListToGeoRegionDistrictsListMapper
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geostreet.GeoStreetApiMappers
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geostreet.StreetElementToGeoStreetMapper
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geostreet.StreetElementsListToGeoStreetsListMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -1010,7 +1016,7 @@ object GeoMappersModule {
     ): GeoLocalityApiMappers =
         GeoLocalityApiMappers(localityElementsListToGeoLocalitiesListMapper)
 
-    // LocalityElement
+    // LocalityDistrictElement
     @Singleton
     @Provides
     fun provideLocalityDistrictElementToGeoLocalityDistrictMapper(
@@ -1030,4 +1036,44 @@ object GeoMappersModule {
         localityDistrictElementsListToGeoLocalityDistrictsListMapper: LocalityDistrictElementsListToGeoLocalityDistrictsListMapper
     ): GeoLocalityDistrictApiMappers =
         GeoLocalityDistrictApiMappers(localityDistrictElementsListToGeoLocalityDistrictsListMapper)
+
+    // MicrodistrictElement
+    @Singleton
+    @Provides
+    fun provideMicrodistrictElementToGeoMicrodistrictMapper(
+        @ApplicationContext ctx: Context,
+        mapper: GeometryToGeoCoordinatesMapper
+    ): MicrodistrictElementToGeoMicrodistrictMapper =
+        MicrodistrictElementToGeoMicrodistrictMapper(ctx = ctx, mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideMicrodistrictElementsListToGeoMicrodistrictsListMapper(mapper: MicrodistrictElementToGeoMicrodistrictMapper): MicrodistrictElementsListToGeoMicrodistrictsListMapper =
+        MicrodistrictElementsListToGeoMicrodistrictsListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoMicrodistrictApiMappers(
+        microdistrictElementsListToGeoMicrodistrictsListMapper: MicrodistrictElementsListToGeoMicrodistrictsListMapper
+    ): GeoMicrodistrictApiMappers =
+        GeoMicrodistrictApiMappers(microdistrictElementsListToGeoMicrodistrictsListMapper)
+
+    // StreetElement
+    @Singleton
+    @Provides
+    fun provideStreetElementToGeoStreetMapper(
+        @ApplicationContext ctx: Context,
+        mapper: GeometryToGeoCoordinatesMapper
+    ): StreetElementToGeoStreetMapper = StreetElementToGeoStreetMapper(ctx = ctx, mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideStreetElementsListToGeoStreetsListMapper(mapper: StreetElementToGeoStreetMapper): StreetElementsListToGeoStreetsListMapper =
+        StreetElementsListToGeoStreetsListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoStreetApiMappers(
+        streetElementsListToGeoStreetsListMapper: StreetElementsListToGeoStreetsListMapper
+    ): GeoStreetApiMappers = GeoStreetApiMappers(streetElementsListToGeoStreetsListMapper)
 }

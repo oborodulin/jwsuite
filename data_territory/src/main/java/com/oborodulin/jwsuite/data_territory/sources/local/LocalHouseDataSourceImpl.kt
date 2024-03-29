@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.data_territory.sources.local
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_territory.local.db.dao.HouseDao
 import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalHouseDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalHouseDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext

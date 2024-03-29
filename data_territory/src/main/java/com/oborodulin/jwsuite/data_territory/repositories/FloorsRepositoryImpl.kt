@@ -1,9 +1,9 @@
-package com.oborodulin.jwsuite.data_territory.local.db.repositories
+package com.oborodulin.jwsuite.data_territory.repositories
 
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.floor.FloorCsvMappers
 import com.oborodulin.jwsuite.data_territory.local.db.entities.FloorEntity
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.floor.FloorMappers
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalFloorDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalFloorDataSource
 import com.oborodulin.jwsuite.domain.model.territory.Floor
 import com.oborodulin.jwsuite.domain.repositories.FloorsRepository
 import com.oborodulin.jwsuite.domain.services.csv.CsvExtract

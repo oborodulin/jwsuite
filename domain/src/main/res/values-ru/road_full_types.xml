@@ -1,0 +1,9 @@
+<resources>
+    <string-array name="road_full_types">
+        <item>улица;вулиця</item>
+        <item>проспект</item>
+        <item>переулок;провулок</item>
+        <item>бульвар</item>
+        <item>площадь;площа</item>
+    </string-array>
+</resources>

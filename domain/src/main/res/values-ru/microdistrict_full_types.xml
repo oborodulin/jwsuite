@@ -2,5 +2,9 @@
     <string-array name="microdistrict_full_types">
         <item>посёлок</item>
         <item>микрорайон</item>
+        <item>квартал</item>
+        <item>городок</item>
+        <item>квартал</item>
+        <item>территория</item>
     </string-array>
 </resources>

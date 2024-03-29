@@ -1,9 +1,9 @@
-package com.oborodulin.jwsuite.data_territory.local.db.repositories
+package com.oborodulin.jwsuite.data_territory.repositories
 
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territoryreport.TerritoryReportCsvMappers
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.TerritoryReportMappers
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryReportDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalTerritoryReportDataSource
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryMemberReport
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportHouse
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportRoom

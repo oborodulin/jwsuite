@@ -1,13 +1,13 @@
 package com.oborodulin.jwsuite.data_territory.di
 
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.EntrancesRepositoryImpl
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.FloorsRepositoryImpl
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.HousesRepositoryImpl
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.RoomsRepositoryImpl
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.TerritoriesRepositoryImpl
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.TerritoryCategoriesRepositoryImpl
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.TerritoryReportsRepositoryImpl
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.TerritoryStreetsRepositoryImpl
+import com.oborodulin.jwsuite.data_territory.repositories.EntrancesRepositoryImpl
+import com.oborodulin.jwsuite.data_territory.repositories.FloorsRepositoryImpl
+import com.oborodulin.jwsuite.data_territory.repositories.HousesRepositoryImpl
+import com.oborodulin.jwsuite.data_territory.repositories.RoomsRepositoryImpl
+import com.oborodulin.jwsuite.data_territory.repositories.TerritoriesRepositoryImpl
+import com.oborodulin.jwsuite.data_territory.repositories.TerritoryCategoriesRepositoryImpl
+import com.oborodulin.jwsuite.data_territory.repositories.TerritoryReportsRepositoryImpl
+import com.oborodulin.jwsuite.data_territory.repositories.TerritoryStreetsRepositoryImpl
 import com.oborodulin.jwsuite.domain.repositories.EntrancesRepository
 import com.oborodulin.jwsuite.domain.repositories.FloorsRepository
 import com.oborodulin.jwsuite.domain.repositories.HousesRepository

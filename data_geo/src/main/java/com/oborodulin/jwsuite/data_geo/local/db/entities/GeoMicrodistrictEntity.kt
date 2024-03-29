@@ -11,7 +11,7 @@ import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.data_geo.local.db.entities.pojo.Coordinates
-import com.oborodulin.jwsuite.domain.types.VillageType
+import com.oborodulin.jwsuite.domain.types.MicrodistrictType
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
@@ -39,7 +39,7 @@ import java.util.UUID
 data class GeoMicrodistrictEntity(
     @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val microdistrictId: UUID = UUID.randomUUID(),
-    val microdistrictType: VillageType = VillageType.MICRO_DISTRICT,
+    val microdistrictType: MicrodistrictType = MicrodistrictType.SUBURB,
     val microdistrictShortName: String,
     val microdistrictGeocode: String? = null,
     @ColumnInfo(index = true) val microdistrictOsmId: Long? = null,
@@ -58,7 +58,7 @@ data class GeoMicrodistrictEntity(
         fun defaultMicrodistrict(
             localityId: UUID = UUID.randomUUID(), localityDistrictId: UUID = UUID.randomUUID(),
             microdistrictId: UUID = UUID.randomUUID(),
-            microdistrictType: VillageType = VillageType.MICRO_DISTRICT,
+            microdistrictType: MicrodistrictType = MicrodistrictType.SUBURB,
             microdistrictShortName: String, microdistrictGeocode: String? = null,
             microdistrictOsmId: Long? = null, coordinates: Coordinates = Coordinates()
         ) = GeoMicrodistrictEntity(
@@ -71,7 +71,7 @@ data class GeoMicrodistrictEntity(
 
         fun cvetochnyMicrodistrict(ctx: Context, localityId: UUID, localityDistrictId: UUID) =
             defaultMicrodistrict(
-                microdistrictType = VillageType.MICRO_DISTRICT,
+                microdistrictType = MicrodistrictType.SUBURB,
                 microdistrictShortName = ctx.resources.getString(R.string.def_cvetochny_short_name),
                 localityDistrictId = localityDistrictId,
                 localityId = localityId
@@ -79,7 +79,7 @@ data class GeoMicrodistrictEntity(
 
         fun donskoyMicrodistrict(ctx: Context, localityId: UUID, localityDistrictId: UUID) =
             defaultMicrodistrict(
-                microdistrictType = VillageType.MICRO_DISTRICT,
+                microdistrictType = MicrodistrictType.SUBURB,
                 microdistrictShortName = ctx.resources.getString(R.string.def_don_short_name),
                 localityDistrictId = localityDistrictId,
                 localityId = localityId

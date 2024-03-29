@@ -4,13 +4,13 @@ import android.content.Context
 import com.oborodulin.home.common.domain.model.DomainModel
 import com.oborodulin.home.common.extensions.ifNotEmpty
 import com.oborodulin.jwsuite.domain.R
-import com.oborodulin.jwsuite.domain.types.VillageType
+import com.oborodulin.jwsuite.domain.types.MicrodistrictType
 
 data class GeoMicrodistrict(
     val ctx: Context? = null,
     var locality: GeoLocality? = null,
     var localityDistrict: GeoLocalityDistrict? = null,
-    val microdistrictType: VillageType = VillageType.MICRO_DISTRICT,
+    val microdistrictType: MicrodistrictType = MicrodistrictType.SUBURB,
     val microdistrictShortName: String = "",
     val microdistrictGeocode: String? = null,
     val microdistrictOsmId: Long? = null,
@@ -20,7 +20,7 @@ data class GeoMicrodistrict(
 ) : DomainModel() {
     val microdistrictFullName =
         "${
-            ctx?.let { it.resources.getStringArray(R.array.village_types)[microdistrictType.ordinal] }
+            ctx?.let { it.resources.getStringArray(R.array.microdistrict_types)[microdistrictType.ordinal] }
                 .orEmpty()
         } $microdistrictName".trim()
 

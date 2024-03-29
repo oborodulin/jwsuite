@@ -1,0 +1,9 @@
+<resources>
+    <string-array name="road_full_types">
+        <item>street</item>
+        <item>avenue</item>
+        <item>lane</item>
+        <item>boulevard</item>
+        <item>square</item>
+    </string-array>
+</resources>

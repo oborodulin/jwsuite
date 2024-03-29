@@ -1,15 +1,15 @@
-package com.oborodulin.jwsuite.data_territory.local.db.repositories
+package com.oborodulin.jwsuite.data_territory.repositories
 
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.TerritoryCsvMappers
 import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryMappers
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalEntranceDataSource
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalFloorDataSource
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalHouseDataSource
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalRoomDataSource
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalEntranceDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalFloorDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalHouseDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalRoomDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalTerritoryDataSource
 import com.oborodulin.jwsuite.domain.model.territory.Territory
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.services.csv.CsvExtract

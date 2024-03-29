@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_territory.local.db.repositories.sources
+package com.oborodulin.jwsuite.data_territory.local.db.sources
 
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberReportView

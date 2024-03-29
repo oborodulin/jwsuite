@@ -7,7 +7,7 @@ import com.oborodulin.jwsuite.data_geo.remote.osm.model.microdistrict.Microdistr
 import com.oborodulin.jwsuite.domain.model.geo.GeoLocality
 import com.oborodulin.jwsuite.domain.model.geo.GeoLocalityDistrict
 import com.oborodulin.jwsuite.domain.model.geo.GeoMicrodistrict
-import com.oborodulin.jwsuite.domain.types.VillageType
+import com.oborodulin.jwsuite.domain.types.MicrodistrictType
 
 class MicrodistrictElementToGeoMicrodistrictMapper(
     private val ctx: Context,
@@ -16,7 +16,7 @@ class MicrodistrictElementToGeoMicrodistrictMapper(
     override fun map(input: MicrodistrictElement): GeoMicrodistrict {
         val resArray =
             ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.microdistrict_full_types)
-        val type = VillageType.valueOf(input.tags.place.uppercase())
+        val type = MicrodistrictType.valueOf(input.tags.place.uppercase())
         val resType = resArray.firstOrNull {
             input.tags.nameLoc.contains(it, true) || input.tags.name.contains(it, true)
         }
@@ -25,7 +25,7 @@ class MicrodistrictElementToGeoMicrodistrictMapper(
             localityDistrict = input.tags.localityDistrictId?.let { rdId ->
                 GeoLocalityDistrict().also { it.id = rdId }
             },
-            microdistrictType = resType?.let { VillageType.entries[resArray.indexOf(it)] } ?: type,
+            microdistrictType = resType?.let { MicrodistrictType.entries[resArray.indexOf(it)] } ?: type,
             microdistrictShortName = GeoLocality.shortNameFromName(
                 prefix = input.tags.wikidata.ifEmpty { input.tags.gnisId },
                 name = input.tags.name

@@ -8,7 +8,7 @@ import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.jwsuite.data_geo.R
-import com.oborodulin.jwsuite.domain.types.VillageType
+import com.oborodulin.jwsuite.domain.types.MicrodistrictType
 import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.DeleteMicrodistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.GetMicrodistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.MicrodistrictUseCases
@@ -172,14 +172,14 @@ class MicrodistrictsListViewModelImpl @Inject constructor(
             MicrodistrictsListItem(
                 id = UUID.randomUUID(),
                 microdistrictShortName = ctx.resources.getString(R.string.def_cvetochny_short_name),
-                microdistrictFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.village_types)[VillageType.MICRO_DISTRICT.ordinal]} ${
+                microdistrictFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.microdistrict_types)[MicrodistrictType.SUBURB.ordinal]} ${
                     ctx.resources.getString(R.string.def_cvetochny_name)
                 }"
             ),
             MicrodistrictsListItem(
                 id = UUID.randomUUID(),
                 microdistrictShortName = ctx.resources.getString(R.string.def_don_short_name),
-                microdistrictFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.village_types)[VillageType.MICRO_DISTRICT.ordinal]} ${
+                microdistrictFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.microdistrict_types)[MicrodistrictType.SUBURB.ordinal]} ${
                     ctx.resources.getString(R.string.def_don_name)
                 }"
             )

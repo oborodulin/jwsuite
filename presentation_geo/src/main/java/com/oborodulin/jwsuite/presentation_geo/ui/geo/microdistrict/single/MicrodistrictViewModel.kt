@@ -5,13 +5,13 @@ import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
-import com.oborodulin.jwsuite.domain.types.VillageType
+import com.oborodulin.jwsuite.domain.types.MicrodistrictType
 import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictUi
 import kotlinx.coroutines.flow.StateFlow
 
 interface MicrodistrictViewModel :
     DialogViewModeled<MicrodistrictUi, MicrodistrictUiAction, UiSingleEvent, MicrodistrictFields> {
-    val microdistrictTypes: StateFlow<MutableMap<VillageType, String>>
+    val microdistrictTypes: StateFlow<MutableMap<MicrodistrictType, String>>
 
     val tlId: StateFlow<InputWrapper>
     val locality: StateFlow<InputListItemWrapper<ListItemModel>>

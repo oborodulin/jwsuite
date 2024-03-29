@@ -7,7 +7,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryDao
 import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalTerritoryDataSource
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi

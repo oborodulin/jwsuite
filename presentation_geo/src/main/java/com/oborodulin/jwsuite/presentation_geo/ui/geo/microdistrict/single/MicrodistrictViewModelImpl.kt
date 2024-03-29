@@ -20,7 +20,7 @@ import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.ResourcesHelper
 import com.oborodulin.jwsuite.data_geo.R
-import com.oborodulin.jwsuite.domain.types.VillageType
+import com.oborodulin.jwsuite.domain.types.MicrodistrictType
 import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.GetMicrodistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.MicrodistrictUseCases
 import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.SaveMicrodistrictUseCase
@@ -70,7 +70,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
     DialogViewModel<MicrodistrictUi, UiState<MicrodistrictUi>, MicrodistrictUiAction, UiSingleEvent, MicrodistrictFields, InputWrapper>(
         state, MicrodistrictFields.MICRODISTRICT_ID.name, MicrodistrictFields.MICRODISTRICT_LOCALITY
     ) {
-    private val _microdistrictTypes: MutableStateFlow<MutableMap<VillageType, String>> =
+    private val _microdistrictTypes: MutableStateFlow<MutableMap<MicrodistrictType, String>> =
         MutableStateFlow(mutableMapOf())
     override val microdistrictTypes = _microdistrictTypes.asStateFlow()
 
@@ -103,12 +103,12 @@ class MicrodistrictViewModelImpl @Inject constructor(
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     init {
-        initVillageTypes(com.oborodulin.jwsuite.domain.R.array.village_types)
+        initVillageTypes(com.oborodulin.jwsuite.domain.R.array.microdistrict_types)
     }
 
     private fun initVillageTypes(@ArrayRes arrayId: Int) {
         val resArray = resHelper.appContext.resources.getStringArray(arrayId)
-        for (type in VillageType.entries) _microdistrictTypes.value[type] = resArray[type.ordinal]
+        for (type in MicrodistrictType.entries) _microdistrictTypes.value[type] = resArray[type.ordinal]
     }
 
     override fun initState() = UiState.Loading
@@ -150,7 +150,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
         val microdistrictUi = MicrodistrictUi(
             locality = locality.value.item.toLocalityUi(),
             localityDistrict = localityDistrict.value.item.toLocalityDistrictUi(),
-            microdistrictType = VillageType.valueOf(microdistrictType.value.value),
+            microdistrictType = MicrodistrictType.valueOf(microdistrictType.value.value),
             microdistrictShortName = microdistrictShortName.value.value.trim(),
             microdistrictName = microdistrictName.value.value.trim()
         ).also {
@@ -353,7 +353,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
                 override val showDialog = MutableStateFlow(true)
 
                 override val microdistrictTypes =
-                    MutableStateFlow(mutableMapOf<VillageType, String>())
+                    MutableStateFlow(mutableMapOf<MicrodistrictType, String>())
 
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
@@ -408,7 +408,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
         fun previewUiModel(ctx: Context) = MicrodistrictUi(
             locality = LocalityViewModelImpl.previewUiModel(ctx),
             localityDistrict = LocalityDistrictViewModelImpl.previewUiModel(ctx),
-            microdistrictType = VillageType.MICRO_DISTRICT,
+            microdistrictType = MicrodistrictType.SUBURB,
             microdistrictShortName = ctx.resources.getString(R.string.def_don_short_name),
             microdistrictName = ctx.resources.getString(R.string.def_don_name)
         ).also { it.id = UUID.randomUUID() }

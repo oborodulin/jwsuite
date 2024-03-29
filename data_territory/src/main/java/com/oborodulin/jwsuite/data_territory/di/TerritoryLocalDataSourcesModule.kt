@@ -1,13 +1,13 @@
 package com.oborodulin.jwsuite.data_territory.di
 
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalEntranceDataSource
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalFloorDataSource
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalHouseDataSource
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalRoomDataSource
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryCategoryDataSource
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryDataSource
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryReportDataSource
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryStreetDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalEntranceDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalFloorDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalHouseDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalRoomDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalTerritoryCategoryDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalTerritoryDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalTerritoryReportDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.sources.LocalTerritoryStreetDataSource
 import com.oborodulin.jwsuite.data_territory.sources.local.LocalEntranceDataSourceImpl
 import com.oborodulin.jwsuite.data_territory.sources.local.LocalFloorDataSourceImpl
 import com.oborodulin.jwsuite.data_territory.sources.local.LocalHouseDataSourceImpl
