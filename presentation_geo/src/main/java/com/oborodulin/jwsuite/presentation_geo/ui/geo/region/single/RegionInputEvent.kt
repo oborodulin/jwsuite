@@ -7,6 +7,7 @@ sealed class RegionInputEvent(val value: String) : Inputable {
     data class Country(val input: ListItemModel) : RegionInputEvent(input.headline)
     data class RegionCode(val input: String) : RegionInputEvent(input)
     data class RegionType(val input: String) : RegionInputEvent(input)
+    data class IsRegionTypePrefix(val input: Boolean) : RegionInputEvent(input.toString())
     data class RegionName(val input: String) : RegionInputEvent(input)
 
     override fun value() = this.value

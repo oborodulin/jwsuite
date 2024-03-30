@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -57,6 +58,7 @@ fun TextFieldComponent(
     modifier: Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    prefixWrapper: InputWrapper? = null,
     inputWrapper: InputWrapper,
     trimmedValue: Boolean = false,
     maxLength: Int = Int.MAX_VALUE,
@@ -144,6 +146,16 @@ fun TextFieldComponent(
                     painterResId = trailingPainterResId,
                     contentDescriptionResId = trailingCntDescResId
                 )
+            },
+            prefix = prefixWrapper?.let {
+                {
+                    Text(
+                        text = it.value,
+                        fontSize = 12.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             },
             supportingText = {
                 Row(

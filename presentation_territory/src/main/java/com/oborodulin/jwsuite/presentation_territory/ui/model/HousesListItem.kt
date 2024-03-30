@@ -11,7 +11,7 @@ data class HousesListItem(
     val zipCode: String? = null,
     val houseNum: Int,
     val houseFullNum: String,
-    val buildingType: BuildingType = BuildingType.HOUSE,
+    val buildingType: BuildingType = BuildingType.APARTMENTS,
     val isBusiness: Boolean = false,
     val isSecurity: Boolean = false,
     val isIntercom: Boolean? = null,

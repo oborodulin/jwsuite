@@ -26,7 +26,7 @@ class StreetElementToGeoStreetMapper(
             locality = GeoLocality().also { it.id = input.tags.localityId },
             streetHashCode = streetName.hashCode(),
             roadType = resType?.let { RoadType.entries[resArray.indexOf(it)] } ?: RoadType.STREET,
-            streetGeocode = input.tags.geocodeArea.ifEmpty { input.tags.name },
+            streetGeocode = input.tags.name,
             streetOsmId = input.id,
             coordinates = mapper.map(input.geometry),
             streetName = streetName

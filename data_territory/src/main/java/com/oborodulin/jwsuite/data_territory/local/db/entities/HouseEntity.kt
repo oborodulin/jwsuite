@@ -53,7 +53,7 @@ data class HouseEntity(
     val houseNum: Int,
     val houseLetter: String? = null,
     val buildingNum: Int? = null,
-    val buildingType: BuildingType = BuildingType.HOUSE,
+    val buildingType: BuildingType = BuildingType.APARTMENTS,
     val isBusinessHouse: Boolean = false,
     val isSecurityHouse: Boolean = false,
     val isIntercomHouse: Boolean? = null,
@@ -108,7 +108,7 @@ data class HouseEntity(
             buildingNum: Int? = null, isBusiness: Boolean = false,
             entrancesQty: Int? = null, floorsByEntrance: Int? = null, roomsByFloor: Int? = null,
             estimatedRooms: Int? = null, isForeignLanguage: Boolean = false,
-            isPrivateSector: Boolean = false, buildingType: BuildingType = BuildingType.HOUSE,
+            isPrivateSector: Boolean = false, buildingType: BuildingType = BuildingType.APARTMENTS,
             territoryDesc: String? = null,
             houseOsmId: Long? = null, coordinates: Coordinates = Coordinates()
         ) = HouseEntity(

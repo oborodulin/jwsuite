@@ -10,7 +10,8 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionEntity
     viewName = GeoRegionDistrictView.VIEW_NAME,
     value = """
 SELECT nv.countryId AS ${GeoCountryEntity.PX_DISTRICT}countryId, nv.countryCode AS ${GeoCountryEntity.PX_DISTRICT}countryCode, 
-            nv.countryGeocode AS ${GeoCountryEntity.PX_DISTRICT}countryGeocode, nv.countryOsmId AS ${GeoCountryEntity.PX_DISTRICT}countryOsmId, 
+            nv.${GeoCountryEntity.PREFIX}geocode AS ${GeoCountryEntity.PX_DISTRICT}${GeoCountryEntity.PREFIX}geocode,
+            nv.${GeoCountryEntity.PREFIX}osmId AS ${GeoCountryEntity.PX_DISTRICT}${GeoCountryEntity.PREFIX}osmId, 
             nv.${GeoCountryEntity.PREFIX}latitude AS ${GeoCountryEntity.PX_DISTRICT}${GeoCountryEntity.PREFIX}latitude,
             nv.${GeoCountryEntity.PREFIX}longitude AS ${GeoCountryEntity.PX_DISTRICT}${GeoCountryEntity.PREFIX}longitude,
             nv.countryTlId AS ${GeoCountryEntity.PX_DISTRICT}countryTlId, nv.countryLocCode AS ${GeoCountryEntity.PX_DISTRICT}countryLocCode, nv.countryTlCode AS ${GeoCountryEntity.PX_DISTRICT}countryTlCode,  

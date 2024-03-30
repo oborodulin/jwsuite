@@ -19,7 +19,7 @@ data class House(
     val houseNum: Int,
     val houseLetter: String? = null,
     val buildingNum: Int? = null,
-    val buildingType: BuildingType = BuildingType.HOUSE,
+    val buildingType: BuildingType = BuildingType.APARTMENTS,
     val isBusiness: Boolean = false,
     val isSecurity: Boolean = false,
     val isIntercom: Boolean? = null,
@@ -44,7 +44,9 @@ data class House(
     val houseFullNum =
         "$houseNum${houseLetter?.uppercase().orEmpty()}${buildingNum?.let { "-$it" }.orEmpty()}"
     val buildingTypeInfo =
-        if (buildingType != BuildingType.HOUSE) ctx?.let { it.resources.getStringArray(R.array.building_types)[buildingType.ordinal] } else null
+        if (listOf(BuildingType.APARTMENTS, BuildingType.HOUSE).contains(buildingType)
+                .not()
+        ) ctx?.let { it.resources.getStringArray(R.array.building_types)[buildingType.ordinal] } else null
     val calcRoomsInfo = if (calculatedRooms > 0) "$calculatedRooms ${
         ctx?.resources?.getString(R.string.room_expr).orEmpty()
     }" else null
@@ -52,4 +54,12 @@ data class House(
     val info = listOfNotNull(buildingTypeInfo, calcRoomsInfo, houseDesc)
     val houseInfo =
         houseFullNum.plus(if (info.isNotEmpty()) " (${info.joinToString(", ")})" else "")
+
+    companion object {
+        fun letterFromHouseFullNum(houseFullNum: String) =
+            houseFullNum.filter { it.isLetter() }.ifEmpty { null }
+
+        fun buildingNumFromHouseFullNum(houseFullNum: String) =
+            houseFullNum.takeIf { it.contains('-') }?.substringAfter('-')?.toIntOrNull()
+    }
 }

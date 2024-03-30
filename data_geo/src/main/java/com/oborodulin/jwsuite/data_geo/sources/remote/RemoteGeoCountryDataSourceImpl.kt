@@ -4,7 +4,6 @@ import com.oborodulin.home.common.data.network.ApiResponse
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.country.CountryApiModel
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.country.CountryService
 import com.oborodulin.jwsuite.data_geo.remote.sources.RemoteGeoCountryDataSource
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -16,7 +15,7 @@ class RemoteGeoCountryDataSourceImpl @Inject constructor(
     private val countryService: CountryService//,
     //@IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : RemoteGeoCountryDataSource {
-    override fun getCountries(): Flow<ApiResponse<CountryApiModel>> = flow {
+    override fun getCountries() = flow {
         try {
             countryService.getCountries(data = CountryApiModel.data())?.let {
                 if (it.elements.isNotEmpty()) {

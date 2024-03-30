@@ -6,7 +6,6 @@ import com.oborodulin.jwsuite.data_geo.remote.osm.model.region.RegionApiModel
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.region.RegionService
 import com.oborodulin.jwsuite.data_geo.remote.sources.RemoteGeoRegionDataSource
 import com.oborodulin.jwsuite.domain.types.RegionType
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.util.UUID
 import javax.inject.Inject
@@ -22,7 +21,7 @@ class RemoteGeoRegionDataSourceImpl @Inject constructor(
     override fun getCountryRegions(
         countryId: UUID,
         countryGeocodeArea: String
-    ): Flow<ApiResponse<RegionApiModel>> = flow {
+    ) = flow {
         val resArray =
             ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.region_full_types)
         try {

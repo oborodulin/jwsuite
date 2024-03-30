@@ -3,11 +3,12 @@ package com.oborodulin.jwsuite.presentation_geo.ui.model
 import com.oborodulin.home.common.extensions.toRegionName
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
+import com.oborodulin.jwsuite.domain.model.geo.GeoRegion
 import com.oborodulin.jwsuite.domain.types.RegionType
 
 data class RegionUi(
     val country: CountryUi? = null,
-    val regionPrefix: String = "",
+    val codePrefix: String = "",
     val regionCode: String = "",
     val regionType: RegionType = RegionType.REGION,
     val isRegionTypePrefix: Boolean = false,
@@ -21,7 +22,8 @@ data class RegionUi(
 fun RegionUi?.toListItemModel() = ListItemModel(
     itemId = this?.id,
     headline = this?.regionFullName.orEmpty(),
-    supportingText = this?.regionCode
+    supportingText = GeoRegion.code(this?.codePrefix.orEmpty(), this?.regionCode.orEmpty())
+        .ifEmpty { null }
 )
 
 fun ListItemModel?.toRegionUi() =

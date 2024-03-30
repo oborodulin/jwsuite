@@ -11,8 +11,7 @@ import com.oborodulin.jwsuite.domain.types.RegionType
 class RegionElementToGeoRegionMapper(
     private val ctx: Context,
     private val mapper: GeometryToGeoCoordinatesMapper
-) :
-    Mapper<RegionElement, GeoRegion> {
+ ) : Mapper<RegionElement, GeoRegion> {
     override fun map(input: RegionElement): GeoRegion {
         val resArray =
             ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.region_full_types)

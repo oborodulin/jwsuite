@@ -78,11 +78,17 @@ class RegionViewModelImpl @Inject constructor(
     override val country: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(RegionFields.REGION_COUNTRY.name, InputListItemWrapper())
     }
+    override val codePrefix: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(RegionFields.REGION_CODE_PREFIX.name, InputWrapper())
+    }
     override val regionCode: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(RegionFields.REGION_CODE.name, InputWrapper())
     }
     override val regionType: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(RegionFields.REGION_TYPE.name, InputWrapper())
+    }
+    override val isRegionTypePrefix: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(RegionFields.REGION_IS_TYPE_PREFIX.name, InputWrapper())
     }
     override val regionName: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(RegionFields.REGION_NAME.name, InputWrapper())
@@ -151,8 +157,10 @@ class RegionViewModelImpl @Inject constructor(
     private fun saveRegion(): Job {
         val regionUi = RegionUi(
             country = country.value.item.toCountryUi(),
+            codePrefix = codePrefix.value.value.trim(),
             regionCode = regionCode.value.value.trim(),
             regionType = RegionType.valueOf(regionType.value.value),
+            isRegionTypePrefix = isRegionTypePrefix.value.value.toBoolean(),
             regionGeocode = regionGeocode.value.value.ifEmpty { null },
             regionOsmId = regionOsmId.value.value.toLongOrNull(),
             coordinates = CoordinatesUi(
@@ -190,8 +198,13 @@ class RegionViewModelImpl @Inject constructor(
         uiModel.id?.let { initStateValue(RegionFields.REGION_ID, id, it.toString()) }
         uiModel.tlId?.let { initStateValue(RegionFields.REGION_TL_ID, tlId, it.toString()) }
         initStateValue(RegionFields.REGION_COUNTRY, country, uiModel.country.toListItemModel())
+        initStateValue(RegionFields.REGION_CODE_PREFIX, codePrefix, uiModel.codePrefix)
         initStateValue(RegionFields.REGION_CODE, regionCode, uiModel.regionCode)
         initStateValue(RegionFields.REGION_TYPE, regionType, uiModel.regionType.name)
+        initStateValue(
+            RegionFields.REGION_IS_TYPE_PREFIX, isRegionTypePrefix,
+            uiModel.isRegionTypePrefix.toString()
+        )
         initStateValue(RegionFields.REGION_NAME, regionName, uiModel.regionName)
         initStateValue(
             RegionFields.REGION_GEOCODE, regionGeocode, uiModel.regionGeocode.orEmpty()
@@ -231,6 +244,11 @@ class RegionViewModelImpl @Inject constructor(
                         RegionFields.REGION_TYPE, regionType, event.input, true
                     )
 
+                    is RegionInputEvent.IsRegionTypePrefix -> setStateValue(
+                        RegionFields.REGION_IS_TYPE_PREFIX, isRegionTypePrefix,
+                        event.input.toString()
+                    )
+
                     is RegionInputEvent.RegionName -> setStateValue(
                         RegionFields.REGION_NAME, regionName, event.input,
                         RegionInputValidator.RegionName.isValid(event.input)
@@ -253,6 +271,9 @@ class RegionViewModelImpl @Inject constructor(
                     is RegionInputEvent.RegionType -> setStateValue(
                         RegionFields.REGION_TYPE, regionType, null
                     )
+
+                    is RegionInputEvent.IsRegionTypePrefix ->
+                        setStateValue(RegionFields.REGION_IS_TYPE_PREFIX, isRegionTypePrefix, null)
 
                     is RegionInputEvent.RegionName -> setStateValue(
                         RegionFields.REGION_NAME, regionName,
@@ -322,8 +343,10 @@ class RegionViewModelImpl @Inject constructor(
                 override fun id() = null
                 override val tlId = MutableStateFlow(InputWrapper())
                 override val country = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val codePrefix = MutableStateFlow(InputWrapper())
                 override val regionCode = MutableStateFlow(InputWrapper())
                 override val regionType = MutableStateFlow(InputWrapper())
+                override val isRegionTypePrefix = MutableStateFlow(InputWrapper())
                 override val regionName = MutableStateFlow(InputWrapper())
                 override val regionGeocode = MutableStateFlow(InputWrapper())
                 override val regionOsmId = MutableStateFlow(InputWrapper())

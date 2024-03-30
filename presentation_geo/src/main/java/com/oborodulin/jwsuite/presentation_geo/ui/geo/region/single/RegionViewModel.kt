@@ -15,8 +15,10 @@ interface RegionViewModel :
 
     val tlId: StateFlow<InputWrapper>
     val country: StateFlow<InputListItemWrapper<ListItemModel>>
+    val codePrefix: StateFlow<InputWrapper>
     val regionCode: StateFlow<InputWrapper>
     val regionType: StateFlow<InputWrapper>
+    val isRegionTypePrefix: StateFlow<InputWrapper>
     val regionName: StateFlow<InputWrapper>
     val regionGeocode: StateFlow<InputWrapper>
     val regionOsmId: StateFlow<InputWrapper>

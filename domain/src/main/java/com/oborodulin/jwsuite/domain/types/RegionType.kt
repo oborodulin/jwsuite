@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.domain.types
 
-// resource: domain/region_types.xml
+// resource:    domain/region_types.xml
+//              domain/region_full_types.xml
 enum class RegionType {
     REPUBLIC,
     TERRITORY,

@@ -66,6 +66,8 @@ import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.tl.GeoStreetT
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.tl.GeoStreetTlEntityToGeoStreetTlCsvMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.CoordinatesToGeoCoordinatesMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.GeoCoordinatesToCoordinatesMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.GeoOsmToOsmDataMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.OsmDataToGeoOsmMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geocountry.GeoCountriesListToGeoCountryEntityListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geocountry.GeoCountryMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geocountry.GeoCountryToGeoCountryEntityMapper
@@ -158,10 +160,19 @@ object GeoMappersModule {
     fun provideGeoCoordinatesToCoordinatesMapper(): GeoCoordinatesToCoordinatesMapper =
         GeoCoordinatesToCoordinatesMapper()
 
+    // Osm:
+    @Singleton
+    @Provides
+    fun provideOsmDataToGeoOsmMapper(): OsmDataToGeoOsmMapper = OsmDataToGeoOsmMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoOsmToOsmDataMapper(): GeoOsmToOsmDataMapper = GeoOsmToOsmDataMapper()
+
     // Countries:
     @Singleton
     @Provides
-    fun provideGeoCountryViewToGeoCountryMapper(mapper: CoordinatesToGeoCoordinatesMapper): GeoCountryViewToGeoCountryMapper =
+    fun provideGeoCountryViewToGeoCountryMapper(mapper: OsmDataToGeoOsmMapper): GeoCountryViewToGeoCountryMapper =
         GeoCountryViewToGeoCountryMapper(mapper = mapper)
 
     @Singleton
@@ -171,7 +182,7 @@ object GeoMappersModule {
 
     @Singleton
     @Provides
-    fun provideGeoCountryToGeoCountryEntityMapper(mapper: GeoCoordinatesToCoordinatesMapper): GeoCountryToGeoCountryEntityMapper =
+    fun provideGeoCountryToGeoCountryEntityMapper(mapper: GeoOsmToOsmDataMapper): GeoCountryToGeoCountryEntityMapper =
         GeoCountryToGeoCountryEntityMapper(mapper = mapper)
 
     @Singleton
@@ -256,8 +267,11 @@ object GeoMappersModule {
     // RegionDistricts:
     @Singleton
     @Provides
-    fun provideRegionDistrictViewToGeoRegionDistrictMapper(mapper: CoordinatesToGeoCoordinatesMapper): RegionDistrictViewToGeoRegionDistrictMapper =
-        RegionDistrictViewToGeoRegionDistrictMapper(mapper = mapper)
+    fun provideRegionDistrictViewToGeoRegionDistrictMapper(
+        @ApplicationContext ctx: Context,
+        mapper: CoordinatesToGeoCoordinatesMapper
+    ): RegionDistrictViewToGeoRegionDistrictMapper =
+        RegionDistrictViewToGeoRegionDistrictMapper(ctx = ctx, mapper = mapper)
 
     @Singleton
     @Provides

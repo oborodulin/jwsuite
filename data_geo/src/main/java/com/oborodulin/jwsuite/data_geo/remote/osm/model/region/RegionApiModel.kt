@@ -14,10 +14,13 @@ data class RegionApiModel(
     @Json(name = "elements") val elements: List<RegionElement>
 ) {
     companion object {
+        //Ukraine
+        //Russia
+        //United States
         fun data(
             countryId: UUID,
             geocodeArea: String,
-            excRegionType: String,
+            excRegionType: String,  // город федерального значения
             locale: String? = Locale.getDefault().language.substringBefore('-')
         ) = """
     [out:json][timeout:$OSM_TIMEOUT];

@@ -12,7 +12,8 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionEntity
     viewName = GeoMicrodistrictView.VIEW_NAME,
     value = """
 SELECT nv.countryId AS ${GeoCountryEntity.PX_MICRODISTRICT}countryId, nv.countryCode AS ${GeoCountryEntity.PX_MICRODISTRICT}countryCode, 
-            nv.countryGeocode AS ${GeoCountryEntity.PX_MICRODISTRICT}countryGeocode, nv.countryOsmId AS ${GeoCountryEntity.PX_MICRODISTRICT}countryOsmId, 
+            nv.${GeoCountryEntity.PREFIX}geocode AS ${GeoCountryEntity.PX_MICRODISTRICT}${GeoCountryEntity.PREFIX}geocode,
+            nv.${GeoCountryEntity.PREFIX}osmId AS ${GeoCountryEntity.PX_MICRODISTRICT}${GeoCountryEntity.PREFIX}osmId, 
             nv.${GeoCountryEntity.PREFIX}latitude AS ${GeoCountryEntity.PX_MICRODISTRICT}${GeoCountryEntity.PREFIX}latitude,
             nv.${GeoCountryEntity.PREFIX}longitude AS ${GeoCountryEntity.PX_MICRODISTRICT}${GeoCountryEntity.PREFIX}longitude,
             nv.countryTlId AS ${GeoCountryEntity.PX_MICRODISTRICT}countryTlId, nv.countryLocCode AS ${GeoCountryEntity.PX_MICRODISTRICT}countryLocCode, nv.countryTlCode AS ${GeoCountryEntity.PX_MICRODISTRICT}countryTlCode,  

@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class OsmData(
     val geocode: String? = null,
     val osmId: Long? = null,
-    @Embedded val coordinates: Coordinates
+    @Embedded val coordinates: Coordinates = Coordinates()
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -18,4 +18,5 @@ data class OsmData(
     }
 
     override fun hashCode() = osmId.hashCode()
+    override fun toString() = "OsmData(${geocode.orEmpty().plus(coordinates)}; osmId = $osmId)"
 }

@@ -15,6 +15,11 @@ data class MicrodistrictApiModel(
 ) {
     companion object {
         // https://stackoverflow.com/questions/30690724/dollar-sign-character-in-multiline-strings
+        //Budyonny Raion
+        //Nevsky District
+        //Kuntsevo District
+        //Kings County
+        //Queens County
         fun data(
             localityId: UUID,
             localityDistrictId: UUID? = null,
@@ -29,7 +34,9 @@ data class MicrodistrictApiModel(
     )->.crl;
     foreach.crl(
         convert MicrodistrictType 
-            osmType = type(), ::id = id(), ::geom = geom(), localityId = "$localityId", localityDistrictId = "${localityDistrictId?.toString().orEmpty()}", wikidata = t["wikidata"], gnis_id = t["gnis:feature_id"], place = t["place"], geocodeArea = t["name:en"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"];
+            osmType = type(), ::id = id(), ::geom = geom(), localityId = "$localityId", localityDistrictId = "${
+            localityDistrictId?.toString().orEmpty()
+        }", wikidata = t["wikidata"], gnis_id = t["gnis:feature_id"], place = t["place"], geocodeArea = t["name:en"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"];
         out center;
     );
     """.trimIndent()

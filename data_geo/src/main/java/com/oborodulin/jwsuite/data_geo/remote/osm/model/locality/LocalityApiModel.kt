@@ -18,6 +18,10 @@ data class LocalityApiModel(
     // https://wiki.openstreetmap.org/wiki/Key:place
     // https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL#Key/value_matches_regular_expression_(~%22key_regex%22~%22value_regex%22)
     // https://wiki.openstreetmap.org/wiki/Key:gnis:feature_id
+    //Kaarosta District
+    //Volnovakha Raion
+    //Mariupol Raion
+    //Monterey County
     companion object {
         fun data(
             regionId: UUID,

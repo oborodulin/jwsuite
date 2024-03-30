@@ -18,7 +18,7 @@ data class HouseUi(
     val houseNum: Int? = null,
     val houseLetter: String? = null,
     val buildingNum: Int? = null,
-    val buildingType: BuildingType = BuildingType.HOUSE,
+    val buildingType: BuildingType = BuildingType.APARTMENTS,
     val isBusiness: Boolean = false,
     val isSecurity: Boolean = false,
     val isIntercom: Boolean? = null,

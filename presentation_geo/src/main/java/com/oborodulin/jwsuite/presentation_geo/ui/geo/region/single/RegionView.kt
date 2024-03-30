@@ -39,6 +39,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComponent
+import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
@@ -67,8 +68,10 @@ fun RegionView(viewModel: RegionViewModel, handleSaveAction: OnImeKeyAction) {
 
     Timber.tag(TAG).d("Region: CollectAsStateWithLifecycle for all fields")
     val country by viewModel.country.collectAsStateWithLifecycle()
+    val codePrefix by viewModel.codePrefix.collectAsStateWithLifecycle()
     val regionCode by viewModel.regionCode.collectAsStateWithLifecycle()
     val regionType by viewModel.regionType.collectAsStateWithLifecycle()
+    val isRegionTypePrefix by viewModel.isRegionTypePrefix.collectAsStateWithLifecycle()
     val regionName by viewModel.regionName.collectAsStateWithLifecycle()
     val regionGeocode by viewModel.regionGeocode.collectAsStateWithLifecycle()
     val regionOsmId by viewModel.regionOsmId.collectAsStateWithLifecycle()
@@ -135,6 +138,7 @@ fun RegionView(viewModel: RegionViewModel, handleSaveAction: OnImeKeyAction) {
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
+            prefixWrapper = codePrefix,
             inputWrapper = regionCode,
             //maxLength = GeoRegion.REGION_CODE_LENGTH,
             trimmedValue = true,
@@ -160,6 +164,20 @@ fun RegionView(viewModel: RegionViewModel, handleSaveAction: OnImeKeyAction) {
             keys = regionTypes.keys.map { it.name }, // Enums
             onValueChange = { viewModel.onTextFieldEntered(RegionInputEvent.RegionType(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction,
+        )
+        SwitchComponent(
+            switchModifier = Modifier
+                .height(90.dp)
+                .focusRequester(focusRequesters[RegionFields.REGION_IS_TYPE_PREFIX]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = RegionFields.REGION_IS_TYPE_PREFIX,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.is_type_prefix_hint,
+            inputWrapper = isRegionTypePrefix,
+            onCheckedChange = { viewModel.onTextFieldEntered(RegionInputEvent.IsRegionTypePrefix(it)) }
         )
         TextFieldComponent(
             modifier = Modifier

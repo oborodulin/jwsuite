@@ -1,11 +1,25 @@
 <resources>
     <string-array name="building_types">
-        <item>жилой дом</item>
+        <!--ЖИЛЫЕ-->
+        <!--Apartments-->
+        <item>многокв. жилой дом</item>
+        <!--House-->
+        <item>частный жилой дом</item>
+        <!--Dormitory-->
         <item>общежитие</item>
+        <!--Hotel-->
+        <item>гостиница</item>
+
+        <!--КОММЕРЧЕСКИЕ-->
         <item>магазин</item>
         <item>супермаркет</item>
-        <item>поликлиника</item>
+        <item>офис</item>
+
+        <!--ОБЩЕСТВЕННЫЕ-->
+        <item>общественное</item>
         <item>больница</item>
+        <item>детский сад</item>
         <item>школа</item>
+        <item>университет</item>
     </string-array>
 </resources>

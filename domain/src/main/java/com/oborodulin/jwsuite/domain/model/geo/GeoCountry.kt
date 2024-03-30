@@ -4,10 +4,8 @@ import com.oborodulin.home.common.domain.model.DomainModel
 
 data class GeoCountry(
     val countryCode: String = "",
-    val countryGeocode: String? = null,
-    val countryOsmId: Long? = null,
-    val coordinates: GeoCoordinates = GeoCoordinates(),
+    val osm: GeoOsm = GeoOsm(),
     val countryName: String = ""
 ) : DomainModel() {
-    val osmInfo = countryGeocode.orEmpty().plus(coordinates)
+    val osmInfo = osm.toString()
 }

@@ -11,7 +11,8 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionEntity
     viewName = GeoLocalityView.VIEW_NAME,
     value = """
 SELECT nv.countryId AS ${GeoCountryEntity.PX}countryId, nv.countryCode AS ${GeoCountryEntity.PX}countryCode, 
-            nv.countryGeocode AS ${GeoCountryEntity.PX}countryGeocode, nv.countryOsmId AS ${GeoCountryEntity.PX}countryOsmId, 
+            nv.${GeoCountryEntity.PREFIX}geocode AS ${GeoCountryEntity.PX}${GeoCountryEntity.PREFIX}geocode,
+            nv.${GeoCountryEntity.PREFIX}osmId AS ${GeoCountryEntity.PX}${GeoCountryEntity.PREFIX}osmId, 
             nv.${GeoCountryEntity.PREFIX}latitude AS ${GeoCountryEntity.PX}${GeoCountryEntity.PREFIX}latitude,
             nv.${GeoCountryEntity.PREFIX}longitude AS ${GeoCountryEntity.PX}${GeoCountryEntity.PREFIX}longitude,
             nv.countryTlId AS ${GeoCountryEntity.PX}countryTlId, nv.countryLocCode AS ${GeoCountryEntity.PX}countryLocCode, nv.countryTlCode AS ${GeoCountryEntity.PX}countryTlCode,  

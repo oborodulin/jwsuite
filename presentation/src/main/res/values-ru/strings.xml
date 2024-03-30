@@ -70,6 +70,7 @@
     <string name="short_name_hint">Короткое наименование</string>
     <string name="type_hint">Тип</string>
     <string name="is_private_sector_hint">Частный сектор?</string>
+    <string name="is_type_prefix_hint">Тип как префикс?</string>
     <!--участки-->
     <string name="territory_hint">Участок</string>
     <!--регистрация/вход-->

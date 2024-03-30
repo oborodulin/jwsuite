@@ -2,11 +2,16 @@ package com.oborodulin.jwsuite.domain.types
 
 // resource: domain/building_types.xml
 enum class BuildingType {
+    APARTMENTS,
     HOUSE,
-    HOSTEL,
-    SHOP,
-    MALL,
-    POLYCLINIC,
+    DORMITORY,
+    HOTEL,
+    RETAIL,
+    SUPERMARKET,
+    OFFICE,
+    PUBLIC,
     HOSPITAL,
-    SCHOOL
+    KINDERGARTEN,
+    SCHOOL,
+    UNIVERSITY
 }

@@ -9,7 +9,7 @@ class CountryToCountriesListItemMapper : Mapper<GeoCountry, CountriesListItem> {
     override fun map(input: GeoCountry) = CountriesListItem(
         id = input.id ?: UUID.randomUUID(),
         countryCode = input.countryCode,
-        countryGeocode = input.countryGeocode,
+        countryGeocode = input.osm.geocode,
         osmInfo = input.osmInfo,
         countryName = input.countryName
     )

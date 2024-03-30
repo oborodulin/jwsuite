@@ -15,6 +15,11 @@ data class StreetApiModel(
 ) {
     companion object {
         // https://help.openstreetmap.org/questions/87188/how-to-get-the-list-of-addresses-or-street-names-by-city
+        //Donetsk / Budyonny Raion
+        //Saint Petersburg
+        //Moscow
+        //New York
+        // geocodeArea = t["name:en"],
         fun data(
             localityId: UUID,
             localityDistrictId: UUID? = null,
@@ -25,10 +30,10 @@ data class StreetApiModel(
     {{geocodeArea:$geocodeArea}}->.searchArea;
     way["highway"]["name"](area.searchArea)->.crl;
     foreach.crl(
-        convert StreetType 
+        convert StreetType
             osmType = type(), ::id = id(), ::geom = geom(), localityId = "$localityId", localityDistrictId = "${
             localityDistrictId?.toString().orEmpty()
-        }", highway = t["highway"], geocodeArea = t["name:en"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"];
+        }", highway = t["highway"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"];
         out center;
     );
     """.trimIndent()
@@ -47,7 +52,7 @@ data class StreetTags(
     @Json(name = "localityId") val localityId: UUID,
     @Json(name = "localityDistrictId") val localityDistrictId: UUID?,
     @Json(name = "highway") val highway: String,
-    @Json(name = "geocodeArea") val geocodeArea: String,
+    //@Json(name = "geocodeArea") val geocodeArea: String,
     @Json(name = "locale") val locale: String,
     @Json(name = "name_loc") val nameLoc: String,
     @Json(name = "name") val name: String

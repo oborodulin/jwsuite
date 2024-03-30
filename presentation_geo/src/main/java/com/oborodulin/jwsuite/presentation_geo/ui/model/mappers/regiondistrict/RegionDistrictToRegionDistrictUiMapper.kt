@@ -14,11 +14,13 @@ class RegionDistrictToRegionDistrictUiMapper(
     NullableMapper<GeoRegionDistrict, RegionDistrictUi> {
     override fun map(input: GeoRegionDistrict) = RegionDistrictUi(
         region = regionMapper.nullableMap(input.region),
-        districtShortName = input.districtShortName,
+        shortNamePrefix = input.prefix,
+        districtShortName = input.shortName,
         districtGeocode = input.districtGeocode,
         districtOsmId = input.districtOsmId,
         coordinates = coordinatesMapper.map(input.coordinates),
-        districtName = input.districtName
+        districtName = input.districtName,
+        districtFullName = input.districtFullName
     ).also {
         it.id = input.id
         it.tlId = input.tlId

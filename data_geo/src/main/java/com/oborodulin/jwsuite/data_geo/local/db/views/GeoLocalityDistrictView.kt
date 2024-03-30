@@ -12,7 +12,8 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionEntity
     viewName = GeoLocalityDistrictView.VIEW_NAME,
     value = """
 SELECT nv.countryId AS ${GeoCountryEntity.PX_LOCALITY_DISTRICT}countryId, nv.countryCode AS ${GeoCountryEntity.PX_LOCALITY_DISTRICT}countryCode, 
-            nv.countryGeocode AS ${GeoCountryEntity.PX_LOCALITY_DISTRICT}countryGeocode, nv.countryOsmId AS ${GeoCountryEntity.PX_LOCALITY_DISTRICT}countryOsmId, 
+            nv.${GeoCountryEntity.PREFIX}geocode AS ${GeoCountryEntity.PX_LOCALITY_DISTRICT}${GeoCountryEntity.PREFIX}geocode,
+            nv.${GeoCountryEntity.PREFIX}osmId AS ${GeoCountryEntity.PX_LOCALITY_DISTRICT}${GeoCountryEntity.PREFIX}osmId, 
             nv.${GeoCountryEntity.PREFIX}latitude AS ${GeoCountryEntity.PX_LOCALITY_DISTRICT}${GeoCountryEntity.PREFIX}latitude,
             nv.${GeoCountryEntity.PREFIX}longitude AS ${GeoCountryEntity.PX_LOCALITY_DISTRICT}${GeoCountryEntity.PREFIX}longitude,
             nv.countryTlId AS ${GeoCountryEntity.PX_LOCALITY_DISTRICT}countryTlId, nv.countryLocCode AS ${GeoCountryEntity.PX_LOCALITY_DISTRICT}countryLocCode, nv.countryTlCode AS ${GeoCountryEntity.PX_LOCALITY_DISTRICT}countryTlCode,  

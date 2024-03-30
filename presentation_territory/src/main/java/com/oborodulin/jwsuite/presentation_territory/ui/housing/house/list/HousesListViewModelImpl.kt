@@ -132,7 +132,7 @@ class HousesListViewModelImpl @Inject constructor(
                 zipCode = "830004",
                 houseNum = 1,
                 houseFullNum = "1Б",
-                buildingType = BuildingType.HOSTEL,
+                buildingType = BuildingType.DORMITORY,
                 isBusiness = true,
                 isSecurity = true,
                 isIntercom = true,

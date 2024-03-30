@@ -3,15 +3,14 @@ package com.oborodulin.jwsuite.data_geo.local.db.views
 import androidx.room.DatabaseView
 import androidx.room.Embedded
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryEntity
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionEntity
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionTlEntity
 
 @DatabaseView(
     viewName = GeoRegionView.VIEW_NAME,
     value = """
 SELECT nv.countryId AS ${GeoCountryEntity.PX_REGION}countryId, nv.countryCode AS ${GeoCountryEntity.PX_REGION}countryCode, 
-            nv.countryGeocode AS ${GeoCountryEntity.PX_REGION}countryGeocode, nv.countryOsmId AS ${GeoCountryEntity.PX_REGION}countryOsmId, 
+            nv.${GeoCountryEntity.PREFIX}geocode AS ${GeoCountryEntity.PX_REGION}${GeoCountryEntity.PREFIX}geocode,
+            nv.${GeoCountryEntity.PREFIX}osmId AS ${GeoCountryEntity.PX_REGION}${GeoCountryEntity.PREFIX}osmId, 
             nv.${GeoCountryEntity.PREFIX}latitude AS ${GeoCountryEntity.PX_REGION}${GeoCountryEntity.PREFIX}latitude,
             nv.${GeoCountryEntity.PREFIX}longitude AS ${GeoCountryEntity.PX_REGION}${GeoCountryEntity.PREFIX}longitude,
             nv.countryTlId AS ${GeoCountryEntity.PX_REGION}countryTlId, nv.countryLocCode AS ${GeoCountryEntity.PX_REGION}countryLocCode, nv.countryTlCode AS ${GeoCountryEntity.PX_REGION}countryTlCode,  

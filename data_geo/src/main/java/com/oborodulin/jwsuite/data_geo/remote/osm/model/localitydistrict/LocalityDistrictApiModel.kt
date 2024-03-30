@@ -15,6 +15,10 @@ data class LocalityDistrictApiModel(
 ) {
     companion object {
         // https://stackoverflow.com/questions/30690724/dollar-sign-character-in-multiline-strings
+        //Donetsk
+        //Saint Petersburg
+        //Moscow
+        //New York
         fun data(
             localityId: UUID,
             geocodeArea: String,

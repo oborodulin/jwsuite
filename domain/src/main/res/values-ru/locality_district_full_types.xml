@@ -1,0 +1,6 @@
+<resources>
+    <string-array name="locality_district_full_types">
+        <!--Жилой район-->
+        <item>район</item>
+    </string-array>
+</resources>

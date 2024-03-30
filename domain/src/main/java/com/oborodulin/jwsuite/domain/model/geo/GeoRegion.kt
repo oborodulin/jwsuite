@@ -2,8 +2,10 @@ package com.oborodulin.jwsuite.domain.model.geo
 
 import android.content.Context
 import com.oborodulin.home.common.domain.model.DomainModel
+import com.oborodulin.home.common.extensions.ifNotEmpty
 import com.oborodulin.jwsuite.domain.R
 import com.oborodulin.jwsuite.domain.types.RegionType
+import java.util.Locale
 
 data class GeoRegion(
     val ctx: Context? = null,
@@ -18,20 +20,18 @@ data class GeoRegion(
     val districts: List<GeoRegionDistrict> = emptyList(),
     val localities: List<GeoLocality> = emptyList()
 ) : DomainModel() {
-    val regionFullName =
-        "${
-            ctx?.let { it.resources.getStringArray(R.array.region_types)[regionType.ordinal] }
-                .takeIf { isRegionTypePrefix }
-                .orEmpty()
-        } $regionName ${
-            ctx?.let { it.resources.getStringArray(R.array.region_types)[regionType.ordinal] }
-                .takeIf { isRegionTypePrefix.not() }
-                .orEmpty()
-        }".trim()
+    val prefix = regionCode.substringBeforeLast('-')
+    val code = regionCode.substringAfterLast('-')
+    val type = ctx?.let { it.resources.getStringArray(R.array.region_types)[regionType.ordinal] }
+    val regionFullName = "${
+        type?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
+            .takeIf { isRegionTypePrefix }.orEmpty()
+    } $regionName ${type.takeIf { isRegionTypePrefix.not() }.orEmpty()}".trim()
     val osmInfo = regionGeocode.orEmpty().plus(coordinates)
 
     companion object {
         const val REGION_CODE_LENGTH = 3
         fun default(country: GeoCountry?) = GeoRegion(country = country)
+        fun code(prefix: String = "", code: String) = prefix.ifNotEmpty { "$it-$code" } ?: code
     }
 }

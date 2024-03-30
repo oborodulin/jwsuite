@@ -10,6 +10,6 @@ class RegionDistrictToRegionDistrictsListItemMapper :
     override fun map(input: GeoRegionDistrict) = RegionDistrictsListItem(
         id = input.id ?: UUID.randomUUID(),
         districtShortName = input.districtShortName,
-        districtName = input.districtName
+        districtName = input.districtFullName
     )
 }
