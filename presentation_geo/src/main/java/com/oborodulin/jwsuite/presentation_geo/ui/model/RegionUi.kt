@@ -7,8 +7,10 @@ import com.oborodulin.jwsuite.domain.types.RegionType
 
 data class RegionUi(
     val country: CountryUi? = null,
+    val regionPrefix: String = "",
     val regionCode: String = "",
     val regionType: RegionType = RegionType.REGION,
+    val isRegionTypePrefix: Boolean = false,
     val regionGeocode: String? = null,
     val regionOsmId: Long? = null,
     val coordinates: CoordinatesUi = CoordinatesUi(),

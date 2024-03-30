@@ -12,6 +12,7 @@ class GeoRegionToGeoRegionEntityMapper(private val mapper: GeoCoordinatesToCoord
         regionId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
         regionCode = input.regionCode,
         regionType = input.regionType,
+        isRegionTypePrefix = input.isRegionTypePrefix,
         regionGeocode = input.regionGeocode,
         regionOsmId = input.regionOsmId,
         coordinates = mapper.map(input.coordinates),

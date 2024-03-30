@@ -2,11 +2,10 @@ package com.oborodulin.jwsuite.data_geo.sources.remote
 
 import android.content.Context
 import com.oborodulin.home.common.data.network.ApiResponse
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.region.RegionApiModel
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.regiondistrict.RegionDistrictApiModel
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.regiondistrict.RegionDistrictService
 import com.oborodulin.jwsuite.data_geo.remote.sources.RemoteGeoRegionDataSource
-import com.oborodulin.jwsuite.domain.types.RegionType
+import com.oborodulin.jwsuite.domain.types.RegionDistrictType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.util.UUID
@@ -20,18 +19,18 @@ class RemoteGeoRegionDistrictDataSourceImpl @Inject constructor(
     private val regionDistrictService: RegionDistrictService
     //@IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : RemoteGeoRegionDataSource {
-    override fun getCountryRegions(
-        countryId: UUID,
-        countryGeocodeArea: String
-    ): Flow<ApiResponse<RegionApiModel>> = flow {
+    override fun getRegionDistricts(
+        regionId: UUID,
+        regionGeocodeArea: String
+    ): Flow<ApiResponse<RegionDistrictApiModel>> = flow {
         val resArray =
-            ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.region_full_types)
+            ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.region_district_full_types)
         try {
             regionDistrictService.getRegionDistricts(
                 data = RegionDistrictApiModel.data(
-                    countryId = countryId,
-                    geocodeArea = countryGeocodeArea,
-                    excRegionType = resArray[RegionType.FEDERAL_CITY.ordinal]
+                    regionId = regionId,
+                    geocodeArea = regionGeocodeArea,
+                    incRegionDistrictType = resArray[RegionDistrictType.BOROUGH.ordinal]
                 )
             )?.let {
                 if (it.elements.isNotEmpty()) {

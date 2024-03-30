@@ -17,6 +17,7 @@ SELECT nv.countryId AS ${GeoCountryEntity.PX_REGION}countryId, nv.countryCode AS
             nv.countryTlId AS ${GeoCountryEntity.PX_REGION}countryTlId, nv.countryLocCode AS ${GeoCountryEntity.PX_REGION}countryLocCode, nv.countryTlCode AS ${GeoCountryEntity.PX_REGION}countryTlCode,  
             nv.countryName AS ${GeoCountryEntity.PX_REGION}countryName, nv.countriesId AS ${GeoCountryEntity.PX_REGION}countriesId, 
         rv.regionId AS ${GeoRegionEntity.PX}regionId, rv.regionCode AS ${GeoRegionEntity.PX}regionCode, rv.regionType AS ${GeoRegionEntity.PX}regionType,
+            rv.isRegionTypePrefix AS ${GeoRegionEntity.PX}isRegionTypePrefix,
             rv.regionGeocode AS ${GeoRegionEntity.PX}regionGeocode, rv.regionOsmId AS ${GeoRegionEntity.PX}regionOsmId, 
             rv.${GeoRegionEntity.PREFIX}latitude AS ${GeoRegionEntity.PX}${GeoRegionEntity.PREFIX}latitude,
             rv.${GeoRegionEntity.PREFIX}longitude AS ${GeoRegionEntity.PX}${GeoRegionEntity.PREFIX}longitude, 

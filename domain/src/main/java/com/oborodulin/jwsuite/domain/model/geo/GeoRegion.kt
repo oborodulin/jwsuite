@@ -10,6 +10,7 @@ data class GeoRegion(
     var country: GeoCountry? = null,
     val regionCode: String = "",
     val regionType: RegionType = RegionType.REGION,
+    val isRegionTypePrefix: Boolean = false,
     val regionGeocode: String? = null,
     val regionOsmId: Long? = null,
     val coordinates: GeoCoordinates = GeoCoordinates(),
@@ -18,8 +19,13 @@ data class GeoRegion(
     val localities: List<GeoLocality> = emptyList()
 ) : DomainModel() {
     val regionFullName =
-        "$regionName ${
+        "${
             ctx?.let { it.resources.getStringArray(R.array.region_types)[regionType.ordinal] }
+                .takeIf { isRegionTypePrefix }
+                .orEmpty()
+        } $regionName ${
+            ctx?.let { it.resources.getStringArray(R.array.region_types)[regionType.ordinal] }
+                .takeIf { isRegionTypePrefix.not() }
                 .orEmpty()
         }".trim()
     val osmInfo = regionGeocode.orEmpty().plus(coordinates)

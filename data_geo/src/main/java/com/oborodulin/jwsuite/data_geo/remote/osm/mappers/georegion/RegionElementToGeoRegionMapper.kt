@@ -22,16 +22,18 @@ class RegionElementToGeoRegionMapper(
                     input.tags.officialName.contains(it, true) ||
                     input.tags.officialNameLoc.contains(it, true)
         }
+        val regionName = input.tags.nameLoc.ifEmpty { input.tags.name }
         return GeoRegion(
             country = GeoCountry().also { it.id = input.tags.countryId },
             regionCode = input.tags.cadasterCode.ifEmpty { input.tags.shortNameLoc.ifEmpty { input.tags.refLoc.ifEmpty { input.tags.gost.ifEmpty { input.tags.shortName.ifEmpty { input.tags.ref.ifEmpty { input.tags.isoCode } } } } } },
             regionType = resType?.let { RegionType.entries[resArray.indexOf(it)] }
                 ?: RegionType.REGION,
+            isRegionTypePrefix = resType?.let { regionName.startsWith(it, true) } ?: false,
             regionGeocode = input.tags.geocodeArea.ifEmpty { input.tags.name },
             regionOsmId = input.id,
             coordinates = mapper.map(input.geometry),
-            regionName = input.tags.nameLoc.ifEmpty { input.tags.name }
-                .replace(resType.orEmpty().toRegex(RegexOption.IGNORE_CASE), "").trim()
+            regionName = regionName.replace(resType.orEmpty().toRegex(RegexOption.IGNORE_CASE), "")
+                .trim()
         )
     }
 }

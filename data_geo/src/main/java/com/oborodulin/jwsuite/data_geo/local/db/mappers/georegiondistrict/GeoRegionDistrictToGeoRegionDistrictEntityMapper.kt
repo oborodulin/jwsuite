@@ -11,6 +11,7 @@ class GeoRegionDistrictToGeoRegionDistrictEntityMapper(private val mapper: GeoCo
     override fun map(input: GeoRegionDistrict) = GeoRegionDistrictEntity(
         regionDistrictId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
         regDistrictShortName = input.districtShortName,
+        regDistrictType = input.districtType,
         regDistrictGeocode = input.districtGeocode,
         regDistrictOsmId = input.districtOsmId,
         coordinates = mapper.map(input.coordinates),

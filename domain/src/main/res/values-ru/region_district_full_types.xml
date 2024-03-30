@@ -1,7 +1,7 @@
 <resources>
     <string-array name="region_district_full_types">
         <item>городской округ</item>
-        <!--Муниципальный район-->
+        <!--Муниципальный/жилой район-->
         <item>район</item>
     </string-array>
 </resources>

@@ -1,0 +1,8 @@
+<resources>
+    <string-array name="region_district_types">
+        <!--Городской округ-->
+        <item>г.о.</item>
+        <!--Муниципальный/жилой район-->
+        <item>р-н</item>
+    </string-array>
+</resources>

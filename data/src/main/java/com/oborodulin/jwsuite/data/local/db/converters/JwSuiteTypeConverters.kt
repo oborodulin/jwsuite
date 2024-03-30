@@ -10,12 +10,13 @@ import com.oborodulin.jwsuite.domain.types.BuildingType
 import com.oborodulin.jwsuite.domain.types.LocalityType
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.domain.types.MemberType
+import com.oborodulin.jwsuite.domain.types.MicrodistrictType
+import com.oborodulin.jwsuite.domain.types.RegionDistrictType
 import com.oborodulin.jwsuite.domain.types.RegionType
 import com.oborodulin.jwsuite.domain.types.RoadType
 import com.oborodulin.jwsuite.domain.types.TerritoryCategoryType
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.types.TerritoryReportMark
-import com.oborodulin.jwsuite.domain.types.MicrodistrictType
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
@@ -100,6 +101,13 @@ object JwSuiteTypeConverters {
 
     //-----------------------------
     @TypeConverter
+    fun toRegionDistrictType(value: String) = enumValueOf<RegionDistrictType>(value)
+
+    @TypeConverter
+    fun fromRegionDistrictType(value: RegionDistrictType) = value.name
+
+    //-----------------------------
+    @TypeConverter
     fun toLocalityType(value: String) = enumValueOf<LocalityType>(value)
 
     @TypeConverter
@@ -107,10 +115,10 @@ object JwSuiteTypeConverters {
 
     //-----------------------------
     @TypeConverter
-    fun toVillageType(value: String) = enumValueOf<MicrodistrictType>(value)
+    fun toMicrodistrictType(value: String) = enumValueOf<MicrodistrictType>(value)
 
     @TypeConverter
-    fun fromVillageType(value: MicrodistrictType) = value.name
+    fun fromMicrodistrictType(value: MicrodistrictType) = value.name
 
     //-----------------------------
     @TypeConverter

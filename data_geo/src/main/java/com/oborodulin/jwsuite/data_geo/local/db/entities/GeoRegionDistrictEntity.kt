@@ -11,12 +11,16 @@ import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.data_geo.local.db.entities.pojo.Coordinates
+import com.oborodulin.jwsuite.domain.types.RegionDistrictType
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Entity(
     tableName = GeoRegionDistrictEntity.TABLE_NAME,
-    indices = [Index(value = ["rRegionsId", "regDistrictShortName"], unique = true)],
+    indices = [Index(
+        value = ["rRegionsId", "regDistrictType", "regDistrictShortName"],
+        unique = true
+    )],
     foreignKeys = [ForeignKey(
         entity = GeoRegionEntity::class,
         parentColumns = arrayOf("regionId"),
@@ -30,6 +34,7 @@ data class GeoRegionDistrictEntity(
     @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val regionDistrictId: UUID = UUID.randomUUID(),
     val regDistrictShortName: String,
+    val regDistrictType: RegionDistrictType = RegionDistrictType.BOROUGH,
     val regDistrictGeocode: String? = null,
     @ColumnInfo(index = true) val regDistrictOsmId: Long? = null,
     @Embedded(prefix = PREFIX) val coordinates: Coordinates,
@@ -48,11 +53,12 @@ data class GeoRegionDistrictEntity(
         fun defaultRegionDistrict(
             regionDistrictId: UUID = UUID.randomUUID(), regionId: UUID = UUID.randomUUID(),
             districtShortName: String,
+            regDistrictType: RegionDistrictType = RegionDistrictType.BOROUGH,
             regDistrictGeocode: String? = null,
             regDistrictOsmId: Long? = null, coordinates: Coordinates = Coordinates()
         ) = GeoRegionDistrictEntity(
             rRegionsId = regionId, regionDistrictId = regionDistrictId,
-            regDistrictShortName = districtShortName,
+            regDistrictShortName = districtShortName, regDistrictType = regDistrictType,
             regDistrictGeocode = regDistrictGeocode, regDistrictOsmId = regDistrictOsmId,
             coordinates = coordinates
         )
@@ -73,18 +79,20 @@ data class GeoRegionDistrictEntity(
 
     override fun key(): Int {
         var result = rRegionsId.hashCode()
+        result = result * 31 + regDistrictType.hashCode()
         result = result * 31 + regDistrictShortName.hashCode()
         return result
     }
 
     override fun toString(): String {
         val str = StringBuffer()
-        str.append("Region District Entity '").append(regDistrictShortName)
-            .append("'. OSM: regDistrictOsmId = ").append(regDistrictOsmId)
+        str.append("RegionDistrictEntity ('").append(regDistrictShortName)
+            .append("'; regDistrictType = ").append(regDistrictType)
+            .append("'; OSM(regDistrictOsmId = ").append(regDistrictOsmId)
             .append("; regDistrictGeocode = ").append(regDistrictGeocode)
             .append("; coordinates = ").append(coordinates)
-            .append(" [rRegionsId = ").append(rRegionsId)
-            .append("] regionDistrictId = ").append(regionDistrictId)
+            .append("); [rRegionsId = ").append(rRegionsId)
+            .append("]; regionDistrictId = ").append(regionDistrictId).append(")")
         return str.toString()
     }
 }

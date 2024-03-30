@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.region
 
+import com.oborodulin.home.common.extensions.ifNotEmpty
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.domain.model.geo.GeoRegion
@@ -13,8 +14,10 @@ class RegionUiToRegionMapper(
 ) : Mapper<RegionUi, GeoRegion>, NullableMapper<RegionUi, GeoRegion> {
     override fun map(input: RegionUi) = GeoRegion(
         country = countryUiMapper.map(input.country!!),
-        regionCode = input.regionCode,
+        regionCode = input.regionPrefix.ifNotEmpty { "$it-${input.regionCode}" }
+            ?: input.regionCode,
         regionType = input.regionType,
+        isRegionTypePrefix = input.isRegionTypePrefix,
         regionGeocode = input.regionGeocode,
         regionOsmId = input.regionOsmId,
         coordinates = coordinatesUiMapper.map(input.coordinates),

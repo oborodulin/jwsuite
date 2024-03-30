@@ -8,6 +8,8 @@ class GeoRegionEntityToGeoRegionCsvMapper : Mapper<GeoRegionEntity, GeoRegionCsv
     override fun map(input: GeoRegionEntity) = GeoRegionCsv(
         regionId = input.regionId,
         regionCode = input.regionCode,
+        regionType = input.regionType,
+        isRegionTypePrefix = input.isRegionTypePrefix,
         regionGeocode = input.regionGeocode,
         regionOsmId = input.regionOsmId,
         latitude = input.coordinates.latitude,

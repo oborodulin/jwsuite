@@ -13,8 +13,9 @@ class RegionViewToGeoRegionMapper(
 ) : Mapper<RegionView, GeoRegion>, NullableMapper<RegionView, GeoRegion> {
     override fun map(input: RegionView) = GeoRegion(
         ctx = ctx,
-        regionCode = input.data.regionCode.substringAfterLast('-'),
+        regionCode = input.data.regionCode,
         regionType = input.data.regionType,
+        isRegionTypePrefix = input.data.isRegionTypePrefix,
         regionGeocode = input.data.regionGeocode,
         regionOsmId = input.data.regionOsmId,
         coordinates = mapper.map(input.data.coordinates),

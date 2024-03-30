@@ -14,6 +14,8 @@ class GeoRegionViewToGeoRegionMapper(
     override fun map(input: GeoRegionView) = GeoRegion(
         country = countryMapper.map(input.country),
         regionCode = input.region.data.regionCode,
+        regionType = input.region.data.regionType,
+        isRegionTypePrefix = input.region.data.isRegionTypePrefix,
         regionGeocode = input.region.data.regionGeocode,
         regionOsmId = input.region.data.regionOsmId,
         coordinates = coordinatesMapper.map(input.region.data.coordinates),

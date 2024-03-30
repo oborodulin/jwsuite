@@ -2,10 +2,12 @@ package com.oborodulin.jwsuite.domain.model.geo
 
 import com.oborodulin.home.common.domain.model.DomainModel
 import com.oborodulin.home.common.extensions.ifNotEmpty
+import com.oborodulin.jwsuite.domain.types.RegionDistrictType
 
 data class GeoRegionDistrict(
     var region: GeoRegion? = null,
     val districtShortName: String = "",
+    val districtType: RegionDistrictType = RegionDistrictType.BOROUGH,
     val districtGeocode: String? = null,
     val districtOsmId: Long? = null,
     val coordinates: GeoCoordinates = GeoCoordinates(),
