@@ -29,8 +29,8 @@ data class MicrodistrictApiModel(
     [out:json][timeout:$OSM_TIMEOUT];
     {{geocodeArea:$geocodeArea}}->.searchArea;
     (
-    node[place~"^(suburb|quarter|neighbourhood|city_block|plot)${'$'}"]["name"~"."](area.searchArea);
-    rel["admin_level"~"^[8,9]|10${'$'}"][place="suburb"]["name"~"."](area.searchArea);
+    node[place~"^(suburb|quarter|neighbourhood|city_block|plot)${'$'}"]["name"](area.searchArea);
+    rel["admin_level"~"^[8,9]|10${'$'}"][place="suburb"]["name"](area.searchArea);
     )->.crl;
     foreach.crl(
         convert MicrodistrictType 

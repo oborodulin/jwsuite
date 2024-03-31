@@ -28,9 +28,9 @@ data class LocalityDistrictApiModel(
     [out:json][timeout:$OSM_TIMEOUT];
     {{geocodeArea:$geocodeArea}}->.searchArea;
     (
-        node[place="borough"]["name"~"."](area.searchArea);
+        node[place="borough"]["name"](area.searchArea);
         rel["admin_level"~"^[5-8]${'$'}"]["name"~"$incLocalityDistrictType", i](area.searchArea);
-        rel["admin_level"~"^[5-8]${'$'}"][border_type="county"]["name"~"."](area.searchArea);
+        rel["admin_level"~"^[5-8]${'$'}"][border_type="county"]["name"](area.searchArea);
     )->.crl;
     foreach.crl(
         convert LocalityDistrictType 

@@ -31,7 +31,7 @@ data class LocalityApiModel(
         ) = """ 
     [out:json][timeout:$OSM_TIMEOUT];
     {{geocodeArea:$geocodeArea}}->.searchArea;
-    node[place~"^(city|town|village|hamlet|isolated_dwelling)${'$'}"]["name"~"."](area.searchArea)->.crl;
+    node[place~"^(city|town|village|hamlet|isolated_dwelling)${'$'}"]["name"](area.searchArea)->.crl;
     foreach.crl(
         convert LocalityType 
             osmType = type(), ::id = id(), ::geom = geom(), regionId = "$regionId", regionDistrictId = "${

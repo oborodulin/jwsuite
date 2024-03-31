@@ -13,9 +13,10 @@ data class CountryApiModel(
     @Json(name = "elements") val elements: List<CountryElement>
 ) {
     companion object {
+        // https://stackoverflow.com/questions/69950326/how-to-query-overpass-turbo-by-a-tag-with-any-value
         fun data(locale: String? = Locale.getDefault().language.substringBefore('-')) = """
     [out:json][timeout:$OSM_TIMEOUT];
-    (rel[admin_level="2"][boundary="administrative"][type!="multilinestring"][~"^(country_code_iso3166_1_alpha_2|ISO3166-1:alpha2)${'$'}"~"."];)->.rc;
+    (rel[admin_level="2"][boundary="administrative"][type!="multilinestring"][~"^(country_code_iso3166_1_alpha_2|ISO3166-1:alpha2)${'$'}"~"."]["name"];)->.rc;
     foreach.rc(
         convert CountryType 
             osmType = type(), ::id = id(), ::geom = geom(), countryCode = t["country_code_iso3166_1_alpha_2"], isoCode = t["ISO3166-1:alpha2"], geocodeArea = t["name:en"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"], flag = t["flag"];

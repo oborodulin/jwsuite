@@ -28,8 +28,8 @@ data class RegionDistrictApiModel(
     [out:json][timeout:$OSM_TIMEOUT];
     {{geocodeArea:$geocodeArea}}->.searchArea;
     (
-    rel["admin_level"="6"][~"^(place|official_status)*${'$'}"~"(district|$incRegionDistrictType)${'$'}"]["name"~"."](area.searchArea);
-    rel["admin_level"="6"][~"^county.*${'$'}"~"."]["border_type"!~"city"]["name"~"."](area.searchArea);
+    rel["admin_level"="6"][~"^(place|official_status)*${'$'}"~"(district|$incRegionDistrictType)${'$'}"]["name"](area.searchArea);
+    rel["admin_level"="6"][~"^county.*${'$'}"~"."]["border_type"!~"city"]["name"](area.searchArea);
     )->.rdr;
     foreach.rdr(
         convert RegionDistrictType 

@@ -6,13 +6,15 @@ enum class BuildingType {
     APARTMENTS,
     HOUSE,
     DORMITORY,
-    HOTEL,
 
     // Commercial
+    HOTEL,
     RETAIL,
     SUPERMARKET,
     OFFICE,
-    INDUSTRIAL, //non-residential
+
+    //non-residential
+    INDUSTRIAL,
 
     // Civic/amenity
     PUBLIC,

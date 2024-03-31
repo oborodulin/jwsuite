@@ -21,10 +21,11 @@ class HouseElementToHouseMapper(private val mapper: GeometryToGeoCoordinatesMapp
                 },
                 zipCode = this.postcode.ifBlank { null },
                 houseNum = this.houseNum(),
-                houseLetter = House.letterFromHouseFullNum(this.houseNumber),
-                buildingNum = House.buildingNumFromHouseFullNum(this.houseNumber),
+                houseLetter = this.houseLetter(),
+                buildingNum = this.buildingNum(),
                 buildingType = type,
                 isBusiness = listOf(
+                    BuildingType.HOTEL,
                     BuildingType.RETAIL,
                     BuildingType.SUPERMARKET,
                     BuildingType.OFFICE
@@ -32,8 +33,7 @@ class HouseElementToHouseMapper(private val mapper: GeometryToGeoCoordinatesMapp
                 isResidential = listOf(
                     BuildingType.APARTMENTS,
                     BuildingType.HOUSE,
-                    BuildingType.DORMITORY,
-                    BuildingType.HOTEL
+                    BuildingType.DORMITORY
                 ).contains(type),
                 floorsByEntrance = this.levels.ifBlank { this.maxLevel }.toIntOrNull(),
                 estimatedRooms = this.flats.toIntOrNull(),

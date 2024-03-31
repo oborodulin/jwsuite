@@ -56,10 +56,18 @@ data class House(
         houseFullNum.plus(if (info.isNotEmpty()) " (${info.joinToString(", ")})" else "")
 
     companion object {
-        fun letterFromHouseFullNum(houseFullNum: String) =
-            houseFullNum.filter { it.isLetter() }.ifEmpty { null }
+        const val BUILDING_DELIMITERS = "-"
+        const val LETTER_DELIMITERS = "-/"
+        const val NUMBER_DELIMITERS = "$LETTER_DELIMITERS "
+        fun houseNum(houseFullNum: String) =
+            houseFullNum.substringBefore(BUILDING_DELIMITERS).filter { it.isDigit() }.toInt()
 
-        fun buildingNumFromHouseFullNum(houseFullNum: String) =
-            houseFullNum.takeIf { it.contains('-') }?.substringAfter('-')?.toIntOrNull()
+        fun houseLetter(houseFullNum: String) =
+            houseFullNum.substringBefore(BUILDING_DELIMITERS).filter { it.isLetter() }
+                .ifEmpty { null }
+
+        fun buildingNum(houseFullNum: String) =
+            houseFullNum.takeIf { it.contains(BUILDING_DELIMITERS) }
+                ?.substringAfter(BUILDING_DELIMITERS)?.toIntOrNull()
     }
 }

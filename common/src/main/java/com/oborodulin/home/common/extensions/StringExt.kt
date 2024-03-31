@@ -50,7 +50,7 @@ fun String?.toLocalityDistrictName() = this?.substringAfter(' ').orEmpty()
 // Territory:
 fun String?.toStreetName() = this?.substringAfter(' ').orEmpty()
 fun String.toIntHouseNum() = this.let { s ->
-    val cs = s.substringAfter(' ')
+    val cs = s.substringAfterLast(' ')
     try {
         cs.substringBefore(cs.first { it.isLetter() || it == '-' })
     } catch (e: NoSuchElementException) {
