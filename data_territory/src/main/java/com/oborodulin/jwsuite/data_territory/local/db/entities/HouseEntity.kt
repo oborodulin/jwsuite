@@ -19,7 +19,7 @@ import java.util.UUID
 @Entity(
     tableName = HouseEntity.TABLE_NAME,
     indices = [Index(
-        value = ["hStreetsId", "zipCode", "houseNum", "houseLetter", "buildingNum"],
+        value = ["hStreetsId", "buildingType", "zipCode", "houseNum", "houseLetter", "buildingNum"],
         unique = true
     )],
     foreignKeys = [ForeignKey(

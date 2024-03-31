@@ -2,9 +2,9 @@
     <string-array name="building_types">
         <!--ЖИЛЫЕ-->
         <!--Apartments-->
-        <item>многокв. жилой дом</item>
+        <item>многоэтажка</item>
         <!--House-->
-        <item>частный жилой дом</item>
+        <item>частный дом</item>
         <!--Dormitory-->
         <item>общежитие</item>
         <!--Hotel-->
@@ -14,6 +14,8 @@
         <item>магазин</item>
         <item>супермаркет</item>
         <item>офис</item>
+        <!--не жилое здание/помещение-->
+        <item>промышленное</item>
 
         <!--ОБЩЕСТВЕННЫЕ-->
         <item>общественное</item>
