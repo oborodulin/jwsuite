@@ -4,6 +4,7 @@ import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.GeometryToGeoCoordinatesMapper
 import com.oborodulin.jwsuite.data_territory.remote.osm.model.house.HouseElement
 import com.oborodulin.jwsuite.domain.model.geo.GeoLocalityDistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoMicrodistrict
 import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
 import com.oborodulin.jwsuite.domain.model.territory.House
 import com.oborodulin.jwsuite.domain.types.BuildingType
@@ -14,10 +15,12 @@ class HouseElementToHouseMapper(private val mapper: GeometryToGeoCoordinatesMapp
         with(input.tags) {
             val type = this.buildingType()
             return House(
-                //val microdistrict: GeoMicrodistrict? = null,
                 street = GeoStreet().also { it.id = this.streetId },
                 localityDistrict = this.localityDistrictId?.let { ldId ->
                     GeoLocalityDistrict().also { it.id = ldId }
+                },
+                microdistrict = this.microdistrictId?.let { mdId ->
+                    GeoMicrodistrict().also { it.id = mdId }
                 },
                 zipCode = this.postcode.ifBlank { null },
                 houseNum = this.houseNum(),
@@ -35,7 +38,7 @@ class HouseElementToHouseMapper(private val mapper: GeometryToGeoCoordinatesMapp
                     BuildingType.HOUSE,
                     BuildingType.DORMITORY
                 ).contains(type),
-                floorsByEntrance = this.levels.ifBlank { this.maxLevel }.toIntOrNull(),
+                floorsByEntrance = this.floors(),
                 estimatedRooms = this.flats.toIntOrNull(),
                 isPrivateSector = type == BuildingType.HOUSE,
                 houseOsmId = input.id,

@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.domain.model.territory
 
 import android.content.Context
+import androidx.core.text.isDigitsOnly
 import com.oborodulin.home.common.domain.model.DomainModel
 import com.oborodulin.jwsuite.domain.R
 import com.oborodulin.jwsuite.domain.model.geo.GeoCoordinates
@@ -36,20 +37,17 @@ data class House(
     val entrances: List<Entrance> = emptyList(),
     val rooms: List<Room> = emptyList()
 ) : DomainModel() {
-    var calculatedRooms = when (estimatedRooms) {
-        null -> (houseEntrancesQty ?: 0) * (floorsByEntrance ?: 0) * (roomsByHouseFloor ?: 0)
-        else -> estimatedRooms
-    }
+    var calculatedRooms =
+        calculateRooms(houseEntrancesQty, floorsByEntrance, roomsByHouseFloor, estimatedRooms)
     val houseExpr = ctx?.resources?.getString(R.string.house_expr)
-    val houseFullNum =
-        "$houseNum${houseLetter?.uppercase().orEmpty()}${buildingNum?.let { "-$it" }.orEmpty()}"
+    val houseFullNum = houseFullNum(houseNum, houseLetter, buildingNum)
     val buildingTypeInfo =
         if (listOf(BuildingType.APARTMENTS, BuildingType.HOUSE).contains(buildingType)
                 .not()
         ) ctx?.let { it.resources.getStringArray(R.array.building_types)[buildingType.ordinal] } else null
-    val calcRoomsInfo = if (calculatedRooms > 0) "$calculatedRooms ${
+    val calcRoomsInfo = "$calculatedRooms ${
         ctx?.resources?.getString(R.string.room_expr).orEmpty()
-    }" else null
+    }".takeIf { calculatedRooms > 0 }
     val territoryFullCardNum = territory?.let { "${it.fullCardNum}: " }
     val info = listOfNotNull(buildingTypeInfo, calcRoomsInfo, houseDesc)
     val houseInfo =
@@ -59,6 +57,23 @@ data class House(
         const val BUILDING_DELIMITERS = "-"
         const val LETTER_DELIMITERS = "-/"
         const val NUMBER_DELIMITERS = "$LETTER_DELIMITERS "
+        fun houseFullNum(houseNum: Int, houseLetter: String? = null, buildingNum: Int? = null) =
+            "$houseNum${
+                if (houseLetter?.isDigitsOnly() == true) "/$houseLetter"
+                else houseLetter?.uppercase().orEmpty()
+            }${buildingNum?.let { "-$it" }.orEmpty()}"
+
+        fun calculateRooms(
+            houseEntrancesQty: Int? = null, floorsByEntrance: Int? = null,
+            roomsByHouseFloor: Int? = null,
+            estimatedRooms: Int? = null
+        ) = when (estimatedRooms) {
+            null -> (houseEntrancesQty ?: 0) * (floorsByEntrance ?: 0) *
+                    (roomsByHouseFloor ?: 0)
+
+            else -> estimatedRooms
+        }
+
         fun houseNum(houseFullNum: String) =
             houseFullNum.substringBefore(BUILDING_DELIMITERS).filter { it.isDigit() }.toInt()
 

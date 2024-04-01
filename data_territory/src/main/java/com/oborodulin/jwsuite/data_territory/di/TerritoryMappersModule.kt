@@ -11,6 +11,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.Loca
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.MicrodistrictViewToGeoMicrodistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.StreetViewListToGeoStreetsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.StreetViewToGeoStreetMapper
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.GeometryToGeoCoordinatesMapper
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.entrance.EntranceCsvListToEntranceEntityListMapper
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.entrance.EntranceCsvMappers
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.entrance.EntranceCsvToEntranceEntityMapper
@@ -126,7 +127,9 @@ import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorystreet.Te
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorystreet.TerritoryStreetViewListToTerritoryStreetsListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorystreet.TerritoryStreetViewToTerritoryStreetMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorystreet.TerritoryStreetsListToTerritoryStreetEntityListMapper
-import com.oborodulin.jwsuite.domain.usecases.*
+import com.oborodulin.jwsuite.data_territory.remote.osm.mappers.house.HouseApiMappers
+import com.oborodulin.jwsuite.data_territory.remote.osm.mappers.house.HouseElementToHouseMapper
+import com.oborodulin.jwsuite.data_territory.remote.osm.mappers.house.HouseElementsListToHousesListMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -1067,4 +1070,22 @@ object TerritoryMappersModule {
         congregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper,
         territoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper
     )
+
+    // ------------------------------------------- API: -------------------------------------------
+    // HouseElement
+    @Singleton
+    @Provides
+    fun provideHouseElementToHouseMapper(mapper: GeometryToGeoCoordinatesMapper): HouseElementToHouseMapper =
+        HouseElementToHouseMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideHouseElementsListToHousesListMapper(mapper: HouseElementToHouseMapper): HouseElementsListToHousesListMapper =
+        HouseElementsListToHousesListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideHouseApiMappers(
+        houseElementsListToHousesListMapper: HouseElementsListToHousesListMapper
+    ): HouseApiMappers = HouseApiMappers(houseElementsListToHousesListMapper)
 }

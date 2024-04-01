@@ -11,7 +11,7 @@ data class StreetApiModel(
     @Json(name = "version") val version: String,
     @Json(name = "generator") val generator: String,
     @Json(name = "osm3s") val osm3s: Osm3s,
-    @Json(name = "elements") val elements: List<StreetElement>
+    @Json(name = "elements") val elements: List<StreetElement> = emptyList()
 ) {
     companion object {
         // https://help.openstreetmap.org/questions/87188/how-to-get-the-list-of-addresses-or-street-names-by-city
@@ -38,6 +38,9 @@ data class StreetApiModel(
     );
     """.trimIndent()
     }
+
+    fun uniqueElements() =
+        elements.groupBy { it.tags.name }.map { entry -> entry.value.minBy { it.id } }
 }
 
 data class StreetElement(

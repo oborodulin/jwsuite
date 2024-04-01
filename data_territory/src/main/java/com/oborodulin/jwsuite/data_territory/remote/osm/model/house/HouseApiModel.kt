@@ -25,6 +25,7 @@ data class HouseApiModel(
         fun data(
             streetId: UUID,
             localityDistrictId: UUID? = null,
+            microdistrictId: UUID? = null,
             geocodeArea: String,
             streetName: String
         ) = """
@@ -35,6 +36,8 @@ data class HouseApiModel(
         convert HouseType 
             osmType = type(), ::id = id(), ::geom = geom(), streetId = "$streetId", localityDistrictId = "${
             localityDistrictId?.toString().orEmpty()
+        }", microdistrictId = "${
+            microdistrictId?.toString().orEmpty()
         }", building = t["building"], housenumber = t["addr:housenumber"], postcode = t["addr:postcode"], flats  = t["building:flats"], levels = t["building:levels"], max_level = t["max_level"];
         out center;
     );
@@ -54,6 +57,7 @@ data class HouseTags(
     @Json(name = "osmType") val osmType: String,
     @Json(name = "streetId") val streetId: UUID,
     @Json(name = "localityDistrictId") val localityDistrictId: UUID?,
+    @Json(name = "microdistrictId") val microdistrictId: UUID?,
     @Json(name = "building") val building: String,
     @Json(name = "housenumber") val houseNumber: String,
     @Json(name = "postcode") val postcode: String,
@@ -120,4 +124,5 @@ data class HouseTags(
     fun buildingNum() =
         houseNumber.takeIf { it.contains(' ') }?.substringAfter(' ')?.substringBefore(' ')
             ?.filter { it.isDigit() }?.toIntOrNull()
+    fun floors() = levels.ifBlank { maxLevel }.toIntOrNull()
 }
