@@ -8,11 +8,13 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
+//@Module
+//@InstallIn(SingletonComponent::class)
 object TerritoryServicesModule {
+/*
     @Singleton //@ViewModelScoped
-    @Provides
+     @Provides
     fun provideHouseService(retrofit: Retrofit): HouseService =
         retrofit.create(HouseService::class.java)
+ */
 }

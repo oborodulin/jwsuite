@@ -987,7 +987,7 @@ object GeoMappersModule {
     fun provideGeoRegionApiMappers(
         regionElementsListToGeoRegionsListMapper: RegionElementsListToGeoRegionsListMapper
     ): GeoRegionApiMappers = GeoRegionApiMappers(regionElementsListToGeoRegionsListMapper)
-
+/*
     // RegionDistrictElement
     @Singleton
     @Provides
@@ -1090,4 +1090,5 @@ object GeoMappersModule {
     fun provideGeoStreetApiMappers(
         streetElementsListToGeoStreetsListMapper: StreetElementsListToGeoStreetsListMapper
     ): GeoStreetApiMappers = GeoStreetApiMappers(streetElementsListToGeoStreetsListMapper)
+ */
 }

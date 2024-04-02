@@ -26,7 +26,7 @@ object GeoServicesModule {
     @Provides
     fun provideRegionService(retrofit: Retrofit): RegionService =
         retrofit.create(RegionService::class.java)
-
+/*
     @Singleton
     @Provides
     fun provideRegionDistrictService(retrofit: Retrofit): RegionDistrictService =
@@ -51,4 +51,5 @@ object GeoServicesModule {
     @Provides
     fun provideStreetService(retrofit: Retrofit): StreetService =
         retrofit.create(StreetService::class.java)
+ */
 }

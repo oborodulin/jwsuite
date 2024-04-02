@@ -8,8 +8,9 @@ class GeoCountryEntityToGeoCountryCsvMapper : Mapper<GeoCountryEntity, GeoCountr
     override fun map(input: GeoCountryEntity) = GeoCountryCsv(
         countryId = input.countryId,
         countryCode = input.countryCode,
-        countryOsmId = input.countryOsmId,
-        latitude = input.coordinates.latitude,
-        longitude = input.coordinates.longitude
+        countryGeocode = input.osm.geocode,
+        countryOsmId = input.osm.osmId,
+        latitude = input.osm.coordinates.latitude,
+        longitude = input.osm.coordinates.longitude
     )
 }

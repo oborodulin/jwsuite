@@ -51,7 +51,7 @@ interface GeoRemoteDataSourcesModule {
         @ApplicationContext ctx: Context, regionService: RegionService
     ): RemoteGeoRegionDataSource =
         RemoteGeoRegionDataSourceImpl(ctx = ctx, regionService = regionService)
-
+/*
     @Singleton
     @Provides
     fun provideRemoteGeoRegionDistrictDataSource(
@@ -84,4 +84,5 @@ interface GeoRemoteDataSourcesModule {
     @Provides
     fun provideRemoteGeoStreetDataSource(streetService: StreetService): RemoteGeoStreetDataSource =
         RemoteGeoStreetDataSourceImpl(streetService = streetService)
+ */
 }

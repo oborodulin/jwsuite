@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d781be1ae3668d09edee117559be48b6",
+    "identityHash": "36d2adf2392b3187d60540a01098ce34",
     "entities": [
       {
         "tableName": "app_settings",
@@ -90,7 +90,7 @@
       },
       {
         "tableName": "geo_countries",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`countryId` TEXT NOT NULL, `countryCode` TEXT NOT NULL, `countryGeocode` TEXT, `countryOsmId` INTEGER, `country_latitude` INTEGER, `country_longitude` INTEGER, PRIMARY KEY(`countryId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`countryId` TEXT NOT NULL, `countryCode` TEXT NOT NULL, `country_geocode` TEXT, `country_osmId` INTEGER, `country_latitude` INTEGER, `country_longitude` INTEGER, PRIMARY KEY(`countryId`))",
         "fields": [
           {
             "fieldPath": "countryId",
@@ -105,25 +105,25 @@
             "notNull": true
           },
           {
-            "fieldPath": "countryGeocode",
-            "columnName": "countryGeocode",
+            "fieldPath": "osm.geocode",
+            "columnName": "country_geocode",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "countryOsmId",
-            "columnName": "countryOsmId",
+            "fieldPath": "osm.osmId",
+            "columnName": "country_osmId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "coordinates.latitude",
+            "fieldPath": "osm.coordinates.latitude",
             "columnName": "country_latitude",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "coordinates.longitude",
+            "fieldPath": "osm.coordinates.longitude",
             "columnName": "country_longitude",
             "affinity": "INTEGER",
             "notNull": false
@@ -144,15 +144,6 @@
             ],
             "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_countries_countryCode` ON `${TABLE_NAME}` (`countryCode`)"
-          },
-          {
-            "name": "index_geo_countries_countryOsmId",
-            "unique": false,
-            "columnNames": [
-              "countryOsmId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_countries_countryOsmId` ON `${TABLE_NAME}` (`countryOsmId`)"
           }
         ],
         "foreignKeys": []
@@ -236,7 +227,7 @@
       },
       {
         "tableName": "geo_regions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`regionId` TEXT NOT NULL, `regionCode` TEXT NOT NULL, `regionType` TEXT NOT NULL, `regionGeocode` TEXT, `regionOsmId` INTEGER, `rCountriesId` TEXT NOT NULL, `region_latitude` INTEGER, `region_longitude` INTEGER, PRIMARY KEY(`regionId`), FOREIGN KEY(`rCountriesId`) REFERENCES `geo_countries`(`countryId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`regionId` TEXT NOT NULL, `regionCode` TEXT NOT NULL, `regionType` TEXT NOT NULL, `isRegionTypePrefix` INTEGER NOT NULL, `regionGeocode` TEXT, `regionOsmId` INTEGER, `rCountriesId` TEXT NOT NULL, `region_latitude` INTEGER, `region_longitude` INTEGER, PRIMARY KEY(`regionId`), FOREIGN KEY(`rCountriesId`) REFERENCES `geo_countries`(`countryId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
         "fields": [
           {
             "fieldPath": "regionId",
@@ -254,6 +245,12 @@
             "fieldPath": "regionType",
             "columnName": "regionType",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isRegionTypePrefix",
+            "columnName": "isRegionTypePrefix",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -295,14 +292,15 @@
         },
         "indices": [
           {
-            "name": "index_geo_regions_rCountriesId_regionCode",
+            "name": "index_geo_regions_rCountriesId_regionType_regionCode",
             "unique": true,
             "columnNames": [
               "rCountriesId",
+              "regionType",
               "regionCode"
             ],
             "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_regions_rCountriesId_regionCode` ON `${TABLE_NAME}` (`rCountriesId`, `regionCode`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_regions_rCountriesId_regionType_regionCode` ON `${TABLE_NAME}` (`rCountriesId`, `regionType`, `regionCode`)"
           },
           {
             "name": "index_geo_regions_regionOsmId",
@@ -416,7 +414,7 @@
       },
       {
         "tableName": "geo_region_districts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`regionDistrictId` TEXT NOT NULL, `regDistrictShortName` TEXT NOT NULL, `regDistrictGeocode` TEXT, `regDistrictOsmId` INTEGER, `rRegionsId` TEXT NOT NULL, `regDistrict_latitude` INTEGER, `regDistrict_longitude` INTEGER, PRIMARY KEY(`regionDistrictId`), FOREIGN KEY(`rRegionsId`) REFERENCES `geo_regions`(`regionId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`regionDistrictId` TEXT NOT NULL, `regDistrictShortName` TEXT NOT NULL, `regDistrictType` TEXT NOT NULL, `regDistrictGeocode` TEXT, `regDistrictOsmId` INTEGER, `rRegionsId` TEXT NOT NULL, `regDistrict_latitude` INTEGER, `regDistrict_longitude` INTEGER, PRIMARY KEY(`regionDistrictId`), FOREIGN KEY(`rRegionsId`) REFERENCES `geo_regions`(`regionId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
         "fields": [
           {
             "fieldPath": "regionDistrictId",
@@ -427,6 +425,12 @@
           {
             "fieldPath": "regDistrictShortName",
             "columnName": "regDistrictShortName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "regDistrictType",
+            "columnName": "regDistrictType",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -469,14 +473,15 @@
         },
         "indices": [
           {
-            "name": "index_geo_region_districts_rRegionsId_regDistrictShortName",
+            "name": "index_geo_region_districts_rRegionsId_regDistrictType_regDistrictShortName",
             "unique": true,
             "columnNames": [
               "rRegionsId",
+              "regDistrictType",
               "regDistrictShortName"
             ],
             "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_region_districts_rRegionsId_regDistrictShortName` ON `${TABLE_NAME}` (`rRegionsId`, `regDistrictShortName`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_region_districts_rRegionsId_regDistrictType_regDistrictShortName` ON `${TABLE_NAME}` (`rRegionsId`, `regDistrictType`, `regDistrictShortName`)"
           },
           {
             "name": "index_geo_region_districts_regDistrictOsmId",
@@ -2920,17 +2925,18 @@
         },
         "indices": [
           {
-            "name": "index_houses_hStreetsId_zipCode_houseNum_houseLetter_buildingNum",
+            "name": "index_houses_hStreetsId_buildingType_zipCode_houseNum_houseLetter_buildingNum",
             "unique": true,
             "columnNames": [
               "hStreetsId",
+              "buildingType",
               "zipCode",
               "houseNum",
               "houseLetter",
               "buildingNum"
             ],
             "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_houses_hStreetsId_zipCode_houseNum_houseLetter_buildingNum` ON `${TABLE_NAME}` (`hStreetsId`, `zipCode`, `houseNum`, `houseLetter`, `buildingNum`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_houses_hStreetsId_buildingType_zipCode_houseNum_houseLetter_buildingNum` ON `${TABLE_NAME}` (`hStreetsId`, `buildingType`, `zipCode`, `houseNum`, `houseLetter`, `buildingNum`)"
           },
           {
             "name": "index_houses_houseOsmId",
@@ -3813,15 +3819,15 @@
     "views": [
       {
         "viewName": "geo_countries_view",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT c.countryId, ifnull(ctl.countryTlCode, c.countryCode) AS countryCode, c.countryGeocode,\n            c.countryOsmId, c.country_latitude, c.country_longitude,\n            ctl.countryTlId, ctl.countryLocCode, ctl.countryTlCode, ctl.countryName, ctl.countriesId \n    FROM geo_countries c JOIN geo_countries_tl ctl ON ctl.countriesId = c.countryId"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT c.countryId, ifnull(ctl.countryTlCode, c.countryCode) AS countryCode,\n            c.country_geocode, c.country_osmId,\n            c.country_latitude, c.country_longitude,\n            ctl.countryTlId, ctl.countryLocCode, ctl.countryTlCode, ctl.countryName, ctl.countriesId \n    FROM geo_countries c JOIN geo_countries_tl ctl ON ctl.countriesId = c.countryId"
       },
       {
         "viewName": "regions_view",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT r.regionId, ifnull(rtl.regionTlCode, r.regionCode) AS regionCode, r.regionType, r.regionGeocode,\n            r.regionOsmId, r.region_latitude, r.region_longitude,\n            r.rCountriesId,\n            rtl.regionTlId, rtl.regionLocCode, rtl.regionTlCode, rtl.regionName, rtl.regionsId \n    FROM geo_regions r JOIN geo_regions_tl rtl ON rtl.regionsId = r.regionId"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT r.regionId, ifnull(rtl.regionTlCode, r.regionCode) AS regionCode, r.regionType, r.isRegionTypePrefix, \n            r.regionGeocode, r.regionOsmId, r.region_latitude, r.region_longitude,\n            r.rCountriesId,\n            rtl.regionTlId, rtl.regionLocCode, rtl.regionTlCode, rtl.regionName, rtl.regionsId \n    FROM geo_regions r JOIN geo_regions_tl rtl ON rtl.regionsId = r.regionId"
       },
       {
         "viewName": "region_districts_view",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT rd.regionDistrictId, ifnull(rdtl.regDistrictTlShortName, rd.regDistrictShortName) AS regDistrictShortName, rd.regDistrictGeocode,\n            rd.regDistrictOsmId, rd.regDistrict_latitude, rd.regDistrict_longitude, rd.rRegionsId, \n            rdtl.regionDistrictTlId, rdtl.regDistrictLocCode, rdtl.regDistrictTlShortName, rdtl.regDistrictName, rdtl.regionDistrictsId \n    FROM geo_region_districts rd JOIN geo_region_districts_tl rdtl ON rdtl.regionDistrictsId = rd.regionDistrictId"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT rd.regionDistrictId, ifnull(rdtl.regDistrictTlShortName, rd.regDistrictShortName) AS regDistrictShortName, rd.regDistrictType, \n            rd.regDistrictGeocode,\n            rd.regDistrictOsmId, rd.regDistrict_latitude, rd.regDistrict_longitude, rd.rRegionsId, \n            rdtl.regionDistrictTlId, rdtl.regDistrictLocCode, rdtl.regDistrictTlShortName, rdtl.regDistrictName, rdtl.regionDistrictsId \n    FROM geo_region_districts rd JOIN geo_region_districts_tl rdtl ON rdtl.regionDistrictsId = rd.regionDistrictId"
       },
       {
         "viewName": "localities_view",
@@ -3881,23 +3887,23 @@
       },
       {
         "viewName": "geo_regions_view",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT nv.countryId AS nr_countryId, nv.countryCode AS nr_countryCode, \n            nv.countryGeocode AS nr_countryGeocode, nv.countryOsmId AS nr_countryOsmId, \n            nv.country_latitude AS nr_country_latitude,\n            nv.country_longitude AS nr_country_longitude,\n            nv.countryTlId AS nr_countryTlId, nv.countryLocCode AS nr_countryLocCode, nv.countryTlCode AS nr_countryTlCode,  \n            nv.countryName AS nr_countryName, nv.countriesId AS nr_countriesId, \n        rv.regionId AS r_regionId, rv.regionCode AS r_regionCode, rv.regionType AS r_regionType,\n            rv.regionGeocode AS r_regionGeocode, rv.regionOsmId AS r_regionOsmId, \n            rv.region_latitude AS r_region_latitude,\n            rv.region_longitude AS r_region_longitude, \n            rv.rCountriesId AS r_rCountriesId,\n            rv.regionTlId AS r_regionTlId, rv.regionLocCode AS r_regionLocCode, rv.regionTlCode AS r_regionTlCode,  \n            rv.regionName AS r_regionName, rv.regionsId AS r_regionsId\n    FROM regions_view rv JOIN geo_countries_view nv ON nv.countryId = rv.rCountriesId AND nv.countryLocCode = rv.regionLocCode"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT nv.countryId AS nr_countryId, nv.countryCode AS nr_countryCode, \n            nv.country_geocode AS nr_country_geocode,\n            nv.country_osmId AS nr_country_osmId, \n            nv.country_latitude AS nr_country_latitude,\n            nv.country_longitude AS nr_country_longitude,\n            nv.countryTlId AS nr_countryTlId, nv.countryLocCode AS nr_countryLocCode, nv.countryTlCode AS nr_countryTlCode,  \n            nv.countryName AS nr_countryName, nv.countriesId AS nr_countriesId, \n        rv.regionId AS r_regionId, rv.regionCode AS r_regionCode, rv.regionType AS r_regionType,\n            rv.isRegionTypePrefix AS r_isRegionTypePrefix,\n            rv.regionGeocode AS r_regionGeocode, rv.regionOsmId AS r_regionOsmId, \n            rv.region_latitude AS r_region_latitude,\n            rv.region_longitude AS r_region_longitude, \n            rv.rCountriesId AS r_rCountriesId,\n            rv.regionTlId AS r_regionTlId, rv.regionLocCode AS r_regionLocCode, rv.regionTlCode AS r_regionTlCode,  \n            rv.regionName AS r_regionName, rv.regionsId AS r_regionsId\n    FROM regions_view rv JOIN geo_countries_view nv ON nv.countryId = rv.rCountriesId AND nv.countryLocCode = rv.regionLocCode"
       },
       {
         "viewName": "geo_region_districts_view",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT nv.countryId AS ndr_countryId, nv.countryCode AS ndr_countryCode, \n            nv.countryGeocode AS ndr_countryGeocode, nv.countryOsmId AS ndr_countryOsmId, \n            nv.country_latitude AS ndr_country_latitude,\n            nv.country_longitude AS ndr_country_longitude,\n            nv.countryTlId AS ndr_countryTlId, nv.countryLocCode AS ndr_countryLocCode, nv.countryTlCode AS ndr_countryTlCode,  \n            nv.countryName AS ndr_countryName, nv.countriesId AS ndr_countriesId,\n        rv.regionId AS dr_regionId, rv.regionCode AS dr_regionCode, rv.regionType AS dr_regionType,\n            rv.regionGeocode AS dr_regionGeocode, rv.regionOsmId AS dr_regionOsmId, \n            rv.region_latitude AS dr_region_latitude,\n            rv.region_longitude AS dr_region_longitude, \n            rv.rCountriesId AS dr_rCountriesId,\n            rv.regionTlId AS dr_regionTlId, rv.regionLocCode AS dr_regionLocCode, rv.regionTlCode AS dr_regionTlCode,  \n            rv.regionName AS dr_regionName, rv.regionsId AS dr_regionsId, \n        rdv.regionDistrictId AS rd_regionDistrictId, rdv.regDistrictShortName  AS rd_regDistrictShortName, \n            rdv.regDistrictGeocode AS rd_regDistrictGeocode, rdv.regDistrictOsmId AS rd_regDistrictOsmId, \n            rdv.regDistrict_latitude AS rd_regDistrict_latitude,\n            rdv.regDistrict_longitude AS rd_regDistrict_longitude, \n            rdv.rRegionsId AS rd_rRegionsId,\n            rdv.regionDistrictTlId  AS rd_regionDistrictTlId, rdv.regDistrictLocCode  AS rd_regDistrictLocCode,\n            rdv.regDistrictTlShortName AS rd_regDistrictTlShortName,\n            rdv.regDistrictName  AS rd_regDistrictName, rdv.regionDistrictsId  AS rd_regionDistrictsId\n    FROM region_districts_view rdv JOIN regions_view rv ON rv.regionId = rdv.rRegionsId AND rv.regionLocCode = rdv.regDistrictLocCode\n        JOIN geo_countries_view nv ON nv.countryId = rv.rCountriesId AND nv.countryLocCode = rdv.regDistrictLocCode"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT nv.countryId AS ndr_countryId, nv.countryCode AS ndr_countryCode, \n            nv.country_geocode AS ndr_country_geocode,\n            nv.country_osmId AS ndr_country_osmId, \n            nv.country_latitude AS ndr_country_latitude,\n            nv.country_longitude AS ndr_country_longitude,\n            nv.countryTlId AS ndr_countryTlId, nv.countryLocCode AS ndr_countryLocCode, nv.countryTlCode AS ndr_countryTlCode,  \n            nv.countryName AS ndr_countryName, nv.countriesId AS ndr_countriesId,\n        rv.regionId AS dr_regionId, rv.regionCode AS dr_regionCode, rv.regionType AS dr_regionType,\n            rv.isRegionTypePrefix AS dr_isRegionTypePrefix,\n            rv.regionGeocode AS dr_regionGeocode, rv.regionOsmId AS dr_regionOsmId, \n            rv.region_latitude AS dr_region_latitude,\n            rv.region_longitude AS dr_region_longitude, \n            rv.rCountriesId AS dr_rCountriesId,\n            rv.regionTlId AS dr_regionTlId, rv.regionLocCode AS dr_regionLocCode, rv.regionTlCode AS dr_regionTlCode,  \n            rv.regionName AS dr_regionName, rv.regionsId AS dr_regionsId, \n        rdv.regionDistrictId AS rd_regionDistrictId, rdv.regDistrictShortName AS rd_regDistrictShortName,\n            rdv.regDistrictType AS rd_regDistrictType,\n            rdv.regDistrictGeocode AS rd_regDistrictGeocode, rdv.regDistrictOsmId AS rd_regDistrictOsmId, \n            rdv.regDistrict_latitude AS rd_regDistrict_latitude,\n            rdv.regDistrict_longitude AS rd_regDistrict_longitude, \n            rdv.rRegionsId AS rd_rRegionsId,\n            rdv.regionDistrictTlId AS rd_regionDistrictTlId, rdv.regDistrictLocCode AS rd_regDistrictLocCode,\n            rdv.regDistrictTlShortName AS rd_regDistrictTlShortName,\n            rdv.regDistrictName AS rd_regDistrictName, rdv.regionDistrictsId AS rd_regionDistrictsId\n    FROM region_districts_view rdv JOIN regions_view rv ON rv.regionId = rdv.rRegionsId AND rv.regionLocCode = rdv.regDistrictLocCode\n        JOIN geo_countries_view nv ON nv.countryId = rv.rCountriesId AND nv.countryLocCode = rdv.regDistrictLocCode"
       },
       {
         "viewName": "geo_localities_view",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT nv.countryId AS n_countryId, nv.countryCode AS n_countryCode, \n            nv.countryGeocode AS n_countryGeocode, nv.countryOsmId AS n_countryOsmId, \n            nv.country_latitude AS n_country_latitude,\n            nv.country_longitude AS n_country_longitude,\n            nv.countryTlId AS n_countryTlId, nv.countryLocCode AS n_countryLocCode, nv.countryTlCode AS n_countryTlCode,  \n            nv.countryName AS n_countryName, nv.countriesId AS n_countriesId,\n        rv.regionId AS r_regionId, rv.regionCode AS r_regionCode, rv.regionType AS r_regionType,\n            rv.regionGeocode AS r_regionGeocode, rv.regionOsmId AS r_regionOsmId, \n            rv.region_latitude AS r_region_latitude,\n            rv.region_longitude AS r_region_longitude, \n            rv.rCountriesId AS r_rCountriesId, \n            rv.regionTlId AS r_regionTlId, rv.regionLocCode AS r_regionLocCode, rv.regionTlCode AS r_regionTlCode, \n            rv.regionName AS r_regionName, rv.regionsId AS r_regionsId, \n        rdv.regionDistrictId AS rd_regionDistrictId, rdv.regDistrictShortName  AS rd_regDistrictShortName, \n            rdv.regDistrictGeocode AS rd_regDistrictGeocode, rdv.regDistrictOsmId AS rd_regDistrictOsmId, \n            rdv.regDistrict_latitude AS rd_regDistrict_latitude,\n            rdv.regDistrict_longitude AS rd_regDistrict_longitude, \n            rdv.rRegionsId  AS rd_rRegionsId,\n            rdv.regionDistrictTlId  AS rd_regionDistrictTlId, rdv.regDistrictLocCode  AS rd_regDistrictLocCode,\n            rdv.regDistrictTlShortName AS rd_regDistrictTlShortName, \n            rdv.regDistrictName  AS rd_regDistrictName, rdv.regionDistrictsId  AS rd_regionDistrictsId, \n        lv.localityId AS l_localityId, lv.localityCode AS l_localityCode, lv.localityType AS l_localityType, \n            lv.localityGeocode AS l_localityGeocode, lv.localityOsmId AS l_localityOsmId, \n            lv.locality_latitude AS l_locality_latitude,\n            lv.locality_longitude AS l_locality_longitude, \n            lv.lRegionDistrictsId AS l_lRegionDistrictsId, lv.lRegionsId AS l_lRegionsId,\n            lv.localityTlId AS l_localityTlId, lv.localityLocCode AS l_localityLocCode, lv.localityShortName AS l_localityShortName, \n            lv.localityName AS l_localityName, lv.localitiesId AS l_localitiesId\n    FROM localities_view lv JOIN regions_view rv ON rv.regionId = lv.lRegionsId AND rv.regionLocCode = lv.localityLocCode\n        JOIN geo_countries_view nv ON nv.countryId = rv.rCountriesId AND nv.countryLocCode = lv.localityLocCode\n        LEFT JOIN region_districts_view rdv ON rdv.regionDistrictId = lv.lRegionDistrictsId AND rdv.regDistrictLocCode = lv.localityLocCode"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT nv.countryId AS n_countryId, nv.countryCode AS n_countryCode, \n            nv.country_geocode AS n_country_geocode,\n            nv.country_osmId AS n_country_osmId, \n            nv.country_latitude AS n_country_latitude,\n            nv.country_longitude AS n_country_longitude,\n            nv.countryTlId AS n_countryTlId, nv.countryLocCode AS n_countryLocCode, nv.countryTlCode AS n_countryTlCode,  \n            nv.countryName AS n_countryName, nv.countriesId AS n_countriesId,\n        rv.regionId AS r_regionId, rv.regionCode AS r_regionCode, rv.regionType AS r_regionType,\n            rv.isRegionTypePrefix AS r_isRegionTypePrefix,\n            rv.regionGeocode AS r_regionGeocode, rv.regionOsmId AS r_regionOsmId, \n            rv.region_latitude AS r_region_latitude,\n            rv.region_longitude AS r_region_longitude, \n            rv.rCountriesId AS r_rCountriesId, \n            rv.regionTlId AS r_regionTlId, rv.regionLocCode AS r_regionLocCode, rv.regionTlCode AS r_regionTlCode, \n            rv.regionName AS r_regionName, rv.regionsId AS r_regionsId, \n        rdv.regionDistrictId AS rd_regionDistrictId, rdv.regDistrictShortName AS rd_regDistrictShortName,\n            rdv.regDistrictType AS rd_regDistrictType,\n            rdv.regDistrictGeocode AS rd_regDistrictGeocode, rdv.regDistrictOsmId AS rd_regDistrictOsmId, \n            rdv.regDistrict_latitude AS rd_regDistrict_latitude,\n            rdv.regDistrict_longitude AS rd_regDistrict_longitude, \n            rdv.rRegionsId AS rd_rRegionsId,\n            rdv.regionDistrictTlId AS rd_regionDistrictTlId, rdv.regDistrictLocCode AS rd_regDistrictLocCode,\n            rdv.regDistrictTlShortName AS rd_regDistrictTlShortName, \n            rdv.regDistrictName AS rd_regDistrictName, rdv.regionDistrictsId AS rd_regionDistrictsId, \n        lv.localityId AS l_localityId, lv.localityCode AS l_localityCode, lv.localityType AS l_localityType, \n            lv.localityGeocode AS l_localityGeocode, lv.localityOsmId AS l_localityOsmId, \n            lv.locality_latitude AS l_locality_latitude,\n            lv.locality_longitude AS l_locality_longitude, \n            lv.lRegionDistrictsId AS l_lRegionDistrictsId, lv.lRegionsId AS l_lRegionsId,\n            lv.localityTlId AS l_localityTlId, lv.localityLocCode AS l_localityLocCode, lv.localityShortName AS l_localityShortName, \n            lv.localityName AS l_localityName, lv.localitiesId AS l_localitiesId\n    FROM localities_view lv JOIN regions_view rv ON rv.regionId = lv.lRegionsId AND rv.regionLocCode = lv.localityLocCode\n        JOIN geo_countries_view nv ON nv.countryId = rv.rCountriesId AND nv.countryLocCode = lv.localityLocCode\n        LEFT JOIN region_districts_view rdv ON rdv.regionDistrictId = lv.lRegionDistrictsId AND rdv.regDistrictLocCode = lv.localityLocCode"
       },
       {
         "viewName": "geo_locality_districts_view",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT nv.countryId AS nld_countryId, nv.countryCode AS nld_countryCode, \n            nv.countryGeocode AS nld_countryGeocode, nv.countryOsmId AS nld_countryOsmId, \n            nv.country_latitude AS nld_country_latitude,\n            nv.country_longitude AS nld_country_longitude,\n            nv.countryTlId AS nld_countryTlId, nv.countryLocCode AS nld_countryLocCode, nv.countryTlCode AS nld_countryTlCode,  \n            nv.countryName AS nld_countryName, nv.countriesId AS nld_countriesId,\n        rv.regionId AS ldr_regionId, rv.regionCode AS ldr_regionCode, rv.regionType AS ldr_regionType,\n            rv.regionGeocode AS ldr_regionGeocode, rv.regionOsmId AS ldr_regionOsmId, \n            rv.region_latitude AS ldr_region_latitude,\n            rv.region_longitude AS ldr_region_longitude, \n            rv.rCountriesId AS ldr_rCountriesId, \n            rv.regionTlId AS ldr_regionTlId, rv.regionLocCode AS ldr_regionLocCode, rv.regionTlCode AS ldr_regionTlCode, \n            rv.regionName AS ldr_regionName, rv.regionsId AS ldr_regionsId, \n        rdv.regionDistrictId AS ldrd_regionDistrictId, rdv.regDistrictShortName  AS ldrd_regDistrictShortName, \n            rdv.regDistrictGeocode AS ldrd_regDistrictGeocode, rdv.regDistrictOsmId AS ldrd_regDistrictOsmId, \n            rdv.regDistrict_latitude AS ldrd_regDistrict_latitude,\n            rdv.regDistrict_longitude AS ldrd_regDistrict_longitude, \n            rdv.rRegionsId AS ldrd_rRegionsId,\n            rdv.regionDistrictTlId  AS ldrd_regionDistrictTlId, rdv.regDistrictLocCode  AS ldrd_regDistrictLocCode,\n            rdv.regDistrictTlShortName AS ldrd_regDistrictTlShortName,\n            rdv.regDistrictName  AS ldrd_regDistrictName, rdv.regionDistrictsId  AS ldrd_regionDistrictsId, \n        lv.localityId AS ldl_localityId, lv.localityCode AS ldl_localityCode, lv.localityType AS ldl_localityType, \n            lv.localityGeocode AS ldl_localityGeocode, lv.localityOsmId AS ldl_localityOsmId, \n            lv.locality_latitude AS ldl_locality_latitude,\n            lv.locality_longitude AS ldl_locality_longitude, \n            lv.lRegionDistrictsId AS ldl_lRegionDistrictsId, lv.lRegionsId AS ldl_lRegionsId,\n            lv.localityTlId AS ldl_localityTlId, lv.localityLocCode AS ldl_localityLocCode, lv.localityShortName AS ldl_localityShortName, \n            lv.localityName AS ldl_localityName, lv.localitiesId AS ldl_localitiesId, \n        ldv.localityDistrictId AS ld_localityDistrictId, ldv.locDistrictShortName AS ld_locDistrictShortName, \n            ldv.locDistrictGeocode AS ld_locDistrictGeocode, ldv.locDistrictOsmId AS ld_locDistrictOsmId, \n            ldv.locDistrict_latitude AS ld_locDistrict_latitude,\n            ldv.locDistrict_longitude AS ld_locDistrict_longitude, \n            ldv.ldLocalitiesId AS ld_ldLocalitiesId, ldv.localityDistrictTlId AS ld_localityDistrictTlId, \n            ldv.locDistrictLocCode AS ld_locDistrictLocCode, ldv.locDistrictName AS ld_locDistrictName, \n            ldv.localityDistrictsId AS ld_localityDistrictsId\nFROM locality_districts_view ldv JOIN localities_view lv ON lv.localityId = ldv.ldLocalitiesId AND lv.localityLocCode = ldv.locDistrictLocCode \n    JOIN regions_view rv ON rv.regionId = lv.lRegionsId AND rv.regionLocCode = ldv.locDistrictLocCode\n    JOIN geo_countries_view nv ON nv.countryId = rv.rCountriesId AND nv.countryLocCode = ldv.locDistrictLocCode\n    LEFT JOIN region_districts_view rdv ON rdv.regionDistrictId = lv.lRegionDistrictsId AND rdv.regDistrictLocCode = ldv.locDistrictLocCode"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT nv.countryId AS nld_countryId, nv.countryCode AS nld_countryCode, \n            nv.country_geocode AS nld_country_geocode,\n            nv.country_osmId AS nld_country_osmId, \n            nv.country_latitude AS nld_country_latitude,\n            nv.country_longitude AS nld_country_longitude,\n            nv.countryTlId AS nld_countryTlId, nv.countryLocCode AS nld_countryLocCode, nv.countryTlCode AS nld_countryTlCode,  \n            nv.countryName AS nld_countryName, nv.countriesId AS nld_countriesId,\n        rv.regionId AS ldr_regionId, rv.regionCode AS ldr_regionCode, rv.regionType AS ldr_regionType,\n            rv.isRegionTypePrefix AS ldr_isRegionTypePrefix,\n            rv.regionGeocode AS ldr_regionGeocode, rv.regionOsmId AS ldr_regionOsmId, \n            rv.region_latitude AS ldr_region_latitude,\n            rv.region_longitude AS ldr_region_longitude, \n            rv.rCountriesId AS ldr_rCountriesId, \n            rv.regionTlId AS ldr_regionTlId, rv.regionLocCode AS ldr_regionLocCode, rv.regionTlCode AS ldr_regionTlCode, \n            rv.regionName AS ldr_regionName, rv.regionsId AS ldr_regionsId, \n        rdv.regionDistrictId AS ldrd_regionDistrictId, rdv.regDistrictShortName AS ldrd_regDistrictShortName,\n            rdv.regDistrictType AS ldrd_regDistrictType,\n            rdv.regDistrictGeocode AS ldrd_regDistrictGeocode, rdv.regDistrictOsmId AS ldrd_regDistrictOsmId, \n            rdv.regDistrict_latitude AS ldrd_regDistrict_latitude,\n            rdv.regDistrict_longitude AS ldrd_regDistrict_longitude, \n            rdv.rRegionsId AS ldrd_rRegionsId,\n            rdv.regionDistrictTlId AS ldrd_regionDistrictTlId, rdv.regDistrictLocCode AS ldrd_regDistrictLocCode,\n            rdv.regDistrictTlShortName AS ldrd_regDistrictTlShortName,\n            rdv.regDistrictName AS ldrd_regDistrictName, rdv.regionDistrictsId AS ldrd_regionDistrictsId, \n        lv.localityId AS ldl_localityId, lv.localityCode AS ldl_localityCode, lv.localityType AS ldl_localityType, \n            lv.localityGeocode AS ldl_localityGeocode, lv.localityOsmId AS ldl_localityOsmId, \n            lv.locality_latitude AS ldl_locality_latitude,\n            lv.locality_longitude AS ldl_locality_longitude, \n            lv.lRegionDistrictsId AS ldl_lRegionDistrictsId, lv.lRegionsId AS ldl_lRegionsId,\n            lv.localityTlId AS ldl_localityTlId, lv.localityLocCode AS ldl_localityLocCode, lv.localityShortName AS ldl_localityShortName, \n            lv.localityName AS ldl_localityName, lv.localitiesId AS ldl_localitiesId, \n        ldv.localityDistrictId AS ld_localityDistrictId, ldv.locDistrictShortName AS ld_locDistrictShortName, \n            ldv.locDistrictGeocode AS ld_locDistrictGeocode, ldv.locDistrictOsmId AS ld_locDistrictOsmId, \n            ldv.locDistrict_latitude AS ld_locDistrict_latitude,\n            ldv.locDistrict_longitude AS ld_locDistrict_longitude, \n            ldv.ldLocalitiesId AS ld_ldLocalitiesId, ldv.localityDistrictTlId AS ld_localityDistrictTlId, \n            ldv.locDistrictLocCode AS ld_locDistrictLocCode, ldv.locDistrictName AS ld_locDistrictName, \n            ldv.localityDistrictsId AS ld_localityDistrictsId\nFROM locality_districts_view ldv JOIN localities_view lv ON lv.localityId = ldv.ldLocalitiesId AND lv.localityLocCode = ldv.locDistrictLocCode \n    JOIN regions_view rv ON rv.regionId = lv.lRegionsId AND rv.regionLocCode = ldv.locDistrictLocCode\n    JOIN geo_countries_view nv ON nv.countryId = rv.rCountriesId AND nv.countryLocCode = ldv.locDistrictLocCode\n    LEFT JOIN region_districts_view rdv ON rdv.regionDistrictId = lv.lRegionDistrictsId AND rdv.regDistrictLocCode = ldv.locDistrictLocCode"
       },
       {
         "viewName": "geo_microdistricts_view",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT nv.countryId AS nm_countryId, nv.countryCode AS nm_countryCode, \n            nv.countryGeocode AS nm_countryGeocode, nv.countryOsmId AS nm_countryOsmId, \n            nv.country_latitude AS nm_country_latitude,\n            nv.country_longitude AS nm_country_longitude,\n            nv.countryTlId AS nm_countryTlId, nv.countryLocCode AS nm_countryLocCode, nv.countryTlCode AS nm_countryTlCode,  \n            nv.countryName AS nm_countryName, nv.countriesId AS nm_countriesId,\n        rv.regionId AS mr_regionId, rv.regionCode AS mr_regionCode, rv.regionType AS mr_regionType,\n            rv.regionGeocode AS mr_regionGeocode, rv.regionOsmId AS mr_regionOsmId, \n            rv.region_latitude AS mr_region_latitude,\n            rv.region_longitude AS mr_region_longitude,\n            rv.rCountriesId AS mr_rCountriesId,\n            rv.regionTlId AS mr_regionTlId, rv.regionLocCode AS mr_regionLocCode, rv.regionTlCode AS mr_regionTlCode,\n            rv.regionName AS mr_regionName, rv.regionsId AS mr_regionsId, \n        rdv.regionDistrictId AS mrd_regionDistrictId, rdv.regDistrictShortName  AS mrd_regDistrictShortName, \n            rdv.regDistrictGeocode AS mrd_regDistrictGeocode, rdv.regDistrictOsmId AS mrd_regDistrictOsmId, \n            rdv.regDistrict_latitude AS mrd_regDistrict_latitude,\n            rdv.regDistrict_longitude AS mrd_regDistrict_longitude, \n            rdv.rRegionsId AS mrd_rRegionsId,\n            rdv.regionDistrictTlId AS mrd_regionDistrictTlId, rdv.regDistrictLocCode  AS mrd_regDistrictLocCode,\n            rdv.regDistrictTlShortName AS mrd_regDistrictTlShortName, \n            rdv.regDistrictName AS mrd_regDistrictName, rdv.regionDistrictsId  AS mrd_regionDistrictsId, \n        lv.localityId AS ml_localityId, lv.localityCode AS ml_localityCode, lv.localityType AS ml_localityType, \n            lv.localityGeocode AS ml_localityGeocode, lv.localityOsmId AS ml_localityOsmId, \n            lv.locality_latitude AS ml_locality_latitude,\n            lv.locality_longitude AS ml_locality_longitude, \n            lv.lRegionDistrictsId AS ml_lRegionDistrictsId, lv.lRegionsId AS ml_lRegionsId,\n            lv.localityTlId AS ml_localityTlId, lv.localityLocCode AS ml_localityLocCode, lv.localityShortName AS ml_localityShortName, \n            lv.localityName AS ml_localityName, lv.localitiesId AS ml_localitiesId, \n        ldv.localityDistrictId AS mld_localityDistrictId, ldv.locDistrictShortName AS mld_locDistrictShortName, \n            ldv.locDistrictGeocode AS mld_locDistrictGeocode, ldv.locDistrictOsmId AS mld_locDistrictOsmId, \n            ldv.locDistrict_latitude AS mld_locDistrict_latitude,\n            ldv.locDistrict_longitude AS mld_locDistrict_longitude, \n            ldv.ldLocalitiesId AS mld_ldLocalitiesId, ldv.localityDistrictTlId AS mld_localityDistrictTlId, \n            ldv.locDistrictLocCode AS mld_locDistrictLocCode, ldv.locDistrictName AS mld_locDistrictName, \n            ldv.localityDistrictsId AS mld_localityDistrictsId, \n        mdv.* \nFROM microdistricts_view mdv JOIN locality_districts_view ldv ON ldv.localityDistrictId = mdv.mLocalityDistrictsId AND ldv.locDistrictLocCode = mdv.microdistrictLocCode \n    JOIN localities_view lv ON lv.localityId = ldv.ldLocalitiesId AND lv.localityLocCode = mdv.microdistrictLocCode\n    JOIN regions_view rv ON rv.regionId = lv.lRegionsId AND rv.regionLocCode = mdv.microdistrictLocCode\n    JOIN geo_countries_view nv ON nv.countryId = rv.rCountriesId AND nv.countryLocCode = mdv.microdistrictLocCode\n    LEFT JOIN region_districts_view rdv ON rdv.regionDistrictId = lv.lRegionDistrictsId AND rdv.regDistrictLocCode = mdv.microdistrictLocCode"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT nv.countryId AS nm_countryId, nv.countryCode AS nm_countryCode, \n            nv.country_geocode AS nm_country_geocode,\n            nv.country_osmId AS nm_country_osmId, \n            nv.country_latitude AS nm_country_latitude,\n            nv.country_longitude AS nm_country_longitude,\n            nv.countryTlId AS nm_countryTlId, nv.countryLocCode AS nm_countryLocCode, nv.countryTlCode AS nm_countryTlCode,  \n            nv.countryName AS nm_countryName, nv.countriesId AS nm_countriesId,\n        rv.regionId AS mr_regionId, rv.regionCode AS mr_regionCode, rv.regionType AS mr_regionType,\n            rv.isRegionTypePrefix AS mr_isRegionTypePrefix,\n            rv.regionGeocode AS mr_regionGeocode, rv.regionOsmId AS mr_regionOsmId, \n            rv.region_latitude AS mr_region_latitude,\n            rv.region_longitude AS mr_region_longitude,\n            rv.rCountriesId AS mr_rCountriesId,\n            rv.regionTlId AS mr_regionTlId, rv.regionLocCode AS mr_regionLocCode, rv.regionTlCode AS mr_regionTlCode,\n            rv.regionName AS mr_regionName, rv.regionsId AS mr_regionsId, \n        rdv.regionDistrictId AS mrd_regionDistrictId, rdv.regDistrictShortName AS mrd_regDistrictShortName,\n            rdv.regDistrictType AS mrd_regDistrictType,\n            rdv.regDistrictGeocode AS mrd_regDistrictGeocode, rdv.regDistrictOsmId AS mrd_regDistrictOsmId, \n            rdv.regDistrict_latitude AS mrd_regDistrict_latitude,\n            rdv.regDistrict_longitude AS mrd_regDistrict_longitude, \n            rdv.rRegionsId AS mrd_rRegionsId,\n            rdv.regionDistrictTlId AS mrd_regionDistrictTlId, rdv.regDistrictLocCode AS mrd_regDistrictLocCode,\n            rdv.regDistrictTlShortName AS mrd_regDistrictTlShortName, \n            rdv.regDistrictName AS mrd_regDistrictName, rdv.regionDistrictsId AS mrd_regionDistrictsId, \n        lv.localityId AS ml_localityId, lv.localityCode AS ml_localityCode, lv.localityType AS ml_localityType, \n            lv.localityGeocode AS ml_localityGeocode, lv.localityOsmId AS ml_localityOsmId, \n            lv.locality_latitude AS ml_locality_latitude,\n            lv.locality_longitude AS ml_locality_longitude, \n            lv.lRegionDistrictsId AS ml_lRegionDistrictsId, lv.lRegionsId AS ml_lRegionsId,\n            lv.localityTlId AS ml_localityTlId, lv.localityLocCode AS ml_localityLocCode, lv.localityShortName AS ml_localityShortName, \n            lv.localityName AS ml_localityName, lv.localitiesId AS ml_localitiesId, \n        ldv.localityDistrictId AS mld_localityDistrictId, ldv.locDistrictShortName AS mld_locDistrictShortName, \n            ldv.locDistrictGeocode AS mld_locDistrictGeocode, ldv.locDistrictOsmId AS mld_locDistrictOsmId, \n            ldv.locDistrict_latitude AS mld_locDistrict_latitude,\n            ldv.locDistrict_longitude AS mld_locDistrict_longitude, \n            ldv.ldLocalitiesId AS mld_ldLocalitiesId, ldv.localityDistrictTlId AS mld_localityDistrictTlId, \n            ldv.locDistrictLocCode AS mld_locDistrictLocCode, ldv.locDistrictName AS mld_locDistrictName, \n            ldv.localityDistrictsId AS mld_localityDistrictsId, \n        mdv.* \nFROM microdistricts_view mdv JOIN locality_districts_view ldv ON ldv.localityDistrictId = mdv.mLocalityDistrictsId AND ldv.locDistrictLocCode = mdv.microdistrictLocCode \n    JOIN localities_view lv ON lv.localityId = ldv.ldLocalitiesId AND lv.localityLocCode = mdv.microdistrictLocCode\n    JOIN regions_view rv ON rv.regionId = lv.lRegionsId AND rv.regionLocCode = mdv.microdistrictLocCode\n    JOIN geo_countries_view nv ON nv.countryId = rv.rCountriesId AND nv.countryLocCode = mdv.microdistrictLocCode\n    LEFT JOIN region_districts_view rdv ON rdv.regionDistrictId = lv.lRegionDistrictsId AND rdv.regDistrictLocCode = mdv.microdistrictLocCode"
       },
       {
         "viewName": "congregations_view",
@@ -4002,7 +4008,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd781be1ae3668d09edee117559be48b6')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '36d2adf2392b3187d60540a01098ce34')"
     ]
   }
 }

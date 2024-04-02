@@ -62,9 +62,9 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideMoshi(): Moshi = Moshi.Builder()
-        .add(UuidAdapter())
-        .add(BigDecimalAdapter())
-        .add(OffsetDateTimeAdapter())
+        //.add(UuidAdapter())
+        //.add(BigDecimalAdapter())
+        //.add(OffsetDateTimeAdapter())
         .add(KotlinJsonAdapterFactory())
         .build()
 
