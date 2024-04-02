@@ -41,10 +41,11 @@ data class House(
         calculateRooms(houseEntrancesQty, floorsByEntrance, roomsByHouseFloor, estimatedRooms)
     val houseExpr = ctx?.resources?.getString(R.string.house_expr)
     val houseFullNum = houseFullNum(houseNum, houseLetter, buildingNum)
-    val buildingTypeInfo =
-        if (listOf(BuildingType.APARTMENTS, BuildingType.HOUSE).contains(buildingType)
-                .not()
-        ) ctx?.let { it.resources.getStringArray(R.array.building_types)[buildingType.ordinal] } else null
+    val buildingTypeInfo = if (buildingType !in listOf(
+            BuildingType.APARTMENTS,
+            BuildingType.HOUSE
+        )
+    ) ctx?.let { it.resources.getStringArray(R.array.building_types)[buildingType.ordinal] } else null
     val calcRoomsInfo = "$calculatedRooms ${
         ctx?.resources?.getString(R.string.room_expr).orEmpty()
     }".takeIf { calculatedRooms > 0 }
@@ -79,10 +80,10 @@ data class House(
 
         fun houseLetter(houseFullNum: String) =
             houseFullNum.substringBefore(BUILDING_DELIMITERS).filter { it.isLetter() }
-                .ifEmpty { null }
+                .ifBlank { null }
 
         fun buildingNum(houseFullNum: String) =
-            houseFullNum.takeIf { it.contains(BUILDING_DELIMITERS) }
+            houseFullNum.takeIf { BUILDING_DELIMITERS in it }
                 ?.substringAfter(BUILDING_DELIMITERS)?.toIntOrNull()
     }
 }

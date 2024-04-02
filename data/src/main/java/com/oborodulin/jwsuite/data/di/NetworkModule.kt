@@ -2,6 +2,9 @@ package com.oborodulin.jwsuite.data.di
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.oborodulin.home.common.data.json.BigDecimalAdapter
+import com.oborodulin.home.common.data.json.OffsetDateTimeAdapter
+import com.oborodulin.home.common.data.json.UuidAdapter
 import com.oborodulin.jwsuite.data.BuildConfig
 import com.oborodulin.jwsuite.data.util.Constants.BASE_URL_OVERPASS_API
 import com.squareup.moshi.Moshi
@@ -55,10 +58,15 @@ object NetworkModule {
         }
     }
 
-
+    // https://www.baeldung.com/kotlin/moshi-json-library
     @Singleton
     @Provides
-    fun provideMoshi(): Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+    fun provideMoshi(): Moshi = Moshi.Builder()
+        .add(UuidAdapter())
+        .add(BigDecimalAdapter())
+        .add(OffsetDateTimeAdapter())
+        .add(KotlinJsonAdapterFactory())
+        .build()
 
     @Singleton
     @Provides

@@ -12,7 +12,9 @@ import java.util.UUID
 
 // Converters:
 fun String.toUUID(): UUID = UUID.fromString(this)
-fun String?.toUUIDOrNull() = this?.ifEmpty { null }?.let { UUID.fromString(it) }
+
+// this?.ifEmpty { null }?.let { UUID.fromString(it) }
+fun String?.toUUIDOrNull() = this?.takeIf { it.isNotBlank() }?.let { UUID.fromString(it) }
 fun String.toOffsetDateTime(): OffsetDateTime {
     //val zoneId: ZoneId = ZoneId.of("UTC")   // Or another geographic: Europe/Paris
     //val defaultZone: ZoneId = ZoneId.systemDefault()

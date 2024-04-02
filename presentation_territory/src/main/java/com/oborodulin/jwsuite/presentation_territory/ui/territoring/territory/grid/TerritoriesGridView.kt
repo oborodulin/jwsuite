@@ -101,11 +101,11 @@ fun TerritoriesGridView(
             Timber.tag(TAG).d("Collect ui state flow: %s", state)
         }
         CommonScreen(state = state) {
-            if (listOf(
+            if (territoryProcessType in listOf(
                     TerritoryProcessType.HAND_OUT,
                     TerritoryProcessType.AT_WORK,
                     TerritoryProcessType.IDLE
-                ).contains(territoryProcessType)
+                )
             ) {
                 TerritoriesClickableGrid(
                     territories = it,

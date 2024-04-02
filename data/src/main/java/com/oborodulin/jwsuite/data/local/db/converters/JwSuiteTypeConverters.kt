@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.data.local.db.converters
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.room.TypeConverter
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.util.Constants
 import com.oborodulin.home.common.util.Constants.CONV_COEFF_BIGDECIMAL
 import com.oborodulin.jwsuite.domain.types.AppSettingParam
@@ -32,7 +33,7 @@ object JwSuiteTypeConverters {
         DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)//.ISO_OFFSET_DATE_TIME
 
     @TypeConverter
-    fun toUUID(uuid: String?): UUID? = uuid?.let { UUID.fromString(it) }
+    fun toUUID(uuid: String?): UUID? = uuid.toUUIDOrNull()
 
     @TypeConverter
     fun fromUUID(uuid: UUID?): String? = uuid?.toString()

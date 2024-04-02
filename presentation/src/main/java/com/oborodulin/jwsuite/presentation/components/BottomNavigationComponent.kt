@@ -45,9 +45,7 @@ fun BottomNavigationComponent(
         val navBackStackEntry by appState.barNavController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         NavRoutes.bottomNavBarRoutes().forEach { item ->
-            if (userRoles.isEmpty() || item.userRoles.isEmpty() ||
-                item.userRoles.any { role -> userRoles.contains(role) }
-            ) {
+            if (userRoles.isEmpty() || item.userRoles.isEmpty() || item.userRoles.any { it in userRoles }) {
                 NavigationBarItem(
                     icon = {
                         IconComponent(

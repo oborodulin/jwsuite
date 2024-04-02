@@ -39,7 +39,7 @@ fun RadioBooleanComponent(
 
     var selectedItem by remember {
         mutableStateOf(
-            if (!listOf("true", "false").contains(inputWrapper.value)) RadioBooleanType.UNDEF
+            if (inputWrapper.value !in listOf("true", "false")) RadioBooleanType.UNDEF
             else when (inputWrapper.value.toBoolean()) {
                 true -> RadioBooleanType.YES
                 false -> RadioBooleanType.NO

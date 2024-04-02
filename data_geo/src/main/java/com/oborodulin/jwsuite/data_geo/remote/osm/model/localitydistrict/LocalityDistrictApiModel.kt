@@ -4,6 +4,7 @@ import com.oborodulin.jwsuite.data_geo.remote.osm.model.Geometry
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.Osm3s
 import com.oborodulin.jwsuite.domain.util.Constants.OSM_TIMEOUT
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import java.util.Locale
 import java.util.UUID
 
@@ -48,6 +49,7 @@ data class LocalityDistrictElement(
     @Json(name = "tags") val tags: LocalityDistrictTags
 )
 
+@JsonClass(generateAdapter = true)
 data class LocalityDistrictTags(
     @Json(name = "osmType") val osmType: String,
     @Json(name = "localityId") val localityId: UUID,

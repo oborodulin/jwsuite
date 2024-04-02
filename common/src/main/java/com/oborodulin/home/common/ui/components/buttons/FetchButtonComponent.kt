@@ -1,6 +1,11 @@
 package com.oborodulin.home.common.ui.components.buttons
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -20,33 +25,48 @@ private const val TAG = "Common.ui.FetchButtonComponent"
 
 @Composable
 fun FetchButtonComponent(
-    modifier: Modifier = Modifier, enabled: Boolean = false, onClick: () -> Unit = {}
+    modifier: Modifier = Modifier,
+    enabled: Boolean = false,
+    content: @Composable (() -> Unit)? = null,
+    onClick: () -> Unit = {}
 ) {
     // This will cause re-composition on every network state change
     val connection by connectivityState()
-    if (connection === ConnectionState.Available) {
-        if (LogLevel.LOG_NETWORK) {
-            Timber.tag(TAG).d("Internet connectivity is available")
+    val isConnectionAvailable = connection === ConnectionState.Available
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            content?.invoke()
+            if (LogLevel.LOG_NETWORK && isConnectionAvailable) {
+                Timber.tag(TAG).d("Internet connectivity is available")
+            }
+            ButtonComponent(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .then(modifier),
+                enabled = enabled && isConnectionAvailable,
+                painterResId = R.drawable.ic_download_24,
+                textResId = R.string.btn_fetch_lbl,
+                contentDescriptionResId = R.string.btn_fetch_cnt_desc,
+                onClick = onClick
+            )
         }
-        ButtonComponent(
-            modifier = Modifier
-                .padding(8.dp)
-                .then(modifier),
-            enabled = enabled,
-            painterResId = R.drawable.ic_download_24,
-            textResId = R.string.btn_fetch_lbl,
-            contentDescriptionResId = R.string.btn_fetch_cnt_desc,
-            onClick = onClick
-        )
-    } else {
-        if (LogLevel.LOG_NETWORK) {
-            Timber.tag(TAG).d("No Internet Connectivity")
+        if (isConnectionAvailable.not()) {
+            if (LogLevel.LOG_NETWORK) {
+                Timber.tag(TAG).d("No Internet Connectivity")
+            }
+            ErrorTextComponent(
+                painterResId = R.drawable.ic_no_internet_24,
+                contentDescResId = R.string.ic_no_internet_cnt_desc,
+                textResId = R.string.no_internet_error
+            )
         }
-        ErrorTextComponent(
-            painterResId = R.drawable.ic_no_internet_24,
-            contentDescResId = R.string.ic_no_internet_cnt_desc,
-            textResId = R.string.no_internet_error
-        )
     }
 }
 

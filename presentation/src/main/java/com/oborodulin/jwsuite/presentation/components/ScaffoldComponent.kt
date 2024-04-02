@@ -140,7 +140,7 @@ fun ScaffoldComponent(
                         repeat(barActionItems.size) {
                             if (userRoles.isEmpty() || barActionItems[it].userRoles.isEmpty() ||
                                 barActionItems[it].userRoles.any { role ->
-                                    userRoles.contains(MemberRoleType.valueOf(role))
+                                    MemberRoleType.valueOf(role) in userRoles
                                 }
                             ) {
                                 IconButton(onClick = barActionItems[it].onClick) {

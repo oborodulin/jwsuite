@@ -27,17 +27,17 @@ class HouseElementToHouseMapper(private val mapper: GeometryToGeoCoordinatesMapp
                 houseLetter = this.houseLetter(),
                 buildingNum = this.buildingNum(),
                 buildingType = type,
-                isBusiness = listOf(
+                isBusiness = type in listOf(
                     BuildingType.HOTEL,
                     BuildingType.RETAIL,
                     BuildingType.SUPERMARKET,
                     BuildingType.OFFICE
-                ).contains(type),
-                isResidential = listOf(
+                ),
+                isResidential = type in listOf(
                     BuildingType.APARTMENTS,
                     BuildingType.HOUSE,
                     BuildingType.DORMITORY
-                ).contains(type),
+                ),
                 floorsByEntrance = this.floors(),
                 estimatedRooms = this.flats.toIntOrNull(),
                 isPrivateSector = type == BuildingType.HOUSE,

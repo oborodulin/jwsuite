@@ -9,14 +9,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.oborodulin.home.common.ui.components.buttons.AddButtonComponent
+import com.oborodulin.home.common.ui.components.buttons.FetchButtonComponent
 import com.oborodulin.home.common.ui.components.list.EditableListViewComponent
 import com.oborodulin.home.common.ui.components.list.ListViewComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
-import com.oborodulin.home.common.ui.components.buttons.FetchButtonComponent
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.list.RegionDistrictsListUiAction
@@ -36,6 +39,7 @@ fun RegionsListView(
     isEditableList: Boolean = true
 ) {
     Timber.tag(TAG).d("RegionsListView(...) called: countryInput = %s", countryInput)
+    val appState = LocalAppState.current
     LaunchedEffect(countryInput?.countryId) {
         Timber.tag(TAG).d("RegionsListView -> LaunchedEffect()")
         regionsListViewModel.submitAction(RegionsListUiAction.Load(countryInput?.countryId))
@@ -43,7 +47,11 @@ fun RegionsListView(
     val searchText by regionsListViewModel.searchText.collectAsStateWithLifecycle()
     val fetchButton = @Composable {
         countryInput?.let {
-            FetchButtonComponent(enabled = true) {
+            FetchButtonComponent(enabled = true, content = {
+                AddButtonComponent(contentDescriptionResId = R.string.btn_add_region_cnt_desc) {
+                    appState.mainNavigate(NavRoutes.Region.routeForRegion())
+                }
+            }) {
                 regionsListViewModel.submitAction(
                     RegionsListUiAction.Load(
                         it.countryId, it.countryGeocodeArea, true

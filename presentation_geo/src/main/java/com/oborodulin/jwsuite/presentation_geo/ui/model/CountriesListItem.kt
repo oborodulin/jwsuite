@@ -19,8 +19,8 @@ data class CountriesListItem(
 fun ListItemModel.toCountriesListItem() = CountriesListItem(
     id = this.itemId!!,
     countryCode = this.supportingText?.substringBefore(':').orEmpty(),
-    countryGeocode = this.supportingText?.takeIf { it.contains(':') }?.substringAfter(' ')
+    countryGeocode = this.supportingText?.takeIf { ':' in it }?.substringAfter(' ')
         ?.substringBeforeLast('[').orEmpty(),
     countryName = this.headline,
-    osmInfo = this.supportingText?.takeIf { it.contains(':') }?.substringAfter(' ').orEmpty()
+    osmInfo = this.supportingText?.takeIf { ':' in it }?.substringAfter(' ').orEmpty()
 )

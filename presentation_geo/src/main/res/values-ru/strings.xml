@@ -162,5 +162,7 @@
     <string name="street_unique_constraint_error">Улица такого типа и с таким наименованием уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
+    <string name="btn_add_country_cnt_desc">Добавить страну</string>
+    <string name="btn_add_region_cnt_desc">Добавить область страны</string>
 
 </resources>

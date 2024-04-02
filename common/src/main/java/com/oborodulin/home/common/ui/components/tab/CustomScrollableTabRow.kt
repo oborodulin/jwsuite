@@ -30,9 +30,7 @@ fun CustomScrollableTabRow(tabRowItems: List<TabRowItem>, userRoles: List<String
     // https://stackoverflow.com/questions/70923243/how-to-adjust-tabrow-indicator-width-according-to-the-text-above-it
     val density = LocalDensity.current
     val tabs = tabRowItems.filter { tab ->
-        userRoles.isEmpty() || tab.userRoles.isEmpty() || tab.userRoles.any { role ->
-            userRoles.contains(role)
-        }
+        userRoles.isEmpty() || tab.userRoles.isEmpty() || tab.userRoles.any { it in userRoles }
     }
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val tabWidths = remember {

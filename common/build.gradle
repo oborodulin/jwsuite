@@ -73,8 +73,11 @@ dependencies {
 
     // XML-parser
     implementation deps.xml.xmlpull
+
+    // JSON
     implementation deps.json.kotlinx
-    // deps.json.kotlinx
+    implementation deps.json.moshi
+    implementation deps.json.moshiKotlin
     // implementation deps.google.gson
 
     // Compose

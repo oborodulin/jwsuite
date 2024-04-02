@@ -139,9 +139,7 @@ class AppState(
     // Возврат к экрану из главного меню нижней панели.
     fun backToBottomBarScreen(destination: String? = null) {
         val dbgMsg = "backToBottomBarScreen(...) called: destination = %s".format(destination)
-        destination?.let {
-            if (!bottomNavBarRoutes.contains(it)) throw IllegalArgumentException(dbgMsg)
-        }
+        destination?.let { if (it !in bottomNavBarRoutes) throw IllegalArgumentException(dbgMsg) }
         if (LOG_NAVIGATION) {
             Timber.tag(TAG).d(dbgMsg)
         }
@@ -168,15 +166,15 @@ class AppState(
             Timber.tag(TAG).d("navigateByRoute(...) called: destination = %s", destination)
         }
         when {
-            NavRoutes.authRoutes().map { it.route }
-                .contains(destination) -> this.rootNavController.navigate(destination) {
+            destination in NavRoutes.authRoutes()
+                .map { it.route } -> this.rootNavController.navigate(destination) {
                 popUpTo(destination) {
                     inclusive = true
                 }
             }
 
-            NavRoutes.bottomNavBarRoutes().map { it.route }
-                .contains(destination) -> this.barNavController.navigate(destination) {
+            destination in NavRoutes.bottomNavBarRoutes()
+                .map { it.route } -> this.barNavController.navigate(destination) {
                 popUpTo(destination) {
                     inclusive = true
                 }
@@ -207,7 +205,7 @@ class AppState(
     // Клик по навигационному меню, вкладке.
     fun navigateToBarRoute(route: String) {
         val dbgMsg = "navigateToBarRoute(...) called: route = %s".format(route)
-        if (!bottomNavBarRoutes.contains(route)) throw IllegalArgumentException(dbgMsg)
+        if (route !in bottomNavBarRoutes) throw IllegalArgumentException(dbgMsg)
         if (LOG_NAVIGATION) {
             Timber.tag(TAG).d(dbgMsg)
         }

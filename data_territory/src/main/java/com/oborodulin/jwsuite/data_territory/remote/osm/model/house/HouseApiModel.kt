@@ -8,6 +8,7 @@ import com.oborodulin.jwsuite.domain.model.territory.House.Companion.NUMBER_DELI
 import com.oborodulin.jwsuite.domain.types.BuildingType
 import com.oborodulin.jwsuite.domain.util.Constants.OSM_TIMEOUT
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import java.util.UUID
 
 data class HouseApiModel(
@@ -53,6 +54,7 @@ data class HouseElement(
 )
 
 // https://wiki.openstreetmap.org/wiki/RU:%D0%90%D0%B4%D1%80%D0%B5%D1%81%D0%B0#%D0%9D%D1%83%D0%BC%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D1%8F_%D0%B4%D0%BE%D0%BC%D0%BE%D0%B2
+@JsonClass(generateAdapter = true)
 data class HouseTags(
     @Json(name = "osmType") val osmType: String,
     @Json(name = "streetId") val streetId: UUID,
@@ -66,7 +68,7 @@ data class HouseTags(
     @Json(name = "max_level") val maxLevel: String
 ) {
     fun buildingType(): BuildingType = when {
-        listOf(
+        this.building in listOf(
             "bungalow",
             "cabin",
             "detached",
@@ -80,14 +82,12 @@ data class HouseTags(
             "tree_house",
             "trullo",
             "hut"
-        ).contains(this.building) -> BuildingType.HOUSE
+        ) -> BuildingType.HOUSE
 
-        listOf("yes", "residential").contains(this.building) -> BuildingType.HOUSE
+        this.building in listOf("yes", "residential") -> BuildingType.HOUSE
         "commercial" == this.building -> BuildingType.OFFICE
         "kiosk" == this.building -> BuildingType.RETAIL
-        listOf(
-            "industrial", "shed"
-        ).contains(this.building) -> BuildingType.INDUSTRIAL
+        this.building in listOf("industrial", "shed") -> BuildingType.INDUSTRIAL
 
         else -> try {
             BuildingType.valueOf(this.building.trim().uppercase())
@@ -99,7 +99,7 @@ data class HouseTags(
     fun houseNum(): Int {
         var number = houseNumber
         NUMBER_DELIMITERS.forEach { delimiter ->
-            houseNumber.takeIf { it.contains(delimiter) }?.substringBefore(delimiter)?.let {
+            houseNumber.takeIf { delimiter in it }?.substringBefore(delimiter)?.let {
                 number = it
                 return@forEach
             }
@@ -110,19 +110,20 @@ data class HouseTags(
     fun houseLetter(): String? {
         val number = houseNumber.substringBefore(' ')
         if (number.isDigitsOnly()) return null
-        var letter = number.filter { it.isLetter() && LETTER_DELIMITERS.contains(it).not() }
+        var letter = number.filter { it.isLetter() && it !in LETTER_DELIMITERS }
         if (letter.isNotEmpty()) return letter.uppercase()
         LETTER_DELIMITERS.forEach { delimiter ->
-            number.takeIf { it.contains(delimiter) }?.substringAfter(delimiter)?.let {
+            number.takeIf { delimiter in it }?.substringAfter(delimiter)?.let {
                 letter = it
                 return@forEach
             }
         }
-        return letter.ifEmpty { null }
+        return letter.ifBlank { null }
     }
 
     fun buildingNum() =
-        houseNumber.takeIf { it.contains(' ') }?.substringAfter(' ')?.substringBefore(' ')
+        houseNumber.takeIf { ' ' in it }?.substringAfter(' ')?.substringBefore(' ')
             ?.filter { it.isDigit() }?.toIntOrNull()
+
     fun floors() = levels.ifBlank { maxLevel }.toIntOrNull()
 }

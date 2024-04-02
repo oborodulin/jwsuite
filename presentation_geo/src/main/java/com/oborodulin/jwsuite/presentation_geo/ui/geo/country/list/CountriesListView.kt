@@ -9,13 +9,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.oborodulin.home.common.ui.components.buttons.AddButtonComponent
+import com.oborodulin.home.common.ui.components.buttons.FetchButtonComponent
 import com.oborodulin.home.common.ui.components.list.EditableListViewComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
-import com.oborodulin.home.common.ui.components.buttons.FetchButtonComponent
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.list.RegionsListUiAction
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.list.RegionsListViewModelImpl
 import kotlinx.coroutines.flow.collectLatest
@@ -31,6 +34,7 @@ fun CountriesListView(
     countryInput: NavigationInput.CountryInput? = null
 ) {
     Timber.tag(TAG).d("CountriesListView(...) called: countryInput = %s", countryInput)
+    val appState = LocalAppState.current
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("CountriesListView -> LaunchedEffect()")
         countriesListViewModel.submitAction(CountriesListUiAction.Load())
@@ -41,24 +45,24 @@ fun CountriesListView(
             Timber.tag(TAG).d("Collect ui state flow: %s", state)
         }
         CommonScreen(state = state) {
-            EditableListViewComponent(
-                items = it,
+            EditableListViewComponent(items = it,
                 searchedText = searchText.text,
                 dlgConfirmDelResId = R.string.dlg_confirm_del_country,
                 emptyListResId = R.string.countries_list_empty_text,
                 isEmptyListTextOutput = true,
                 fetchListControl = {
-                    FetchButtonComponent(enabled = true) {
-                        countriesListViewModel.submitAction(CountriesListUiAction.Load(true))
-                    }
+                    FetchButtonComponent(enabled = true, content = {
+                        AddButtonComponent(contentDescriptionResId = R.string.btn_add_country_cnt_desc) {
+                            appState.mainNavigate(NavRoutes.Country.routeForCountry())
+                        }
+                    }) { countriesListViewModel.submitAction(CountriesListUiAction.Load(true)) }
                 },
                 onEdit = { country ->
                     countriesListViewModel.submitAction(CountriesListUiAction.EditCountry(country.itemId!!))
                 },
                 onDelete = { region ->
                     countriesListViewModel.submitAction(CountriesListUiAction.DeleteCountry(region.itemId!!))
-                }
-            ) { region ->
+                }) { region ->
                 countriesListViewModel.singleSelectItem(region)
                 regionsListViewModel.submitAction(RegionsListUiAction.Load(region.itemId!!))
             }
