@@ -11,6 +11,7 @@ import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
+/*
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.CongregatingScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.DashboardingScreen
@@ -19,6 +20,8 @@ import com.oborodulin.jwsuite.presentation_territory.ui.territoring.TerritoringS
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.atwork.ProcessConfirmationScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.handout.HandOutConfirmationScreen
+
+ */
 import timber.log.Timber
 
 private const val TAG = "App.navigation.BarNavigationHost"

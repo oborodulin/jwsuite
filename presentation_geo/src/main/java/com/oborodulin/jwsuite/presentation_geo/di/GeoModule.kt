@@ -104,6 +104,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object GeoModule {
     // MAPPERS:
+    /*
     // Coordinates:
     @Singleton
     @Provides
@@ -536,4 +537,6 @@ object GeoModule {
         saveStreetLocalityDistrictsUseCase,
         saveStreetMicrodistrictsUseCase
     )
+
+     */
 }

@@ -3,9 +3,10 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     //https://proandroiddev.com/welcome-datastore-good-bye-sharedpreferences-fdeb831a1e58
     //id "com.google.protobuf" version "0.9.4"
-    id 'dagger.hilt.android.plugin'
     id 'org.jetbrains.kotlin.plugin.serialization'
     id 'com.google.devtools.ksp'
+    //id 'dagger.hilt.android.plugin'
+    id 'com.google.dagger.hilt.android'
 }
 
 android {

@@ -1,9 +1,10 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'dagger.hilt.android.plugin'
     id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.devtools.ksp'
+    //id 'dagger.hilt.android.plugin'
+    id 'com.google.dagger.hilt.android'
     // https://github.com/androiddevnotesyoutube/android-dokka-documentation-kdoc/blob/main/app/build.gradle
     id 'org.jetbrains.dokka'
 }
@@ -100,9 +101,9 @@ dependencies {
     implementation project(':domain')
     implementation project(':presentation')
     implementation project(':presentation_geo')
-    implementation project(':presentation_dashboard')
-    implementation project(':presentation_congregation')
-    implementation project(':presentation_territory')
+    //implementation project(':presentation_dashboard')
+    //implementation project(':presentation_congregation')
+    //implementation project(':presentation_territory')
 
     // Logging
     implementation deps.logging.timber

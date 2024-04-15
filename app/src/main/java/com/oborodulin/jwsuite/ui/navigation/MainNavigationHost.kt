@@ -13,6 +13,7 @@ import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.login.LoginScreen
 import com.oborodulin.jwsuite.presentation.ui.session.signup.SignupScreen
+/*
 import com.oborodulin.jwsuite.presentation_congregation.ui.CurrentMemberViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.CongregatingScreen
@@ -24,6 +25,7 @@ import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.Dashboardin
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.datamanagement.DataManagementScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.setting.DashboardSettingScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.database.send.DatabaseSendScreen
+*/
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.GeoScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.country.single.CountryScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityScreen
@@ -34,6 +36,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.single.Regi
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.localitydistrict.StreetLocalityDistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.microdistrict.StreetMicrodistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetScreen
+/*
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.HousingScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.HouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.room.single.RoomScreen
@@ -52,6 +55,7 @@ import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.si
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorycategory.single.TerritoryCategoryScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.single.TerritoryStreetScreen
+ */
 import timber.log.Timber
 
 private const val TAG = "App.Navigation.MainNavigationHost"
@@ -101,7 +105,7 @@ fun MainNavigationHost(
                 .d("Navigation Graph: to SignupScreen [route = '%s']", it.destination.route)
             SignupScreen(sessionViewModel)
         }
-
+/*
         // CONGREGATION Nav Graph:
         composable(
             route = NavRoutes.Congregation.route, arguments = NavRoutes.Congregation.arguments
@@ -348,12 +352,7 @@ fun MainNavigationHost(
             TerritoryRoomScreen(
                 territoryViewModel = territoryViewModel,
                 territoryRoomInput = NavRoutes.TerritoryRoom.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
 
@@ -365,16 +364,7 @@ fun MainNavigationHost(
                 it.destination.route, NavRoutes.Geo.arguments
             )
             //onActionBarSubtitleChange("")
-            GeoScreen(
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarTitleChange = onActionBarTitleChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
-            )
+            GeoScreen(defTopBarActions = defTopBarActions)
         }
         // CountryScreen:
         composable(route = NavRoutes.Country.route, arguments = NavRoutes.Country.arguments) {
@@ -395,12 +385,7 @@ fun MainNavigationHost(
             )
             RegionScreen(
                 regionInput = NavRoutes.Region.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
         // RegionDistrictScreen:
@@ -413,12 +398,7 @@ fun MainNavigationHost(
             )
             RegionDistrictScreen(
                 regionDistrictInput = NavRoutes.RegionDistrict.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
         // LocalityScreen:
@@ -430,12 +410,7 @@ fun MainNavigationHost(
             )
             LocalityScreen(
                 localityInput = NavRoutes.Locality.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
         // LocalityDistrictScreen:
@@ -450,12 +425,7 @@ fun MainNavigationHost(
             )
             LocalityDistrictScreen(
                 localityDistrictInput = NavRoutes.LocalityDistrict.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
         // MicrodistrictScreen:
@@ -469,12 +439,7 @@ fun MainNavigationHost(
             )
             MicrodistrictScreen(
                 microdistrictInput = NavRoutes.Microdistrict.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
         // StreetScreen:
@@ -486,12 +451,7 @@ fun MainNavigationHost(
             )
             StreetScreen(
                 streetInput = NavRoutes.Street.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
         // StreetLocalityDistrictScreen:
@@ -505,12 +465,7 @@ fun MainNavigationHost(
             )
             StreetLocalityDistrictScreen(
                 streetLocalityDistrictInput = NavRoutes.StreetLocalityDistrict.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
         // StreetMicrodistrictScreen:
@@ -524,12 +479,7 @@ fun MainNavigationHost(
             )
             StreetMicrodistrictScreen(
                 streetMicrodistrictInput = NavRoutes.StreetMicrodistrict.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
 
@@ -683,6 +633,7 @@ fun MainNavigationHost(
             )
             DatabaseSendScreen(defTopBarActions = defTopBarActions)
         }
+*/
 
         /*congregationNavGraph(
             startDestination = session.startDestination,
@@ -742,6 +693,9 @@ fun MainNavigationHost(
                 onFabChange = onFabChange
             )
         }*/
+
+
+        /* ********************************
         // Dashboarding Screen:
         composable(NavRoutes.Dashboarding.route) {
             // dashboarding: TOTALS: Congregations: Groups, Members; Territories; Ministries: Territories, Members and etc.
@@ -824,6 +778,8 @@ fun MainNavigationHost(
             //                onActionBarTitleChange = onActionBarTitleChange,
             //                onTopBarActionsChange = onTopBarActionsChange)
         }
+
+         */
     }
 }
 

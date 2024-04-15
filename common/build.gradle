@@ -2,9 +2,10 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-parcelize'
-    id 'dagger.hilt.android.plugin'
     id 'org.jetbrains.kotlin.plugin.serialization'
     id 'com.google.devtools.ksp'
+    //id 'dagger.hilt.android.plugin'
+    id 'com.google.dagger.hilt.android'
     // https://medium.com/@ruchiram4/android-create-a-library-project-and-publish-to-local-maven-repository-2141621dff1c
     // https://github.com/codepath/android_guides/wiki/Building-your-own-Android-library
     //id 'maven-publish'
