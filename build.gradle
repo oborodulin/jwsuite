@@ -8,9 +8,9 @@ buildscript {
                 argon2kt               : '1.4.0',
                 chucker                : '4.0.0',
                 compose                : '1.4.3',
-                composeActivity        : '1.8.2',
-                composeBom             : '2024.04.00', //'2024.02.02',
-                composeKotlinExt       : '1.5.1', //Support for Kotlin 1.9.0 https://developer.android.com/jetpack/androidx/releases/compose-kotlin
+                composeActivity        : '1.9.0',
+                composeBom             : '2024.04.01', //'2024.02.02',
+                composeKotlinExt       : '1.5.3',
                 composeMaterial3       : '1.1.0',
                 composeNavigation      : '2.7.7',
                 composableSweetToast   : '1.0.1',
@@ -19,8 +19,8 @@ buildscript {
                 coilKt                 : '2.3.0',
                 coreTesting            : '2.2.0',
                 coroutines             : '1.8.0',
-                dagger                 : '2.44.2',
-                datastore              : '1.1.0-rc01',
+                dagger                 : '2.48', // 2.44.2
+                datastore              : '1.1.0',
                 desugar                : '1.2.2', // для 2.0.0 нужен AGP 7.4.0-alpha10
                 dokka                  : '1.9.10',
                 espresso               : '3.5.1',
@@ -29,19 +29,19 @@ buildscript {
                 gradle                 : '8.3.2',
                 gson                   : '2.10.1',
                 hamcrest               : '2.2',
-                hilt                   : '2.51.1',
+                hilt                   : '2.48', // '2.44', '2.51.1'
                 hiltNavCompose         : '1.2.0',
                 hiltWork               : '1.2.0',
                 inject                 : '1',
                 jsonKotlinx            : '1.6.3',
                 junit                  : '4.13.2',
                 extJunit               : '1.1.5',
-                kotlin                 : '1.9.0', // Support for Compose Compiler 1.5.1 https://developer.android.com/jetpack/androidx/releases/compose-kotlin
-                kotlinReflect          : '1.9.23', // Support for Compose Compiler 1.5.1 https://developer.android.com/jetpack/androidx/releases/compose-kotlin
-                ksp                    : '1.9.0-1.0.13',
+                kotlin                 : '1.9.10',
+                kotlinReflect          : '1.9.10',
+                ksp                    : '1.9.10-1.0.13',
                 ktlint                 : '1.0.1', //'0.45.2',
                 ktlintGradle           : '11.6.1',
-                ktx                    : '1.12.0', // 1.12.0-alpha05 requires android SDK version 34
+                ktx                    : '1.13.0', // 1.12.0-alpha05 requires android SDK version 34
                 ktxLifecycle           : '2.7.0',
                 lifecycle              : '2.2.0',
                 lifecycleCompose       : '2.7.0',
@@ -55,7 +55,7 @@ buildscript {
                 moshi                  : '1.15.1',
                 navigation             : '2.5.3',
                 nvi18n                 : '1.29',
-                okHttp                 : '5.0.0-alpha.12',
+                okHttp                 : '5.0.0-alpha.14',
                 opencsv                : '5.9',
                 paging                 : '3.1.1',
                 pagingCompose          : '3.2.1',
@@ -100,7 +100,7 @@ implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
                       versionName  : "1.0"],
                 sdk: [compileVersion: 34,
                       minVersion    : 28, // also in resources/robolectric.properties
-                      targetVersion : 33],
+                      targetVersion : 34],
                 jvm: [target       : JavaVersion.VERSION_18,
                       compatibility: [source: JavaVersion.VERSION_18, target: JavaVersion.VERSION_18]],
         ]
@@ -271,14 +271,13 @@ implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
 plugins {
     id 'com.android.application' version '8.3.2' apply false
     id 'com.android.library' version '8.3.2' apply false
-    id 'org.jetbrains.kotlin.android' version '1.9.0' apply false
-    // Compose Compiler 1.5.1 поддерживает 1.9.0 https://developer.android.com/jetpack/androidx/releases/compose-kotlin
+    id 'org.jetbrains.kotlin.android' version '1.9.10' apply false
     id 'org.jlleitschuh.gradle.ktlint' version '11.3.1'
     // https://github.com/Kotlin/kotlinx.serialization
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.0'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.10'
     // https://kotlinlang.org/docs/ksp-overview.html#resources
-    id 'com.google.devtools.ksp' version '1.9.0-1.0.13' apply false
-    id 'com.google.dagger.hilt.android' version '2.51.1' apply false
+    id 'com.google.devtools.ksp' version '1.9.10-1.0.13' apply false
+    id 'com.google.dagger.hilt.android' version '2.48' apply false
 }
 
 allprojects {
@@ -295,6 +294,7 @@ spotless {
         endWithNewline()
     }
 }
+
 /*
 task clean(type: Delete) {
     delete rootProject.buildDir

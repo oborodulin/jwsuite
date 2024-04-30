@@ -32,7 +32,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 //abstract class GeoRemoteDataSourcesModule {
-interface GeoRemoteDataSourcesModule {
+object GeoRemoteDataSourcesModule {
     /*@Binds
     abstract fun bindRemoteGeoCountryDataSource(dataSourceImpl: RemoteGeoCountryDataSourceImpl): RemoteGeoCountryDataSource
 

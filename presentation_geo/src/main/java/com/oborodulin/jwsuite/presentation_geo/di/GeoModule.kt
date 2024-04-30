@@ -104,7 +104,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object GeoModule {
     // MAPPERS:
-    /*
     // Coordinates:
     @Singleton
     @Provides
@@ -313,7 +312,7 @@ object GeoModule {
         StreetsListToStreetsListItemMapper(mapper = mapper)
 
     // CONVERTERS:
-    // Regions:
+    // Countries:
     @Singleton
     @Provides
     fun provideCountriesListConverter(mapper: CountriesListToCountriesListItemMapper): CountriesListConverter =
@@ -437,7 +436,6 @@ object GeoModule {
         saveCountryUseCase,
         deleteCountryUseCase
     )
-
     @Singleton
     @Provides
     fun provideRegionUseCases(
@@ -537,6 +535,4 @@ object GeoModule {
         saveStreetLocalityDistrictsUseCase,
         saveStreetMicrodistrictsUseCase
     )
-
-     */
 }
