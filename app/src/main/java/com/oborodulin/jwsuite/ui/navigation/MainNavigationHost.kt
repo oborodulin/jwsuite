@@ -13,7 +13,6 @@ import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.login.LoginScreen
 import com.oborodulin.jwsuite.presentation.ui.session.signup.SignupScreen
-/*
 import com.oborodulin.jwsuite.presentation_congregation.ui.CurrentMemberViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.CongregatingScreen
@@ -25,7 +24,6 @@ import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.Dashboardin
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.datamanagement.DataManagementScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.setting.DashboardSettingScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.database.send.DatabaseSendScreen
-*/
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.GeoScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.country.single.CountryScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityScreen
@@ -36,7 +34,6 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.single.Regi
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.localitydistrict.StreetLocalityDistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.microdistrict.StreetMicrodistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetScreen
-/*
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.HousingScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.HouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.room.single.RoomScreen
@@ -55,7 +52,6 @@ import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.si
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorycategory.single.TerritoryCategoryScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.single.TerritoryStreetScreen
- */
 import timber.log.Timber
 
 private const val TAG = "App.Navigation.MainNavigationHost"
@@ -67,17 +63,6 @@ fun MainNavigationHost(
     sessionViewModel: SessionViewModel,
     defTopBarActions: @Composable RowScope.() -> Unit = {},
     bottomBar: @Composable () -> Unit = {}
-    /*innerPadding: PaddingValues,
-    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
-    onActionBarTitleChange: (String) -> Unit,
-    onActionBarSubtitleChange: (String) -> Unit,
-    onNavIconChange: (@Composable (() -> Unit)?) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarNavClickChange: (() -> Unit) -> Unit,
-    shouldUseNestedScrollConnection: (Boolean) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    areUsingBottomNavigation: (Boolean) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit*/
 ) {
     Timber.tag(TAG).d("MainNavigationHost(...) called")
     val appState = LocalAppState.current
@@ -105,7 +90,7 @@ fun MainNavigationHost(
                 .d("Navigation Graph: to SignupScreen [route = '%s']", it.destination.route)
             SignupScreen(sessionViewModel)
         }
-/*
+
         // CONGREGATION Nav Graph:
         composable(
             route = NavRoutes.Congregation.route, arguments = NavRoutes.Congregation.arguments
@@ -117,12 +102,7 @@ fun MainNavigationHost(
             )
             CongregationScreen(
                 congregationInput = NavRoutes.Congregation.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
         composable(route = NavRoutes.Group.route, arguments = NavRoutes.Group.arguments) {
@@ -136,12 +116,7 @@ fun MainNavigationHost(
             GroupScreen(
                 //sharedViewModel = sharedViewModel,
                 groupInput = NavRoutes.Group.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
         composable(route = NavRoutes.Member.route, arguments = NavRoutes.Member.arguments) {
@@ -155,12 +130,7 @@ fun MainNavigationHost(
             MemberScreen(
                 //sharedViewModel = sharedViewModel,
                 memberInput = NavRoutes.Member.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
         composable(route = NavRoutes.MemberRole.route, arguments = NavRoutes.MemberRole.arguments) {
@@ -174,12 +144,7 @@ fun MainNavigationHost(
             MemberRoleScreen(
                 //sharedViewModel = sharedViewModel,
                 memberRoleInput = NavRoutes.MemberRole.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
 
@@ -198,12 +163,7 @@ fun MainNavigationHost(
                 //sharedViewModel = sharedViewModel,
                 //viewModel = territoryViewModel,
                 territoryInput = NavRoutes.Territory.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
         composable(
@@ -220,12 +180,7 @@ fun MainNavigationHost(
             TerritoryDetailsScreen(
                 //territoryViewModel = territoryViewModel,
                 territoryInput = NavRoutes.TerritoryDetails.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
         composable(route = NavRoutes.HandOutConfirmation.route) {
@@ -241,12 +196,7 @@ fun MainNavigationHost(
             HandOutConfirmationScreen(
                 //sharedViewModel = sharedViewModel,
                 viewModel = territoriesGridViewModel,
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
         composable(route = NavRoutes.ProcessConfirmation.route) {
@@ -263,12 +213,7 @@ fun MainNavigationHost(
             ProcessConfirmationScreen(
                 //sharedViewModel = sharedViewModel,
                 viewModel = territoriesGridViewModel,
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
         composable(
@@ -282,12 +227,7 @@ fun MainNavigationHost(
                 )
             TerritoryCategoryScreen(
                 territoryCategoryInput = NavRoutes.TerritoryCategory.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
 
@@ -307,12 +247,7 @@ fun MainNavigationHost(
                 //sharedViewModel = sharedViewModel,
                 territoryViewModel = territoryViewModel,
                 territoryStreetInput = NavRoutes.TerritoryStreet.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
         composable(
@@ -329,12 +264,7 @@ fun MainNavigationHost(
             TerritoryHouseScreen(
                 territoryViewModel = territoryViewModel,
                 territoryHouseInput = NavRoutes.TerritoryHouse.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
 
@@ -366,7 +296,6 @@ fun MainNavigationHost(
             //onActionBarSubtitleChange("")
             GeoScreen(defTopBarActions = defTopBarActions)
         }
- */
         // CountryScreen:
         composable(route = NavRoutes.Country.route, arguments = NavRoutes.Country.arguments) {
             Timber.tag(TAG).d(
@@ -378,7 +307,6 @@ fun MainNavigationHost(
                 defTopBarActions = defTopBarActions
             )
         }
-        /*
         // RegionScreen:
         composable(route = NavRoutes.Region.route, arguments = NavRoutes.Region.arguments) {
             Timber.tag(TAG).d(
@@ -493,14 +421,7 @@ fun MainNavigationHost(
                     "Navigation Graph: to HousingScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.Housing.arguments
                 )
-            HousingScreen(
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarTitleChange = onActionBarTitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
-                onTopBarActionsChange = onTopBarActionsChange*/
-            )
+            HousingScreen(defTopBarActions = defTopBarActions)
         }
         composable(
             route = NavRoutes.House.route, arguments = NavRoutes.House.arguments
@@ -515,12 +436,7 @@ fun MainNavigationHost(
             HouseScreen(
                 //territoryViewModel = territoryViewModel,
                 houseInput = NavRoutes.House.fromEntry(it),
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
         }
         composable(
@@ -635,7 +551,6 @@ fun MainNavigationHost(
             )
             DatabaseSendScreen(defTopBarActions = defTopBarActions)
         }
-*/
 
         /*congregationNavGraph(
             startDestination = session.startDestination,
@@ -696,8 +611,6 @@ fun MainNavigationHost(
             )
         }*/
 
-
-        /* ********************************
         // Dashboarding Screen:
         composable(NavRoutes.Dashboarding.route) {
             // dashboarding: TOTALS: Congregations: Groups, Members; Territories; Ministries: Territories, Members and etc.
@@ -714,15 +627,7 @@ fun MainNavigationHost(
             }
             Timber.tag(TAG).d("Navigation Graph: sharedViewModel saved in appState")
             //onActionBarSubtitleChange(appState.actionBarSubtitle.value)
-            DashboardingScreen(
-                defTopBarActions = defTopBarActions,
-                bottomBar = bottomBar/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarTitleChange = onActionBarTitleChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
-            )
+            DashboardingScreen(defTopBarActions = defTopBarActions, bottomBar = bottomBar)
         }
         // Congregating Screen:
         composable(
@@ -736,16 +641,7 @@ fun MainNavigationHost(
             if (appState.memberSharedViewModel.value == null) {
                 appState.memberSharedViewModel.value = memberSharedViewModel
             }
-            CongregatingScreen(
-                defTopBarActions = defTopBarActions,
-                bottomBar = bottomBar/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarTitleChange = onActionBarTitleChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
-            )
+            CongregatingScreen(defTopBarActions = defTopBarActions, bottomBar = bottomBar)
         }
         // Territoring Screen:
         composable(
@@ -761,12 +657,7 @@ fun MainNavigationHost(
                 //sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,
                 defTopBarActions = defTopBarActions,
-                bottomBar = bottomBar/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarTitleChange = onActionBarTitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                bottomBar = bottomBar
             )
         }
         // Ministring Screen:
@@ -780,7 +671,5 @@ fun MainNavigationHost(
             //                onActionBarTitleChange = onActionBarTitleChange,
             //                onTopBarActionsChange = onTopBarActionsChange)
         }
-
-         */
     }
 }

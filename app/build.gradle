@@ -101,9 +101,9 @@ dependencies {
     implementation project(':domain')
     implementation project(':presentation')
     implementation project(':presentation_geo')
-    //implementation project(':presentation_dashboard')
-    //implementation project(':presentation_congregation')
-    //implementation project(':presentation_territory')
+    implementation project(':presentation_dashboard')
+    implementation project(':presentation_congregation')
+    implementation project(':presentation_territory')
 
     // Logging
     implementation deps.logging.timber
