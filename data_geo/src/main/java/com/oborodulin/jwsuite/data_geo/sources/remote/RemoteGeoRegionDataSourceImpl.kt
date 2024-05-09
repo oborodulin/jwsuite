@@ -7,8 +7,11 @@ import com.oborodulin.jwsuite.data_geo.remote.osm.model.region.RegionService
 import com.oborodulin.jwsuite.data_geo.remote.sources.RemoteGeoRegionDataSource
 import com.oborodulin.jwsuite.domain.types.RegionType
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
+
+private const val TAG = "Data.RemoteGeoRegionDataSourceImpl"
 
 /**
  * Created by o.borodulin on 08.August.2022
@@ -22,6 +25,10 @@ class RemoteGeoRegionDataSourceImpl @Inject constructor(
         countryId: UUID,
         countryGeocodeArea: String
     ) = flow {
+        Timber.tag(TAG).d(
+            "getCountryRegions(...) called: countryId = %s, countryGeocodeArea = %s",
+            countryId, countryGeocodeArea
+        )
         val resArray =
             ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.region_full_types)
         try {
@@ -32,6 +39,7 @@ class RemoteGeoRegionDataSourceImpl @Inject constructor(
                     excRegionType = resArray[RegionType.FEDERAL_CITY.ordinal]
                 )
             )?.let {
+                Timber.tag(TAG).d("getCountryRegions: RegionApiModel = %s", it)
                 if (it.elements.isNotEmpty()) {
                     emit(ApiResponse.Success(it))
                 } else {

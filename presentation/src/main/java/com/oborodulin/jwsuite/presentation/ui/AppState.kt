@@ -91,8 +91,8 @@ class AppState(
     // Источник состояния BottomBar
     // ----------------------------------------------------------
 
-    private val bottomNavBarTabs = NavRoutes.bottomNavBarRoutes()
-    private val bottomNavBarRoutes = bottomNavBarTabs.map { it.route }
+    private val bottomNavBarTabs: List<NavRoutes> = NavRoutes.bottomNavBarRoutes()
+    private val bottomNavBarRoutes: List<String> = bottomNavBarTabs.map { it.route }
 
     private val allAggregationNavTabs =
         NavRoutes.aggregationRoutes().toMutableList().union(NavRoutes.bottomNavBarRoutes())

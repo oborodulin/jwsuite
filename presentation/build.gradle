@@ -36,6 +36,13 @@ android {
         sourceCompatibility cfg.jvm.compatibility.source
         targetCompatibility cfg.jvm.compatibility.target
     }
+    kotlin {
+        sourceSets.configureEach {
+            languageSettings {
+                languageVersion = "2.0"
+            }
+        }
+    }
     kotlinOptions {
         jvmTarget = cfg.jvm.target
 

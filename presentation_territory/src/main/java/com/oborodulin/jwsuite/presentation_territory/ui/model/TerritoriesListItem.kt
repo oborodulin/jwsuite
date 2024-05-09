@@ -5,13 +5,14 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
+import kotlinx.parcelize.RawValue
 import java.util.UUID
 
 data class TerritoriesListItem(
     val id: UUID,
-    val congregation: CongregationUi,
-    val territoryCategory: TerritoryCategoryUi,
-    val locality: LocalityUi,
+    val congregation: @RawValue CongregationUi,
+    val territoryCategory: @RawValue TerritoryCategoryUi,
+    val locality: @RawValue LocalityUi,
     val territoryNum: Int,
     val isBusiness: Boolean,
     val isGroupMinistry: Boolean,
@@ -21,7 +22,7 @@ data class TerritoriesListItem(
     val territoryDesc: String? = null,
     val streetNames: String? = null,
     val houseNums: String? = null,
-    val member: MemberUi? = null,
+    val member: @RawValue MemberUi? = null,
     val congregationId: UUID? = null,
     val isPrivateSector: Boolean? = null,
     val cardNum: String,

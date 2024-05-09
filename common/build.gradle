@@ -40,6 +40,13 @@ android {
         // https://www.rockandnull.com/java-time-android/
         //coreLibraryDesugaringEnabled true
     }
+    kotlin {
+        sourceSets.configureEach {
+            languageSettings {
+                languageVersion = "2.0"
+            }
+        }
+    }
     kotlinOptions {
         jvmTarget = cfg.jvm.target
     }

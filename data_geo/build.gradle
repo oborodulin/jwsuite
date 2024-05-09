@@ -35,6 +35,13 @@ android {
         sourceCompatibility cfg.jvm.compatibility.source
         targetCompatibility cfg.jvm.compatibility.target
     }
+    kotlin {
+        sourceSets.configureEach {
+            languageSettings {
+                languageVersion = "2.0"
+            }
+        }
+    }
     kotlinOptions {
         jvmTarget = cfg.jvm.target
     }
@@ -81,6 +88,7 @@ dependencies {
     // Networking
     implementation deps.okhttp3.okHttp
     implementation deps.retrofit2.retrofit
+    implementation deps.retrofit2.converterScalars
     implementation deps.retrofit2.converterMoshi
 
     implementation deps.androidx.coreKtx

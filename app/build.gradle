@@ -49,6 +49,13 @@ android {
         sourceCompatibility cfg.jvm.compatibility.source
         targetCompatibility cfg.jvm.compatibility.target
     }
+    kotlin {
+        sourceSets.configureEach {
+            languageSettings {
+                languageVersion = "2.0"
+            }
+        }
+    }
     kotlinOptions {
         // work-runtime-ktx 2.1.0 and above now requires Java 8
         jvmTarget = cfg.jvm.target

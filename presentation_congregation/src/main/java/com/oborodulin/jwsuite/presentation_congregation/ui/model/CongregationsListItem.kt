@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.model
 import android.os.Parcelable
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
+import kotlinx.parcelize.RawValue
 import java.util.UUID
 
 data class CongregationsListItem(
@@ -11,7 +12,7 @@ data class CongregationsListItem(
     val congregationNum: String = "",
     val territoryMark: String = "",
     val isFavorite: Boolean = false,
-    val locality: LocalityUi
+    val locality: @RawValue LocalityUi
 ) : Parcelable, ListItemModel(
     itemId = id,
     headline = congregationName,
