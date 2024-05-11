@@ -2,8 +2,9 @@ package com.oborodulin.jwsuite.data_geo.sources.remote
 
 import android.content.Context
 import com.oborodulin.home.common.data.network.ApiResponse
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.region.RegionApiModel
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.region.RegionService
+import com.oborodulin.home.common.util.LogLevel.LOG_NETWORK
+import com.oborodulin.jwsuite.data_geo.remote.osm.model.RegionApiModel
+import com.oborodulin.jwsuite.data_geo.remote.osm.service.RegionService
 import com.oborodulin.jwsuite.data_geo.remote.sources.RemoteGeoRegionDataSource
 import com.oborodulin.jwsuite.domain.types.RegionType
 import kotlinx.coroutines.flow.flow
@@ -11,7 +12,7 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Data.RemoteGeoRegionDataSourceImpl"
+private const val TAG = "Data_Geo.RemoteGeoRegionDataSourceImpl"
 
 /**
  * Created by o.borodulin on 08.August.2022
@@ -23,12 +24,15 @@ class RemoteGeoRegionDataSourceImpl @Inject constructor(
 ) : RemoteGeoRegionDataSource {
     override fun getCountryRegions(
         countryId: UUID,
-        countryGeocodeArea: String
+        countryGeocodeArea: String,
+        countryCode: String
     ) = flow {
-        Timber.tag(TAG).d(
-            "getCountryRegions(...) called: countryId = %s, countryGeocodeArea = %s",
-            countryId, countryGeocodeArea
-        )
+        if (LOG_NETWORK) {
+            Timber.tag(TAG).d(
+                "getCountryRegions(...) called: countryId = %s, countryGeocodeArea = %s",
+                countryId, countryGeocodeArea
+            )
+        }
         val resArray =
             ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.region_full_types)
         try {
@@ -36,10 +40,13 @@ class RemoteGeoRegionDataSourceImpl @Inject constructor(
                 data = RegionApiModel.data(
                     countryId = countryId,
                     geocodeArea = countryGeocodeArea,
+                    countryCode = countryCode,
                     excRegionType = resArray[RegionType.FEDERAL_CITY.ordinal]
                 )
             )?.let {
-                Timber.tag(TAG).d("getCountryRegions: RegionApiModel = %s", it)
+                if (LOG_NETWORK) {
+                    Timber.tag(TAG).d("getCountryRegions: RegionApiModel = %s", it)
+                }
                 if (it.elements.isNotEmpty()) {
                     emit(ApiResponse.Success(it))
                 } else {

@@ -7,7 +7,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionMappers
 import com.oborodulin.jwsuite.data_geo.local.db.sources.LocalGeoRegionDataSource
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.GeoRegionApiMappers
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.region.RegionApiModel
+import com.oborodulin.jwsuite.data_geo.remote.osm.model.RegionApiModel
 import com.oborodulin.jwsuite.data_geo.remote.sources.RemoteGeoRegionDataSource
 import com.oborodulin.jwsuite.domain.model.geo.GeoRegion
 import com.oborodulin.jwsuite.domain.repositories.GeoRegionsRepository
@@ -31,7 +31,7 @@ class GeoRegionsRepositoryImpl @Inject constructor(
         .map(domainMappers.regionViewListToGeoRegionsListMapper::map)
 
     override fun getAllByCountry(
-        countryId: UUID, countryGeocodeArea: String, isRemoteFetch: Boolean
+        countryId: UUID, countryGeocodeArea: String, countryCode: String, isRemoteFetch: Boolean
     ) = object : NetworkBoundResult<List<GeoRegion>, RegionApiModel>() {
         override fun loadFromDB() = localRegionDataSource.getCountryRegions(countryId)
             .map(domainMappers.regionViewListToGeoRegionsListMapper::map)
@@ -40,7 +40,7 @@ class GeoRegionsRepositoryImpl @Inject constructor(
             isRemoteFetch && data.isNullOrEmpty()
 
         override suspend fun createCall() =
-            remoteRegionDataSource.getCountryRegions(countryId, countryGeocodeArea)
+            remoteRegionDataSource.getCountryRegions(countryId, countryGeocodeArea, countryCode)
 
         override suspend fun saveCallResult(data: RegionApiModel) {
             apiMappers.regionElementsListToGeoRegionsListMapper.map(data.elements)

@@ -54,7 +54,7 @@ fun RegionsListView(
             }) {
                 regionsListViewModel.submitAction(
                     RegionsListUiAction.Load(
-                        it.countryId, it.countryGeocodeArea, true
+                        it.countryId, it.countryGeocodeArea, it.countryCode, true
                     )
                 )
             }

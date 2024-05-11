@@ -7,6 +7,7 @@ sealed class RegionsListUiAction(override val isEmitJob: Boolean = true) : UiAct
     data class Load(
         val countryId: UUID? = null,
         val countryGeocodeArea: String = "",
+        val countryCode: String = "",
         val isRemoteFetch: Boolean = false
     ) : RegionsListUiAction()
 

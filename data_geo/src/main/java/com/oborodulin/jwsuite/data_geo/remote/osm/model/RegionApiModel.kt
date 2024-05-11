@@ -1,7 +1,5 @@
-package com.oborodulin.jwsuite.data_geo.remote.osm.model.region
+package com.oborodulin.jwsuite.data_geo.remote.osm.model
 
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.Geometry
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.Osm3s
 import com.oborodulin.jwsuite.domain.util.Constants.OSM_TIMEOUT
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -21,12 +19,13 @@ data class RegionApiModel(
         fun data(
             countryId: UUID,
             geocodeArea: String,
+            countryCode: String,
             excRegionType: String,  // город федерального значения
             locale: String? = Locale.getDefault().language.substringBefore('-')
         ) = """
     [out:json][timeout:$OSM_TIMEOUT];
     {{geocodeArea:$geocodeArea}}->.searchArea;
-    (rel["admin_level"="4"][~"^(ISO3166-2|addr:country|is_in:country_code)+${'$'}"~"^$locale(.)*${'$'}",i]["official_status"!~"$excRegionType"]["name"](area.searchArea);)->.rr;
+    (rel["admin_level"="4"][~"^(ISO3166-2|addr:country|is_in:country_code)+${'$'}"~"^$countryCode(.)*${'$'}",i]["official_status"!~"$excRegionType"]["name"](area.searchArea);)->.rr;
     foreach.rr(
         convert RegionType 
             osmType = type(), ::id = id(), ::geom = geom(), countryId = "$countryId", cadaster_code = t["cadaster:code"], short_name_loc = t["short_name:$locale"], ref_loc = t["ref:$locale"], gost = t["gost_7.67-2003"], short_name = t["short_name"], ref = t["ref"], isoCode = t["ISO3166-2"], official_name_loc = t["official_name:$locale"], official_name = t["official_name"], official_status = t["official_status"], geocodeArea = t["name:en"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"], flag = t["flag"];

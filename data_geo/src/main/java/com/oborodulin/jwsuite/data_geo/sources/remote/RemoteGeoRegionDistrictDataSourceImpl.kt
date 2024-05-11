@@ -2,8 +2,8 @@ package com.oborodulin.jwsuite.data_geo.sources.remote
 
 import android.content.Context
 import com.oborodulin.home.common.data.network.ApiResponse
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.regiondistrict.RegionDistrictApiModel
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.regiondistrict.RegionDistrictService
+import com.oborodulin.jwsuite.data_geo.remote.osm.model.RegionDistrictApiModel
+import com.oborodulin.jwsuite.data_geo.remote.osm.service.RegionDistrictService
 import com.oborodulin.jwsuite.data_geo.remote.sources.RemoteGeoRegionDistrictDataSource
 import com.oborodulin.jwsuite.domain.types.RegionDistrictType
 import kotlinx.coroutines.flow.flow

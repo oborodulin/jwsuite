@@ -28,6 +28,7 @@ object LogLevel {
     const val LOG_SECURE = false
 
     // Domain:
+    const val LOG_USE_CASES = true
     const val LOG_DOMAIN_MODEL = false
 
     // UI:

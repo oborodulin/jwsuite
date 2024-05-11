@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geostreet
 import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.GeometryToGeoCoordinatesMapper
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.street.StreetElement
+import com.oborodulin.jwsuite.data_geo.remote.osm.model.StreetElement
 import com.oborodulin.jwsuite.domain.model.geo.GeoLocality
 import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
 import com.oborodulin.jwsuite.domain.types.RoadType

@@ -1,8 +1,8 @@
 package com.oborodulin.jwsuite.data_geo.sources.remote
 
 import com.oborodulin.home.common.data.network.ApiResponse
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.street.StreetApiModel
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.street.StreetService
+import com.oborodulin.jwsuite.data_geo.remote.osm.model.StreetApiModel
+import com.oborodulin.jwsuite.data_geo.remote.osm.service.StreetService
 import com.oborodulin.jwsuite.data_geo.remote.sources.RemoteGeoStreetDataSource
 import kotlinx.coroutines.flow.flow
 import java.util.UUID

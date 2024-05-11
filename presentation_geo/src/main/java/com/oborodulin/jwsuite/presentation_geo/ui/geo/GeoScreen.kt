@@ -35,7 +35,6 @@ import com.oborodulin.home.common.ui.components.fab.ExtFabComponent
 import com.oborodulin.home.common.ui.components.search.SearchViewModelComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
-import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
@@ -402,7 +401,8 @@ fun CountriesWithRegionsView(
                     val listItem = it.toCountriesListItem()
                     NavigationInput.CountryInput(
                         countryId = listItem.itemId!!,
-                        countryGeocodeArea = listItem.countryGeocode.orEmpty()
+                        countryGeocodeArea = listItem.countryGeocode.orEmpty(),
+                        countryCode = listItem.countryCode.orEmpty()
                     )
                 },
                 isEditableList = false

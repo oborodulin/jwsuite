@@ -46,7 +46,10 @@ class RegionsListViewModelImpl @Inject constructor(
         }
         val job = when (action) {
             is RegionsListUiAction.Load -> loadRegions(
-                action.countryId, action.countryGeocodeArea, action.isRemoteFetch
+                action.countryId,
+                action.countryGeocodeArea,
+                action.countryCode,
+                action.isRemoteFetch
             )
 
             is RegionsListUiAction.EditRegion -> {
@@ -65,15 +68,16 @@ class RegionsListViewModelImpl @Inject constructor(
     private fun loadRegions(
         countryId: UUID? = null,
         countryGeocodeArea: String = "",
+        countryCode: String = "",
         isRemoteFetch: Boolean = false
     ): Job {
         Timber.tag(TAG).d(
-            "loadRegions(...) called: countryId = %s, countryGeocodeArea = %s, isRemoteFetch = %s",
-            countryId, countryGeocodeArea, isRemoteFetch
+            "loadRegions(...) called: countryId = %s, countryGeocodeArea = %s, countryCode = %s, isRemoteFetch = %s",
+            countryId, countryGeocodeArea, countryCode, isRemoteFetch
         )
         val job = viewModelScope.launch(errorHandler) {
             useCases.getRegionsUseCase.execute(
-                GetRegionsUseCase.Request(countryId, countryGeocodeArea, isRemoteFetch)
+                GetRegionsUseCase.Request(countryId, countryGeocodeArea, countryCode, isRemoteFetch)
             ).map {
                 converter.convert(it)
             }.collect {

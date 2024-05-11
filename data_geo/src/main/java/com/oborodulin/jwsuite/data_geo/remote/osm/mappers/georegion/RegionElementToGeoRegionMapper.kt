@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion
 import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.GeometryToGeoCoordinatesMapper
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.region.RegionElement
+import com.oborodulin.jwsuite.data_geo.remote.osm.model.RegionElement
 import com.oborodulin.jwsuite.domain.model.geo.GeoCountry
 import com.oborodulin.jwsuite.domain.model.geo.GeoRegion
 import com.oborodulin.jwsuite.domain.types.RegionType

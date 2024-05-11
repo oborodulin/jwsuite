@@ -35,7 +35,7 @@ object NetworkModule {
         val chainInterceptor = { chain: Interceptor.Chain ->
             chain.proceed(
                 chain.request().newBuilder()
-                    .header("Content-Type", "application/json")
+                    //.header("Content-Type", "application/json")
                     .header("Accept", "application/json")
                     .build()
             )
@@ -44,8 +44,8 @@ object NetworkModule {
         return if (BuildConfig.DEBUG) {
             OkHttpClient.Builder()
                 .addInterceptor(chainInterceptor)
-                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .addInterceptor(ChuckerInterceptor(context))
+                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .readTimeout(120, TimeUnit.SECONDS)
                 .connectTimeout(120, TimeUnit.SECONDS)
                 .build()
@@ -62,9 +62,9 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideMoshi(): Moshi = Moshi.Builder()
-        //.add(UuidAdapter())
-        //.add(BigDecimalAdapter())
-        //.add(OffsetDateTimeAdapter())
+        .add(UuidAdapter())
+        .add(BigDecimalAdapter())
+        .add(OffsetDateTimeAdapter())
         .add(KotlinJsonAdapterFactory())
         .build()
 

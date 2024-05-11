@@ -7,7 +7,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geocountry.GeoCountryMappers
 import com.oborodulin.jwsuite.data_geo.local.db.sources.LocalGeoCountryDataSource
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geocountry.GeoCountryApiMappers
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.country.CountryApiModel
+import com.oborodulin.jwsuite.data_geo.remote.osm.model.CountryApiModel
 import com.oborodulin.jwsuite.data_geo.remote.sources.RemoteGeoCountryDataSource
 import com.oborodulin.jwsuite.domain.model.geo.GeoCountry
 import com.oborodulin.jwsuite.domain.repositories.GeoCountriesRepository

@@ -1,8 +1,8 @@
 package com.oborodulin.jwsuite.data_geo.sources.remote
 
 import com.oborodulin.home.common.data.network.ApiResponse
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.microdistrict.MicrodistrictApiModel
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.microdistrict.MicrodistrictService
+import com.oborodulin.jwsuite.data_geo.remote.osm.model.MicrodistrictApiModel
+import com.oborodulin.jwsuite.data_geo.remote.osm.service.MicrodistrictService
 import com.oborodulin.jwsuite.data_geo.remote.sources.RemoteGeoMicrodistrictDataSource
 import kotlinx.coroutines.flow.flow
 import java.util.UUID

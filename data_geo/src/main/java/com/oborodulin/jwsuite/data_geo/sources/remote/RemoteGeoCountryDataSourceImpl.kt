@@ -1,8 +1,8 @@
 package com.oborodulin.jwsuite.data_geo.sources.remote
 
 import com.oborodulin.home.common.data.network.ApiResponse
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.country.CountryApiModel
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.country.CountryService
+import com.oborodulin.jwsuite.data_geo.remote.osm.model.CountryApiModel
+import com.oborodulin.jwsuite.data_geo.remote.osm.service.CountryService
 import com.oborodulin.jwsuite.data_geo.remote.sources.RemoteGeoCountryDataSource
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

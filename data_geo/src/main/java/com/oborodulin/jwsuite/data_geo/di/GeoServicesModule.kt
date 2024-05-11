@@ -1,12 +1,7 @@
 package com.oborodulin.jwsuite.data_geo.di
 
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.country.CountryService
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.locality.LocalityService
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.localitydistrict.LocalityDistrictService
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.microdistrict.MicrodistrictService
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.region.RegionService
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.regiondistrict.RegionDistrictService
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.street.StreetService
+import com.oborodulin.jwsuite.data_geo.remote.osm.service.CountryService
+import com.oborodulin.jwsuite.data_geo.remote.osm.service.RegionService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

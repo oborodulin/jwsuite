@@ -1,7 +1,5 @@
-package com.oborodulin.jwsuite.data_geo.remote.osm.model.street
+package com.oborodulin.jwsuite.data_geo.remote.osm.model
 
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.Geometry
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.Osm3s
 import com.oborodulin.jwsuite.domain.util.Constants.OSM_TIMEOUT
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

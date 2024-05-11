@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.data_geo.remote.sources
 
 import com.oborodulin.home.common.data.network.ApiResponse
-import com.oborodulin.jwsuite.data_geo.remote.osm.model.street.StreetApiModel
+import com.oborodulin.jwsuite.data_geo.remote.osm.model.StreetApiModel
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
