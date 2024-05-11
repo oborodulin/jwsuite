@@ -23,9 +23,6 @@ abstract class NetworkBoundResult<ResultType : Any, RequestType : Any> {
             when (val apiResponse = createCall().first()) {
                 is ApiResponse.Success -> {
                     saveCallResult(apiResponse.data)
-                    if (LOG_NETWORK) {
-                        Timber.tag(TAG).d("saved Call Result: data = %s", apiResponse.data)
-                    }
                     emitAll(loadFromDB().map { Result.Success(it) })
                 }
 

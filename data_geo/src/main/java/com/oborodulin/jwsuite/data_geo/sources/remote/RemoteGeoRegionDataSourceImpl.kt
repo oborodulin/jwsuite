@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 private const val TAG = "Data_Geo.RemoteGeoRegionDataSourceImpl"
 
@@ -54,7 +55,12 @@ class RemoteGeoRegionDataSourceImpl @Inject constructor(
                 }
             } ?: emit(ApiResponse.Empty)
         } catch (e: Exception) {
-            emit(ApiResponse.Error(e))
+            // https://stackoverflow.com/questions/73313364/single-and-first-terminal-operators-when-producer-emits-many-values
+            if (e is CancellationException) {
+                throw e
+            } else {
+                emit(ApiResponse.Error(e))
+            }
         }
     }
 }

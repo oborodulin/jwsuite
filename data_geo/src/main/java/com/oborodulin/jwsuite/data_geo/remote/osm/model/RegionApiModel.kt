@@ -16,6 +16,10 @@ data class RegionApiModel(
         //Ukraine
         //Russia
         //United States
+        // https://stackoverflow.com/questions/75780718/find-area-id-related-to-one-city-in-a-specific-country-on-overpass-turbo
+        // {{geocodeArea:$geocodeArea}}
+        // "official_status": "uk:містo зі спеціальним статусом",
+        // https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL#Map_way.2Frelation_to_area_.28map_to_area.29
         fun data(
             countryId: UUID,
             geocodeArea: String,
@@ -23,15 +27,15 @@ data class RegionApiModel(
             excRegionType: String,  // город федерального значения
             locale: String? = Locale.getDefault().language.substringBefore('-')
         ) = """
-    [out:json][timeout:$OSM_TIMEOUT];
-    {{geocodeArea:$geocodeArea}}->.searchArea;
-    (rel["admin_level"="4"][~"^(ISO3166-2|addr:country|is_in:country_code)+${'$'}"~"^$countryCode(.)*${'$'}",i]["official_status"!~"$excRegionType"]["name"](area.searchArea);)->.rr;
-    foreach.rr(
-        convert RegionType 
-            osmType = type(), ::id = id(), ::geom = geom(), countryId = "$countryId", cadaster_code = t["cadaster:code"], short_name_loc = t["short_name:$locale"], ref_loc = t["ref:$locale"], gost = t["gost_7.67-2003"], short_name = t["short_name"], ref = t["ref"], isoCode = t["ISO3166-2"], official_name_loc = t["official_name:$locale"], official_name = t["official_name"], official_status = t["official_status"], geocodeArea = t["name:en"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"], flag = t["flag"];
-        out center;
-    );
-    """.trimIndent()
+[out:json][timeout:$OSM_TIMEOUT];
+area["name:en"="$geocodeArea"]->.searchArea;
+(rel["admin_level"="4"][~"^(ISO3166-2|addr:country|is_in:country_code)+${'$'}"~"^$countryCode(.)*${'$'}",i]["official_status"!~"$excRegionType"]["name"](area.searchArea);)->.rr;
+foreach.rr(
+    convert RegionType 
+        osmType = type(), ::id = id(), ::geom = geom(), countryId = "$countryId", cadaster_code = t["cadaster:code"], short_name_loc = t["short_name:$locale"], ref_loc = t["ref:$locale"], gost = t["gost_7.67-2003"], short_name = t["short_name"], ref = t["ref"], isoCode = t["ISO3166-2"], official_name_loc = t["official_name:$locale"], official_name = t["official_name"], official_status = t["official_status"], geocodeArea = t["name:en"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"], flag = t["flag"];
+    out center;
+);
+    """//.trimIndent()
     }
 }
 

@@ -60,11 +60,11 @@ fun CountriesListView(
                 onEdit = { country ->
                     countriesListViewModel.submitAction(CountriesListUiAction.EditCountry(country.itemId!!))
                 },
-                onDelete = { region ->
-                    countriesListViewModel.submitAction(CountriesListUiAction.DeleteCountry(region.itemId!!))
-                }) { region ->
-                countriesListViewModel.singleSelectItem(region)
-                regionsListViewModel.submitAction(RegionsListUiAction.Load(region.itemId!!))
+                onDelete = { country ->
+                    countriesListViewModel.submitAction(CountriesListUiAction.DeleteCountry(country.itemId!!))
+                }) { country ->
+                countriesListViewModel.singleSelectItem(country)
+                regionsListViewModel.submitAction(RegionsListUiAction.Load(countryId = country.itemId!!))
             }
         }
     }

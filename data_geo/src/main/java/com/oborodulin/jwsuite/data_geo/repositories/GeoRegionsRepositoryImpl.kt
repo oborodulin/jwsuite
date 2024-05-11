@@ -1,6 +1,8 @@
 package com.oborodulin.jwsuite.data_geo.repositories
 
 import com.oborodulin.home.common.data.network.NetworkBoundResult
+import com.oborodulin.home.common.util.LogLevel.LOG_DATABASE
+import com.oborodulin.home.common.util.LogLevel.LOG_NETWORK
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.georegion.GeoRegionCsvMappers
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionTlEntity
@@ -15,10 +17,14 @@ import com.oborodulin.jwsuite.domain.services.csv.CsvExtract
 import com.oborodulin.jwsuite.domain.services.csv.CsvLoad
 import com.oborodulin.jwsuite.domain.services.csv.model.geo.GeoRegionCsv
 import com.oborodulin.jwsuite.domain.services.csv.model.geo.GeoRegionTlCsv
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
+
+private const val TAG = "Data_Geo.GeoRegionsRepositoryImpl"
 
 class GeoRegionsRepositoryImpl @Inject constructor(
     private val localRegionDataSource: LocalGeoRegionDataSource,
@@ -36,15 +42,30 @@ class GeoRegionsRepositoryImpl @Inject constructor(
         override fun loadFromDB() = localRegionDataSource.getCountryRegions(countryId)
             .map(domainMappers.regionViewListToGeoRegionsListMapper::map)
 
-        override fun shouldFetch(data: List<GeoRegion>?) =
-            isRemoteFetch && data.isNullOrEmpty()
+        override fun shouldFetch(data: List<GeoRegion>?) = isRemoteFetch && data.isNullOrEmpty()
 
         override suspend fun createCall() =
             remoteRegionDataSource.getCountryRegions(countryId, countryGeocodeArea, countryCode)
 
         override suspend fun saveCallResult(data: RegionApiModel) {
-            apiMappers.regionElementsListToGeoRegionsListMapper.map(data.elements)
-                .forEach { save(it) }
+            if (LOG_NETWORK) {
+                Timber.tag(TAG).d("saveCallResult(...) called: data = %s", data)
+            }
+            try {
+                val geoRegions =
+                    apiMappers.regionElementsListToGeoRegionsListMapper.map(data.elements)
+                if (LOG_NETWORK) {
+                    Timber.tag(TAG).d("geoRegions = %s", geoRegions)
+                }
+                geoRegions.forEach {
+                    val savedRegion = save(it).first()
+                    if (LOG_NETWORK) {
+                        Timber.tag(TAG).d("savedRegion = %s", savedRegion)
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.tag(TAG).e(e)
+            }
         }
     }.asFlow()
 
@@ -53,6 +74,9 @@ class GeoRegionsRepositoryImpl @Inject constructor(
         .map(domainMappers.geoRegionViewToGeoRegionMapper::map)
 
     override fun save(region: GeoRegion) = flow {
+        if (LOG_DATABASE) {
+            Timber.tag(TAG).d("save(...) called: region = %s", region)
+        }
         if (region.id == null) {
             localRegionDataSource.insertRegion(
                 domainMappers.geoRegionToGeoRegionEntityMapper.map(region),
