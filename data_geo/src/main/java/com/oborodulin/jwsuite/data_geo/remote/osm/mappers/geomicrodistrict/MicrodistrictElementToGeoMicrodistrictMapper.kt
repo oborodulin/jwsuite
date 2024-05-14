@@ -27,13 +27,13 @@ class MicrodistrictElementToGeoMicrodistrictMapper(
             },
             microdistrictType = resType?.let { MicrodistrictType.entries[resArray.indexOf(it)] } ?: type,
             microdistrictShortName = GeoLocality.shortNameFromName(
-                prefix = input.tags.wikidata.ifEmpty { input.tags.gnisId },
+                prefix = input.tags.wikidata.ifBlank { input.tags.gnisId },
                 name = input.tags.name
             ),
-            microdistrictGeocode = input.tags.geocodeArea.ifEmpty { input.tags.name },
+            microdistrictGeocode = input.tags.geocodeArea.ifBlank { input.tags.name },
             microdistrictOsmId = input.id,
             coordinates = mapper.map(input.geometry),
-            microdistrictName = input.tags.nameLoc.ifEmpty { input.tags.name }
+            microdistrictName = input.tags.nameLoc.ifBlank { input.tags.name }
         )
     }
 }

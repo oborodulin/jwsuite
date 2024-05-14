@@ -20,13 +20,13 @@ class LocalityDistrictElementToGeoLocalityDistrictMapper(
         return GeoLocalityDistrict(
             locality = GeoLocality().also { it.id = input.tags.localityId },
             districtShortName = GeoLocalityDistrict.shortNameFromName(
-                prefix = input.tags.wikidata.ifEmpty { input.tags.gnisId },
+                prefix = input.tags.wikidata.ifBlank { input.tags.gnisId },
                 name = input.tags.name
             ),
-            districtGeocode = input.tags.geocodeArea.ifEmpty { input.tags.name },
+            districtGeocode = input.tags.geocodeArea.ifBlank { input.tags.name },
             districtOsmId = input.id,
             coordinates = mapper.map(input.geometry),
-            districtName = input.tags.nameLoc.ifEmpty { input.tags.name }
+            districtName = input.tags.nameLoc.ifBlank { input.tags.name }
                 .replace(resType.orEmpty().toRegex(RegexOption.IGNORE_CASE), "").trim()
         )
     }

@@ -20,7 +20,7 @@ class StreetElementToGeoStreetMapper(
                 input.tags.nameLoc.contains(it, true) || input.tags.name.contains(it, true)
             }
         }
-        val streetName = input.tags.nameLoc.ifEmpty { input.tags.name }
+        val streetName = input.tags.nameLoc.ifBlank { input.tags.name }
             .replace(resType.orEmpty().toRegex(RegexOption.IGNORE_CASE), "").trim()
         return GeoStreet(
             locality = GeoLocality().also { it.id = input.tags.localityId },

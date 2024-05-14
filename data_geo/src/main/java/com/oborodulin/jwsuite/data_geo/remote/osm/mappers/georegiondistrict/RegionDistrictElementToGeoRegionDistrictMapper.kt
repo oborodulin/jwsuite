@@ -10,8 +10,7 @@ import com.oborodulin.jwsuite.domain.model.geo.GeoRegionDistrict
 class RegionDistrictElementToGeoRegionDistrictMapper(
     private val ctx: Context,
     private val mapper: GeometryToGeoCoordinatesMapper
-) :
-    Mapper<RegionDistrictElement, GeoRegionDistrict> {
+) : Mapper<RegionDistrictElement, GeoRegionDistrict> {
     override fun map(input: RegionDistrictElement): GeoRegionDistrict {
         val resArray =
             ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.region_district_full_types)
@@ -20,16 +19,16 @@ class RegionDistrictElementToGeoRegionDistrictMapper(
         }
         return GeoRegionDistrict(
             region = GeoRegion().also { it.id = input.tags.regionId },
-            districtShortName = input.tags.countyAbbrev.ifEmpty {
+            districtShortName = input.tags.countyAbbrev.ifBlank {
                 GeoRegionDistrict.shortNameFromName(
                     prefix = input.tags.wikidata,
                     name = input.tags.name
                 )
             },
-            districtGeocode = input.tags.geocodeArea.ifEmpty { input.tags.name },
+            districtGeocode = input.tags.geocodeArea.ifBlank { input.tags.name },
             districtOsmId = input.id,
             coordinates = mapper.map(input.geometry),
-            districtName = input.tags.nameLoc.ifEmpty { input.tags.name }
+            districtName = input.tags.nameLoc.ifBlank { input.tags.name }
                 .replace(resType.orEmpty().toRegex(RegexOption.IGNORE_CASE), "").trim()
         )
     }

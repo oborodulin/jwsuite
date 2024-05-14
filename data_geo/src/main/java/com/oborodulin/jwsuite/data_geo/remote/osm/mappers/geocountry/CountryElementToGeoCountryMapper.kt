@@ -9,12 +9,12 @@ import com.oborodulin.jwsuite.domain.model.geo.GeoOsm
 class CountryElementToGeoCountryMapper(private val mapper: GeometryToGeoCoordinatesMapper) :
     Mapper<CountryElement, GeoCountry> {
     override fun map(input: CountryElement) = GeoCountry(
-        countryCode = input.tags.isoCode.ifEmpty { input.tags.countryCode },
+        countryCode = input.tags.isoCode.ifBlank { input.tags.countryCode },
         osm = GeoOsm(
-            geocode = input.tags.geocodeArea.ifEmpty { input.tags.name },
+            geocode = input.tags.geocodeArea.ifBlank { input.tags.name },
             osmId = input.id,
             coordinates = mapper.map(input.geometry)
         ),
-        countryName = input.tags.nameLoc.ifEmpty { input.tags.name }
+        countryName = input.tags.nameLoc.ifBlank { input.tags.name }
     )
 }

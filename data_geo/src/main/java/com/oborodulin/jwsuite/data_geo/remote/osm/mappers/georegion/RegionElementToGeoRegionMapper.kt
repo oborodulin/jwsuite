@@ -17,7 +17,7 @@ class RegionElementToGeoRegionMapper(
     private val mapper: GeometryToGeoCoordinatesMapper
 ) : Mapper<RegionElement, GeoRegion> {
     override fun map(input: RegionElement): GeoRegion {
-        if (LogLevel.LOG_DB_MAPPER) {
+        if (LogLevel.LOG_API_MAPPER) {
             Timber.tag(TAG).d("map(...) called: input = %s", input)
         }
         val resArray =
@@ -28,17 +28,18 @@ class RegionElementToGeoRegionMapper(
                     input.tags.officialName.contains(it, true) ||
                     input.tags.officialNameLoc.contains(it, true)
         }
-        val regionName = input.tags.nameLoc.ifEmpty { input.tags.name }
-        if (LogLevel.LOG_DB_MAPPER) {
+        val regionName = input.tags.nameLoc.ifBlank { input.tags.name }
+        if (LogLevel.LOG_API_MAPPER) {
             Timber.tag(TAG).d("regionName = %s", regionName)
         }
         return GeoRegion(
             country = GeoCountry().also { it.id = input.tags.countryId },
-            regionCode = input.tags.cadasterCode.ifEmpty { input.tags.shortNameLoc.ifEmpty { input.tags.refLoc.ifEmpty { input.tags.gost.ifEmpty { input.tags.shortName.ifEmpty { input.tags.ref.ifEmpty { input.tags.isoCode } } } } } },
+            regionCode = input.tags.isoCode.substringAfter('-')
+                .ifBlank { input.tags.cadasterCode.ifBlank { input.tags.shortNameLoc.ifBlank { input.tags.refLoc.ifBlank { input.tags.gost.ifBlank { input.tags.shortName.ifBlank { input.tags.ref } } } } } },
             regionType = resType?.let { RegionType.entries[resArray.indexOf(it)] }
                 ?: RegionType.REGION,
             isRegionTypePrefix = resType?.let { regionName.startsWith(it, true) } ?: false,
-            regionGeocode = input.tags.geocodeArea.ifEmpty { input.tags.name },
+            regionGeocode = input.tags.geocodeArea.ifBlank { input.tags.name },
             regionOsmId = input.id,
             coordinates = mapper.map(input.geometry),
             regionName = regionName.replace(resType.orEmpty().toRegex(RegexOption.IGNORE_CASE), "")

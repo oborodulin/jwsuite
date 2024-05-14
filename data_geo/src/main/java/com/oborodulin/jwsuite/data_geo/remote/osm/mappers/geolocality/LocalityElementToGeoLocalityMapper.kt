@@ -28,16 +28,16 @@ class LocalityElementToGeoLocalityMapper(
             regionDistrict = input.tags.regionDistrictId?.let { rdId ->
                 GeoRegionDistrict().also { it.id = rdId }
             },
-            localityCode = input.tags.postalCode.ifEmpty { input.tags.wikidata.ifEmpty { input.tags.gnisId } },
+            localityCode = input.tags.postalCode.ifBlank { input.tags.wikidata.ifBlank { input.tags.gnisId } },
             localityType = resType?.let { LocalityType.entries[resArray.indexOf(it)] } ?: type,
             localityShortName = GeoLocality.shortNameFromName(
                 prefix = input.tags.wikidata,
                 name = input.tags.name
             ),
-            localityGeocode = input.tags.geocodeArea.ifEmpty { input.tags.name },
+            localityGeocode = input.tags.geocodeArea.ifBlank { input.tags.name },
             localityOsmId = input.id,
             coordinates = mapper.map(input.geometry),
-            localityName = input.tags.nameLoc.ifEmpty { input.tags.name }
+            localityName = input.tags.nameLoc.ifBlank { input.tags.name }
         )
     }
 }

@@ -23,6 +23,7 @@ object LogLevel {
     const val LOG_NETWORK = true
     const val LOG_WORKER = true
     const val LOG_DB_MAPPER = false
+    const val LOG_API_MAPPER = true
 
     // Secure:
     const val LOG_SECURE = false
