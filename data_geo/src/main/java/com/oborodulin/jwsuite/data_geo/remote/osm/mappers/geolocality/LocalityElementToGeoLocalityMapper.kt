@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geolocality
 
 import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
+import com.oborodulin.home.common.util.Constants.RES_DELIMITER
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.GeometryToGeoCoordinatesMapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.LocalityElement
 import com.oborodulin.jwsuite.domain.model.geo.GeoLocality
@@ -18,7 +19,7 @@ class LocalityElementToGeoLocalityMapper(
             ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.locality_full_types)
         val type = LocalityType.valueOf(input.tags.place.uppercase())
         val resType = resArray.firstOrNull { res ->
-            res.splitToSequence(';').any {
+            res.splitToSequence(RES_DELIMITER).any {
                 input.tags.officialStatus.contains(it, true) ||
                         input.tags.prefix.contains(it, true)
             }

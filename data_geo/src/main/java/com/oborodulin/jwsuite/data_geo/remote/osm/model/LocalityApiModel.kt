@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.data_geo.remote.osm.model
 
+import com.oborodulin.home.common.util.Constants.LOC_DELIMITER
 import com.oborodulin.jwsuite.domain.util.Constants.OSM_TIMEOUT
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -26,18 +27,18 @@ data class LocalityApiModel(
             regionId: UUID,
             regionDistrictId: UUID? = null,
             geocodeArea: String,
-            locale: String? = Locale.getDefault().language.substringBefore('-')
+            locale: String? = Locale.getDefault().language.substringBefore(LOC_DELIMITER)
         ) = """ 
-    [out:json][timeout:$OSM_TIMEOUT];
-    {{geocodeArea:$geocodeArea}}->.searchArea;
-    node[place~"^(city|town|village|hamlet|isolated_dwelling)${'$'}"]["name"](area.searchArea)->.crl;
-    foreach.crl(
-        convert LocalityType 
-            osmType = type(), ::id = id(), ::geom = geom(), regionId = "$regionId", regionDistrictId = "${
+[out:json][timeout:$OSM_TIMEOUT];
+(area["admin_level"="${regionDistrictId?.let { '6' } ?: '4'}"]["name:en"="$geocodeArea"];)->.searchArea;
+node[place~"^(city|town|village|hamlet|isolated_dwelling)${'$'}"]["name"](area.searchArea)->.crl;
+foreach.crl(
+    convert LocalityType 
+        osmType = type(), ::id = id(), ::geom = geom(), regionId = "$regionId", regionDistrictId = "${
             regionDistrictId?.toString().orEmpty()
         }", postal_code = t["postal_code"], wikidata = t["wikidata"], gnis_id = t["gnis:feature_id"], place = t["place"], official_status = t["official_status"], prefix = t["name:prefix"], geocodeArea = t["name:en"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"];
-        out center;
-    );
+    out center;
+);
     """.trimIndent()
     }
 }

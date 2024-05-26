@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion
 
 import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
+import com.oborodulin.home.common.util.Constants.LOC_DELIMITER
 import com.oborodulin.home.common.util.LogLevel
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.GeometryToGeoCoordinatesMapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.RegionElement
@@ -34,7 +35,7 @@ class RegionElementToGeoRegionMapper(
         }
         return GeoRegion(
             country = GeoCountry().also { it.id = input.tags.countryId },
-            regionCode = input.tags.isoCode.substringAfter('-')
+            regionCode = input.tags.isoCode.substringAfter(LOC_DELIMITER)
                 .ifBlank { input.tags.cadasterCode.ifBlank { input.tags.shortNameLoc.ifBlank { input.tags.refLoc.ifBlank { input.tags.gost.ifBlank { input.tags.shortName.ifBlank { input.tags.ref } } } } } },
             regionType = resType?.let { RegionType.entries[resArray.indexOf(it)] }
                 ?: RegionType.REGION,

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,6 +41,7 @@ fun FetchButtonComponent(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             content?.invoke()
@@ -48,6 +50,7 @@ fun FetchButtonComponent(
             }
             ButtonComponent(
                 modifier = Modifier
+                    //.alignByBaseline()
                     .padding(8.dp)
                     .then(modifier),
                 enabled = enabled && isConnectionAvailable,
@@ -78,6 +81,7 @@ fun PreviewFetchButtonComponentEnabled() {
         Surface {
             FetchButtonComponent(
                 enabled = true,
+                content = { AddButtonComponent {} },
                 onClick = {}
             )
         }

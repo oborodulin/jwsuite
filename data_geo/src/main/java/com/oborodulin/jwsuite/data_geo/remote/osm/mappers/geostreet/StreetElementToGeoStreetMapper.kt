@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geostreet
 
 import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
+import com.oborodulin.home.common.util.Constants.RES_DELIMITER
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.GeometryToGeoCoordinatesMapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.model.StreetElement
 import com.oborodulin.jwsuite.domain.model.geo.GeoLocality
@@ -16,7 +17,7 @@ class StreetElementToGeoStreetMapper(
         val resArray =
             ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_full_types)
         val resType = resArray.firstOrNull { res ->
-            res.splitToSequence(';').any {
+            res.splitToSequence(RES_DELIMITER).any {
                 input.tags.nameLoc.contains(it, true) || input.tags.name.contains(it, true)
             }
         }

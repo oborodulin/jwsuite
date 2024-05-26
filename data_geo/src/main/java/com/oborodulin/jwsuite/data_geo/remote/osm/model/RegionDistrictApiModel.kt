@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.data_geo.remote.osm.model
 
+import com.oborodulin.home.common.util.Constants.LOC_DELIMITER
 import com.oborodulin.jwsuite.domain.util.Constants.OSM_TIMEOUT
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -18,23 +19,25 @@ data class RegionDistrictApiModel(
         //Leningrad oblast
         //Donetsk Oblast
         //California
+        // {{geocodeArea:$geocodeArea}}->.searchArea;
+        // https://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide#Area_clauses_.28.22area_filters.22.29
         fun data(
             regionId: UUID,
             geocodeArea: String,
             incRegionDistrictType: String, // район
-            locale: String? = Locale.getDefault().language.substringBefore('-')
+            locale: String? = Locale.getDefault().language.substringBefore(LOC_DELIMITER)
         ) = """
-    [out:json][timeout:$OSM_TIMEOUT];
-    {{geocodeArea:$geocodeArea}}->.searchArea;
-    (
+[out:json][timeout:$OSM_TIMEOUT];
+(area["admin_level"="4"]["name:en"="$geocodeArea"];)->.searchArea;
+(
     rel["admin_level"="6"][~"^(place|official_status)*${'$'}"~"(district|$incRegionDistrictType)${'$'}"]["name"](area.searchArea);
     rel["admin_level"="6"][~"^county.*${'$'}"~"."]["border_type"!~"city"]["name"](area.searchArea);
-    )->.rdr;
-    foreach.rdr(
-        convert RegionDistrictType 
-            osmType = type(), ::id = id(), ::geom = geom(), regionId = "$regionId", county_abbrev = t["county:abbrev"], wikidata = t["wikidata"], geocodeArea = t["name:en"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"], flag = t["flag"];
-        out center;
-    );
+)->.rdr;
+foreach.rdr(
+    convert RegionDistrictType 
+        osmType = type(), ::id = id(), ::geom = geom(), regionId = "$regionId", county_abbrev = t["county:abbrev"], wikidata = t["wikidata"], geocodeArea = t["name:en"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"], flag = t["flag"];
+    out center;
+);
     """.trimIndent()
     }
 }

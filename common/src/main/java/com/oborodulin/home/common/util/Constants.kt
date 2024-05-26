@@ -11,4 +11,8 @@ object Constants {
     const val CONV_COEFF_BIGDECIMAL: Long = 10000000
     const val APP_DAY_DATE_TIME = "yyyy-MM-dd"
     const val APP_OFFSET_DATE_TIME = "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
+
+    // Delimiters:
+    const val LOC_DELIMITER: Char = '-'
+    const val RES_DELIMITER: Char = ';'
 }

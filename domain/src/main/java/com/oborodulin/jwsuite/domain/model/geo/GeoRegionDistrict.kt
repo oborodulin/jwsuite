@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.domain.model.geo
 import android.content.Context
 import com.oborodulin.home.common.domain.model.DomainModel
 import com.oborodulin.home.common.extensions.ifNotEmpty
+import com.oborodulin.home.common.util.Constants.LOC_DELIMITER
 import com.oborodulin.jwsuite.domain.R
 import com.oborodulin.jwsuite.domain.types.RegionDistrictType
 
@@ -17,8 +18,8 @@ data class GeoRegionDistrict(
     val districtName: String = "",
     val localities: List<GeoLocality> = emptyList()
 ) : DomainModel() {
-    val prefix = districtShortName.substringBeforeLast('-')
-    val shortName = districtShortName.substringAfterLast('-')
+    val prefix = districtShortName.substringBeforeLast(LOC_DELIMITER)
+    val shortName = districtShortName.substringAfterLast(LOC_DELIMITER)
     val districtFullName =
         "$districtName ${ctx?.let { it.resources.getStringArray(R.array.region_district_types)[districtType.ordinal] }}".trim()
 

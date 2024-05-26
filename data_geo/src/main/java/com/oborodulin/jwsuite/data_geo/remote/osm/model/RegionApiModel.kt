@@ -1,5 +1,7 @@
 package com.oborodulin.jwsuite.data_geo.remote.osm.model
 
+import com.oborodulin.home.common.util.Constants.LOC_DELIMITER
+import com.oborodulin.home.common.util.Constants.RES_DELIMITER
 import com.oborodulin.jwsuite.domain.util.Constants.OSM_TIMEOUT
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -24,12 +26,12 @@ data class RegionApiModel(
             geocodeArea: String,
             countryCode: String,
             excRegionType: String,  // город федерального значения;містo зі спеціальним статусом
-            locale: String? = Locale.getDefault().language.substringBefore('-')
+            locale: String? = Locale.getDefault().language.substringBefore(LOC_DELIMITER)
         ) = """
 [out:json][timeout:$OSM_TIMEOUT];
-area["name:en"="$geocodeArea"]->.searchArea;
-(rel["admin_level"="4"][~"^(ISO3166-2|addr:country|is_in:country_code)+${'$'}"~"^$countryCode(.)*${'$'}",i]["official_status"!~"(${
-            excRegionType.replace(";", "|")
+(area["admin_level"="2"]["name:en"="$geocodeArea"];)->.searchArea;
+(rel["admin_level"="4"]["place"!="city"][~"^(ISO3166-2|addr:country|is_in:country_code)+${'$'}"~"^$countryCode(.)*${'$'}",i]["official_status"!~"(${
+            excRegionType.replace(RES_DELIMITER, '|')
         })"]["name"](area.searchArea);)->.rr;
 foreach.rr(
     convert RegionType 

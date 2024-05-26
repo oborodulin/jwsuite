@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -33,6 +34,7 @@ fun ErrorTextComponent(
     }
     Row(
         modifier = Modifier
+            .fillMaxWidth()
             .padding(8.dp)
             .clip(RoundedCornerShape(16.dp))
             .border(
@@ -41,13 +43,17 @@ fun ErrorTextComponent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconComponent(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier
+                .padding(8.dp)
+                .weight(.1f),
             imageVector = imgVector,
             painterResId = painterResId,
             contentDescriptionResId = contentDescResId,
-            tint = MaterialTheme.colorScheme.error
+            tint = MaterialTheme.colorScheme.error,
+            size = 36.dp
         )
         Text(
+            modifier = Modifier.weight(.9f),
             text = stringResource(textResId),
             color = MaterialTheme.colorScheme.error,
             style = MaterialTheme.typography.titleSmall,

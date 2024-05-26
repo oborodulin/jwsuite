@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.domain.model.geo
 import android.content.Context
 import com.oborodulin.home.common.domain.model.DomainModel
 import com.oborodulin.home.common.extensions.ifNotEmpty
+import com.oborodulin.home.common.util.Constants.LOC_DELIMITER
 import com.oborodulin.jwsuite.domain.R
 import com.oborodulin.jwsuite.domain.types.RegionType
 import java.util.Locale
@@ -20,8 +21,8 @@ data class GeoRegion(
     val districts: List<GeoRegionDistrict> = emptyList(),
     val localities: List<GeoLocality> = emptyList()
 ) : DomainModel() {
-    val prefix = regionCode.substringBeforeLast('-')
-    val code = regionCode.substringAfterLast('-')
+    val prefix = regionCode.substringBeforeLast(LOC_DELIMITER)
+    val code = regionCode.substringAfterLast(LOC_DELIMITER)
     val type = ctx?.let { it.resources.getStringArray(R.array.region_types)[regionType.ordinal] }
     val regionFullName = "${
         type?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
