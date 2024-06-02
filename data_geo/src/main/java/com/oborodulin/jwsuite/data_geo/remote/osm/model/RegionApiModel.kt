@@ -1,6 +1,5 @@
 package com.oborodulin.jwsuite.data_geo.remote.osm.model
 
-import com.oborodulin.home.common.util.Constants.LOC_DELIMITER
 import com.oborodulin.home.common.util.Constants.RES_DELIMITER
 import com.oborodulin.jwsuite.domain.util.Constants.OSM_TIMEOUT
 import com.squareup.moshi.Json
@@ -26,7 +25,7 @@ data class RegionApiModel(
             geocodeArea: String,
             countryCode: String,
             excRegionType: String,  // город федерального значения;містo зі спеціальним статусом
-            locale: String? = Locale.getDefault().language.substringBefore(LOC_DELIMITER)
+            locale: String? = Locale.getDefault().language
         ) = """
 [out:json][timeout:$OSM_TIMEOUT];
 (area["admin_level"="2"]["name:en"="$geocodeArea"];)->.searchArea;

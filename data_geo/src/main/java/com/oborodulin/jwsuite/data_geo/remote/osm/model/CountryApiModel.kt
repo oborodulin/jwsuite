@@ -1,6 +1,5 @@
 package com.oborodulin.jwsuite.data_geo.remote.osm.model
 
-import com.oborodulin.home.common.util.Constants.LOC_DELIMITER
 import com.oborodulin.jwsuite.domain.util.Constants.OSM_TIMEOUT
 import com.squareup.moshi.Json
 import java.util.Locale
@@ -12,8 +11,10 @@ data class CountryApiModel(
     @Json(name = "elements") val elements: List<CountryElement>
 ) {
     companion object {
+        // https://wiki.openstreetmap.org/wiki/Overpass_API
         // https://stackoverflow.com/questions/69950326/how-to-query-overpass-turbo-by-a-tag-with-any-value
-        fun data(locale: String? = Locale.getDefault().language.substringBefore(LOC_DELIMITER)) = """
+        // Locale.getDefault().language.substringBefore(LOC_DELIMITER)
+        fun data(locale: String? = Locale.getDefault().language) = """
     [out:json][timeout:$OSM_TIMEOUT];
     (rel[admin_level="2"][boundary="administrative"][type!="multilinestring"][~"^(country_code_iso3166_1_alpha_2|ISO3166-1:alpha2)${'$'}"~"."]["name"];)->.rc;
     foreach.rc(

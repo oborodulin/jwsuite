@@ -1,6 +1,5 @@
 package com.oborodulin.jwsuite.data_geo.remote.osm.model
 
-import com.oborodulin.home.common.util.Constants.LOC_DELIMITER
 import com.oborodulin.jwsuite.domain.util.Constants.OSM_TIMEOUT
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -24,21 +23,21 @@ data class MicrodistrictApiModel(
             localityId: UUID,
             localityDistrictId: UUID? = null,
             geocodeArea: String,
-            locale: String? = Locale.getDefault().language.substringBefore(LOC_DELIMITER)
+            locale: String? = Locale.getDefault().language
         ) = """
-    [out:json][timeout:$OSM_TIMEOUT];
-    {{geocodeArea:$geocodeArea}}->.searchArea;
-    (
+[out:json][timeout:$OSM_TIMEOUT];
+(area${localityDistrictId?.let { "[admin_level~\"^[5-9]|10${'$'}\"]" } ?: "[place~\"^(city|town|village|hamlet|isolated_dwelling)${'$'}\"]"}["name:en"="$geocodeArea"];)->.searchArea;
+(
     node[place~"^(suburb|quarter|neighbourhood|city_block|plot)${'$'}"]["name"](area.searchArea);
     rel["admin_level"~"^[8,9]|10${'$'}"][place="suburb"]["name"](area.searchArea);
-    )->.crl;
-    foreach.crl(
-        convert MicrodistrictType 
-            osmType = type(), ::id = id(), ::geom = geom(), localityId = "$localityId", localityDistrictId = "${
+)->.crl;
+foreach.crl(
+    convert MicrodistrictType 
+        osmType = type(), ::id = id(), ::geom = geom(), localityId = "$localityId", localityDistrictId = "${
             localityDistrictId?.toString().orEmpty()
         }", wikidata = t["wikidata"], gnis_id = t["gnis:feature_id"], place = t["place"], geocodeArea = t["name:en"], locale = "$locale", name_loc = t["name:$locale"], name = t["name"];
-        out center;
-    );
+    out center;
+);
     """.trimIndent()
     }
 }

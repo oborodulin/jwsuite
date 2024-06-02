@@ -1,6 +1,5 @@
 package com.oborodulin.jwsuite.data_geo.remote.osm.model
 
-import com.oborodulin.home.common.util.Constants.LOC_DELIMITER
 import com.oborodulin.jwsuite.domain.util.Constants.OSM_TIMEOUT
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -27,11 +26,11 @@ data class LocalityApiModel(
             regionId: UUID,
             regionDistrictId: UUID? = null,
             geocodeArea: String,
-            locale: String? = Locale.getDefault().language.substringBefore(LOC_DELIMITER)
+            locale: String? = Locale.getDefault().language
         ) = """ 
 [out:json][timeout:$OSM_TIMEOUT];
 (area["admin_level"="${regionDistrictId?.let { '6' } ?: '4'}"]["name:en"="$geocodeArea"];)->.searchArea;
-node[place~"^(city|town|village|hamlet|isolated_dwelling)${'$'}"]["name"](area.searchArea)->.crl;
+rel[place~"^(city|town|village|hamlet|isolated_dwelling)${'$'}"]["name"](area.searchArea)->.crl;
 foreach.crl(
     convert LocalityType 
         osmType = type(), ::id = id(), ::geom = geom(), regionId = "$regionId", regionDistrictId = "${
